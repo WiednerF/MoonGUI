@@ -1,13 +1,13 @@
 local turbo = require "turbo"
 local io =    require "io"
 
-if #arg < 2 then
-	print('Usage: port logfile')
+if #arg < 1 then
+	print('Usage: port')
 	os.exit()
 end
 
 local port = tonumber(arg[1])
-local filename = arg[2]
+local filename = 'moongen'
 
 local cachedLog = ''
 local lastModified = ''
@@ -35,11 +35,27 @@ function MoonGenStdOutHandler:get()
 	end 
 end
 
+local pidresult = ''
+local ProcessStarterHandler = class("ProcessStarterHandler", turbo.web.RequestHandler)
+function ProcessStarterHandler:get()
+	--local cmd = "bash -c \"ls & echo $!\""
+	local cmd = "nohup ../build/MoonGen ../examples/l3-load-latency.lua 8 9 > " .. filename .. ".log & echo $! > " .. filename .. "-pid.log "
+	print (cmd)
+	os.execute(cmd)
+	local handle = io.input(filename .. "-pid.log")
+	pidresult = io.read("*a")
+	print ("Start process with PID " .. pidresult)
+	handle:close()
+	self:write({pid = pidresult})
+end
+
 local app = turbo.web.Application:new({
 	-- Serve single index.html file on root requests.
 	{"^/$", turbo.web.StaticFileHandler, "index.html"},
-	-- Server csv data
+	-- Serve log data
 	{"^/stdout/(.*)$", MoonGenStdOutHandler},
+	-- Serve start processes
+	{"^/startprocess$", ProcessStarterHandler},
 	-- Serve contents of directory.
 	{"^/(.*)$", turbo.web.StaticFileHandler, "files/"}
 })	
