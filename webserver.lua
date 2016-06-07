@@ -38,15 +38,23 @@ end
 local pidresult = ''
 local ProcessStarterHandler = class("ProcessStarterHandler", turbo.web.RequestHandler)
 function ProcessStarterHandler:get()
-	--local cmd = "bash -c \"ls & echo $!\""
 	local cmd = "nohup ../build/MoonGen ../examples/l3-load-latency.lua 8 9 > " .. filename .. ".log & echo $! > " .. filename .. "-pid.log "
-	print (cmd)
+	--print (cmd)
 	os.execute(cmd)
 	local handle = io.input(filename .. "-pid.log")
 	pidresult = io.read("*a")
 	print ("Start process with PID " .. pidresult)
 	handle:close()
 	self:write({pid = pidresult})
+end
+
+local ProcessKillerHandler = class("ProcessKillerHandler", turbo.web.RequestHandler)
+function ProcessKillerHandler:get()
+        local cmd = "kill " .. pidresult
+        --print (cmd)
+	os.execute(cmd)
+        print ("Kill process with PID " .. pidresult)
+        self:write({pid = pidresult})
 end
 
 local app = turbo.web.Application:new({
@@ -56,6 +64,8 @@ local app = turbo.web.Application:new({
 	{"^/stdout/(.*)$", MoonGenStdOutHandler},
 	-- Serve start processes
 	{"^/startprocess$", ProcessStarterHandler},
+        -- Serve kill processes
+        {"^/killprocess$", ProcessKillerHandler},
 	-- Serve contents of directory.
 	{"^/(.*)$", turbo.web.StaticFileHandler, "files/"}
 })	
