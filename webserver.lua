@@ -11,16 +11,21 @@ local filename = 'moongen'
 
 local cachedLog = ''
 local lastModified = ''
-function readLog() 
-	local file = assert(io.popen("stat -c=%y ".. filename, 'r'))	
+function readLog()
+	local cmd = "stat -c=%y ".. filename .. ".log"
+	print (cmd)
+	local file = assert(io.popen(cmd, 'r'))	
 	local modified = file:read('*a')
 	file:close()
 	if modified ~= lastModified then
 		-- read logfile again
-		local filehandle = io.input(filename)
-		cachedLog =  io.read("*a")
+		cmd = "./ansi2html.sh --body-only < " .. filename .. ".log" 
+		print(cmd)
+		local filehandle = io.popen(cmd)
+		cachedLog =  filehandle:read("*a")
 		lastModified = modified
 		print('cache modified file')
+		filehandle:close()
 	end	
 	return cachedLog
 end
@@ -38,8 +43,8 @@ end
 local pidresult = ''
 local ProcessStarterHandler = class("ProcessStarterHandler", turbo.web.RequestHandler)
 function ProcessStarterHandler:get()
-	local cmd = "nohup ../build/MoonGen ../examples/l3-load-latency.lua 8 9 > " .. filename .. ".log & echo $! > " .. filename .. "-pid.log "
-	--print (cmd)
+	local cmd = "nohup ../build/MoonGen ../examples/l3-load-latency.lua 8 9 > ansi2html > " .. filename .. ".log & echo $! > " .. filename .. "-pid.log "
+	print (cmd)
 	os.execute(cmd)
 	local handle = io.input(filename .. "-pid.log")
 	pidresult = io.read("*a")
@@ -61,7 +66,7 @@ local app = turbo.web.Application:new({
 	-- Serve single index.html file on root requests.
 	{"^/$", turbo.web.StaticFileHandler, "index.html"},
 	-- Serve log data
-	{"^/stdout/(.*)$", MoonGenStdOutHandler},
+	{"^/log/(.*)$", MoonGenStdOutHandler},
 	-- Serve start processes
 	{"^/startprocess$", ProcessStarterHandler},
         -- Serve kill processes
