@@ -11,7 +11,7 @@
 <div class="statusDivider"></div>
 <div class="statusContent" id="statusMessage" ng-bind="statusMessage"></div>
 <div class="statusDivider"></div>
-<div class="statusContent"><progress value="{{progressBar.value }}" max="{{ progressBar.max}}" ng-show="progressBar.show"></progress></div>
+<div class="statusContent"><uib-progressbar ng-show="progressBar.show" max="progressBar.max" value="progressBar.value"><span style="color:white; white-space:nowrap;">{{progressBar.value}} / {{progressBar.max}}</span></uib-progressbar></div>
 <div class="statusDivider"></div>
 <div class="statusContent">
     <div class="statusRunning"

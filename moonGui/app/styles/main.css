@@ -31,6 +31,42 @@ status-bar{
     display: flex;
     flex-direction: row;
 }
+
+.flex{
+    display: flex;
+    height:100%;
+    width:100%;
+}
+.flex > div{
+
+}
+.flex-row{
+    flex-direction: row;
+}
+.flex-column{
+    flex-direction: column;
+}
+.flex-header{
+    min-height: 80px;
+    max-height: 200px;
+    height: 10%;
+    width:100%;
+    -webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.6);
+    -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.6);
+    box-shadow:  1px 1px 10px 0px rgba(0,0,0,0.6);
+    border-bottom-color: #8c8c8c;
+    border-bottom-style: inset;
+    text-align: center;
+    background-position: 30%;
+    background-image: url("images/moongenlogo.png");
+    background-repeat: no-repeat;
+    -webkit-background-size:50px;
+    background-size:50px;
+}
+.flex-content{
+    position: relative;
+    height: 100%;
+}
 status-bar > div.statusContent {
     width:24.75%;
     height: 100%;

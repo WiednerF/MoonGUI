@@ -1,1 +1,1 @@
-var moonGuiApp = angular.module('moonGuiApp',['ui.layout','perfect_scrollbar']);
+var moonGuiApp = angular.module('moonGuiApp',['ui.layout','perfect_scrollbar','ui.bootstrap']);

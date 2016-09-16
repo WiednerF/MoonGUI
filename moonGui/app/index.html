@@ -2,26 +2,22 @@
 <html ng-app="moonGuiApp">
 <head>
 	<meta charset="utf-8">
-	<title>MoonGUI</title>
+	<title>MoonGen {{header.title?( " - "+ header.title ):"" }}</title>
 	<link rel="stylesheet" href="styles/main.css">
 	<link rel="stylesheet" href="lib/angular-ui-layout/ui-layout.css">
     <link rel="stylesheet" href="lib/perfect-scrollbar/perfect-scrollbar.min.css" />
+    <link rel="stylesheet" href="lib/bootstrap/bootstrap.min.css">
 </head>
 <body>
 	<!--Normal Body TODO Flex box instead of ui-layout-->
 
     <div class="wrap">
-    <div ui-layout>
-        <div ui-layout-container size="50px">
+    <div class="flex flex-column">
+        <div class="flex-header">
+            <h1>MoonGen {{header.title?( " - "+ header.title ):"" }}</h1>
             <!--TODO Directive header-->
-            <input type="checkbox"
-                   ng-model="connect">
-            <input type="checkbox"
-                   ng-model="running">
-            <input type="text"
-                   ng-model="status">
         </div><!--HEADER-->
-        <div ui-layout-container="central">
+        <div class="flex-content">
             <ui-layout options="{ flow : 'column'}">
                 <div ui-layout-container size="40%">
                     <perfect-scrollbar class="scroller">
@@ -53,6 +49,9 @@
     <script src="lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="lib/angular/angular.min.js"></script>
     <script src="lib/angular-ui-layout/ui-layout.js"></script>
+    <script src="lib/bootstrap/angular-animate.min.js"></script>
+    <script src="lib/bootstrap/angular-touch.min.js"></script>
+    <script src="lib/bootstrap/ui-bootstrap.min.js"></script>
     <script src="lib/angular-perfect-scrollbar/angular-perfect-scrollbar.js"></script>
 	<script src="scripts/app.js"></script>
     <script src="scripts/directives/status-bar.js"></script>
