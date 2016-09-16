@@ -1,87 +1,61 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <!-- build:css(.) styles/vendor.css -->
-    <!-- bower:css -->
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
-    <!-- endbower -->
-    <!-- endbuild -->
-    <!-- build:css(.tmp) styles/main.css -->
-    <link rel="stylesheet" href="styles/main.css">
-    <!-- endbuild -->
-  </head>
-  <body ng-app="moonGuiApp">
-    <!--[if lte IE 8]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
+<!DOCTYPE html>
+<html ng-app="moonGuiApp">
+<head>
+	<meta charset="utf-8">
+	<title>MoonGUI</title>
+	<link rel="stylesheet" href="styles/main.css">
+	<link rel="stylesheet" href="lib/angular-ui-layout/ui-layout.css">
+    <link rel="stylesheet" href="lib/perfect-scrollbar/perfect-scrollbar.min.css" />
+</head>
+<body>
+	<!--Normal Body TODO Flex box instead of ui-layout-->
 
-    <!-- Add your site or application content here -->
-    <div class="header">
-      <div class="navbar navbar-default" role="navigation">
-        <div class="container">
-          <div class="navbar-header">
+    <div class="wrap">
+    <div ui-layout>
+        <div ui-layout-container size="50px">
+            <!--TODO Directive header-->
+            <input type="checkbox"
+                   ng-model="connect">
+            <input type="checkbox"
+                   ng-model="running">
+            <input type="text"
+                   ng-model="status">
+        </div><!--HEADER-->
+        <div ui-layout-container="central">
+            <ui-layout options="{ flow : 'column'}">
+                <div ui-layout-container size="40%">
+                    <perfect-scrollbar class="scroller">
 
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#js-navbar-collapse">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
+                    </perfect-scrollbar>
+                </div><!--Sidebar-->
+                <div ui-layout-container="central">
+                    <div ui-layout options="{flow : 'row'}">
+                        <div ui-layout-container="central">
+                            <perfect-scrollbar class="scroller">
 
-            <a class="navbar-brand" href="#/">moonGui</a>
-          </div>
+                            </perfect-scrollbar>
+                        </div><!--GRAPH-->
+                        <div ui-layout-container size="20%">
+                            <perfect-scrollbar class="scroller">
 
-          <div class="collapse navbar-collapse" id="js-navbar-collapse">
-
-            <ul class="nav navbar-nav">
-              <li class="active"><a href="#/">Home</a></li>
-              <li><a ng-href="#/">About</a></li>
-              <li><a ng-href="#/">Contact</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
+                            </perfect-scrollbar>
+                        </div><!--LOG-->
+                    </div>
+                </div><!--MainContent-->
+            </ui-layout>
+        </div><!--CONTENT-->
     </div>
-
-    <div class="container">
-    <div ng-include="'views/main.html'" ng-controller="MainCtrl"></div>
     </div>
+    <!--Footer-->
+    <status-bar connection-established="connect" running="running" status-message="status" progress-bar="{show : true,max:100,value:50}"></status-bar>
+    <!--Scripts-->
+    <script src="lib/jquery/jquery-1.11.1.min.js"></script>
+    <script src="lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="lib/angular-ui-layout/ui-layout.js"></script>
+    <script src="lib/angular-perfect-scrollbar/angular-perfect-scrollbar.js"></script>
+	<script src="scripts/app.js"></script>
+    <script src="scripts/directives/status-bar.js"></script>
 
-    <div class="footer">
-      <div class="container">
-        <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
-      </div>
-    </div>
-
-
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-     <script>
-       !function(A,n,g,u,l,a,r){A.GoogleAnalyticsObject=l,A[l]=A[l]||function(){
-       (A[l].q=A[l].q||[]).push(arguments)},A[l].l=+new Date,a=n.createElement(g),
-       r=n.getElementsByTagName(g)[0],a.src=u,r.parentNode.insertBefore(a,r)
-       }(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-       ga('create', 'UA-XXXXX-X');
-       ga('send', 'pageview');
-    </script>
-
-    <!-- build:js(.) scripts/vendor.js -->
-    <!-- bower:js -->
-    <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="bower_components/angular-animate/angular-animate.js"></script>
-    <!-- endbower -->
-    <!-- endbuild -->
-
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <script src="scripts/app.js"></script>
-        <script src="scripts/controllers/main.js"></script>
-        <!-- endbuild -->
 </body>
 </html>

@@ -1,0 +1,25 @@
+<div class="statusDivider"></div>
+<div class="statusContent" id="statusConnection">
+    <div class="statusConnected"
+         ng-show="connectionEstablished">
+        <div class="icon-connect"></div>
+    </div>
+    <div ng-hide="connectionEstablished" class="statusNotConnected">
+        <div class="icon-not-connect"></div>
+    </div>
+</div>
+<div class="statusDivider"></div>
+<div class="statusContent" id="statusMessage" ng-bind="statusMessage"></div>
+<div class="statusDivider"></div>
+<div class="statusContent"><progress value="{{progressBar.value }}" max="{{ progressBar.max}}" ng-show="progressBar.show"></progress></div>
+<div class="statusDivider"></div>
+<div class="statusContent">
+    <div class="statusRunning"
+         ng-show="running">
+        <div class="icon-running"></div>
+    </div>
+    <div ng-hide="running" class="statusNotRunning">
+        <div class="icon-not-running"></div>
+    </div>
+</div>
+<div class="statusDivider"></div>
