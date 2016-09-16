@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="lib/perfect-scrollbar/perfect-scrollbar.min.css" />
     <link rel="stylesheet" href="lib/bootstrap/bootstrap.min.css">
 </head>
-<body>
+<body ng-init="tabs=[{heading:'Start/Stop',disabled:false},{heading:'Configuration',disabled:false},{heading:'System',disabled:false},{heading:'Graph',disabled:true}]">
 	<!--Normal Body TODO Flex box instead of ui-layout-->
 
     <div class="wrap">
@@ -20,20 +20,26 @@
         <div class="flex-content">
             <ui-layout options="{ flow : 'column'}">
                 <div ui-layout-container size="40%">
-                    <perfect-scrollbar class="scroller">
-
-                    </perfect-scrollbar>
+                    <!--TODO Add Controller and Move to templates and move Data to template-->
+                    <uib-tabset justified="true">
+                        <uib-tab index="$index" ng-repeat="tab in tabs" heading="{{tab.heading}}" disable="tab.disabled">
+                            <perfect-scrollbar class="scroller">
+                            {{tab.content}}
+                            </perfect-scrollbar>
+                        </uib-tab>
+                    </uib-tabset>
                 </div><!--Sidebar-->
                 <div ui-layout-container="central">
                     <div ui-layout options="{flow : 'row'}">
                         <div ui-layout-container="central">
                             <perfect-scrollbar class="scroller">
-
+                                <graph-histogram id="4"></graph-histogram>
+                                //TODO Graph
                             </perfect-scrollbar>
                         </div><!--GRAPH-->
                         <div ui-layout-container size="20%">
                             <perfect-scrollbar class="scroller">
-
+                                //TODO Log
                             </perfect-scrollbar>
                         </div><!--LOG-->
                     </div>
@@ -43,10 +49,11 @@
     </div>
     </div>
     <!--Footer-->
-    <status-bar connection-established="connect" running="running" status-message="status" progress-bar="{show : true,max:100,value:50}"></status-bar>
+    <status-bar connection-established="connect" running="running" status-message="status" progress-bar="progressBar"></status-bar>
     <!--Scripts-->
     <script src="lib/jquery/jquery-1.11.1.min.js"></script>
     <script src="lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="lib/plotly/plotly-latest.min.js"></script>
     <script src="lib/angular/angular.min.js"></script>
     <script src="lib/angular-ui-layout/ui-layout.js"></script>
     <script src="lib/bootstrap/angular-animate.min.js"></script>
@@ -55,6 +62,7 @@
     <script src="lib/angular-perfect-scrollbar/angular-perfect-scrollbar.js"></script>
 	<script src="scripts/app.js"></script>
     <script src="scripts/directives/status-bar.js"></script>
+    <script src="scripts/directives/graph-histogram.js"></script>
 
 </body>
 </html>
