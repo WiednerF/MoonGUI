@@ -1,35 +1,49 @@
 moonGuiApp.directive('graphHistogram',function(){
     return {
         restrict : 'E',
-        template : '<div id="histogram{{ id }}"></div>',
         scope : {
-            id : '='
+            id : '@',
+            points: '=',
+            title: '@',
+            yaxis: '=',
+            xaxis: '=',
+            binx: '='
         },
-        link:function(scope,element){
+        link:function($scope){
             function init(){
-                element.html('<div id="histogram'+scope.id+'"></div>');
-                scope.$on('$viewContentLoaded', initGraph());
+                initGraph();
             }
             function initGraph(){
-                var x = [];
-                for (var i = 0; i < 500; i ++) {
-                    x[i] = Math.random();
-                }
-
-                var data = [
+                $scope.data = [
                     {
-                        x: x,
+                        x: $scope.points,
                         type: 'histogram',
-                        marker: {
-                            color: 'rgba(100,250,100,0.7)',
-                        },
+                        autobinx: false,
+                        xbins: $scope.binx
                     }
                 ];
-                //TODO
-                Plotly.newPlot('histogram'+scope.id, data);
+                $scope.layout = {
+                    title: $scope.title,
+                    bargap: 0.05,
+                    bargroupgap: 0.2,
+                    xaxis: $scope.xaxis,
+                    yaxis: $scope.yaxis
+                }
+                Plotly.newPlot($scope.id,[$scope.data],$scope.layout, {showLink: false,displaylogo: false});
+
             }
             init();
-            //TODO
+            $scope.$watch('points.length', function () {//Must use apply for getting changes
+                var update =  {
+                    x: [$scope.points],
+                    type: 'histogram',
+                    autobinx: false,
+                    xbins: $scope.binx
+                };
+                var elem = document.getElementById($scope.id);
+                Plotly.restyle(elem,update);
+            }, true);
+
 
         }
     };

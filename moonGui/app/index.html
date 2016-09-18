@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="moonGuiApp">
+<html ng-app="moonGuiApp" ng-init="points=[-1,2,8,9]">
 <head>
 	<meta charset="utf-8">
 	<title>MoonGen {{header.title?( " - "+ header.title ):"" }}</title>
@@ -33,8 +33,8 @@
                     <div ui-layout options="{flow : 'row'}">
                         <div ui-layout-container="central">
                             <perfect-scrollbar class="scroller">
-                                <graph-histogram id="4"></graph-histogram>
-                                //TODO Graph
+                                <graph-histogram id="histogram4"  points="points" title="Testresult" yaxis="{title: 'Count'}" xaxis="{title:'Value'}" binx="{end: 10,size: 1,start: -3}"></graph-histogram>
+                                <graph-line id="line3" title="Testresult" traces="[{ x: [2, 3, 4, 5],y: [16, 5, 11, 9],}]"></graph-line>
                             </perfect-scrollbar>
                         </div><!--GRAPH-->
                         <div ui-layout-container size="20%">
@@ -63,6 +63,6 @@
 	<script src="scripts/app.js"></script>
     <script src="scripts/directives/status-bar.js"></script>
     <script src="scripts/directives/graph-histogram.js"></script>
-
+    <script src="scripts/directives/graph-line.js"></script>
 </body>
 </html>
