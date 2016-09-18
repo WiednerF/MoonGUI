@@ -1,0 +1,10 @@
+<div class="wrap">
+  <div class="flex flex-column">
+    <app-header [title]="title"></app-header><!--HEADER-->
+    <app-main [(title)]="title" [(status)]="status">
+      //TODO Content
+    </app-main><!--CONTENT-->
+  </div>
+</div>
+<!--Footer-->
+<app-status-bar [connect]="status.connect" [running]="status.running" [status]="status.status" [progressBar]="status.progressBar"></app-status-bar>
