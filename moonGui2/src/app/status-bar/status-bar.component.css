@@ -47,16 +47,16 @@
 }
 
 .icon-connect{
-    background-image: url("images/connect.png");
+    background-image: url("assets/images/connect.png");
 }
 .icon-not-connect{
-    background-image: url("images/no_connection.png");
+    background-image: url("assets/images/no_connection.png");
 }
 .icon-running{
-    background-image: url("images/running.png");
+    background-image: url("assets/images/running.png");
 }
 .icon-not-running{
-    background-image: url("images/not_running.png");
+    background-image: url("assets/images/not_running.png");
 }
 
 .statusNotConnected, .statusNotRunning {

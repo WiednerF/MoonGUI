@@ -1,0 +1,7 @@
+<ngb-tabset type="tabs" [activeId]="tabs[0].title">
+    <ngb-tab *ngFor="let tab of tabs" [id]="tab.title" [title]="tab.title" [disabled]="tab.disabled">
+        <template ngbTabContent>
+            {{ tab.content }}
+        </template>
+    </ngb-tab>
+</ngb-tabset>

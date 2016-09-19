@@ -1,4 +1,7 @@
 import { Component, OnInit , Input, Output, EventEmitter} from '@angular/core';
+import {Observable, Subscriber} from "rxjs";
+
+declare var Object: any;
 
 @Component({
   selector: 'app-main',
@@ -7,10 +10,13 @@ import { Component, OnInit , Input, Output, EventEmitter} from '@angular/core';
 })
 export class MainComponent implements OnInit {
     @Input() public title:string;
-    @Output() public titleChange:EventEmitter<string> = new EventEmitter();//TODO Fire Event for Change
+    @Output() public titleChange:EventEmitter<string> = new EventEmitter<string>();
     @Input() public status:{connect: boolean, running: boolean, status: string, progressBar : {show: boolean, value: number, max: number}};
-    @Output() public statusChange:EventEmitter<{}> = new EventEmitter();//TODO Fire Event for Change
+    @Output() public statusChange:EventEmitter<{}> = new EventEmitter();
     private toggle : {output: boolean, config: boolean, log: boolean, graph: boolean}={output:true,config:true, log: true, graph: true};
+    private points: any=[{x:[1,2,3,4,5,1,4,8,9,1,4,5],name:"test1"},{x:[1,2,3,4,5,1,4,8,9,1,8,9,4,4,4,5],name:"test2"}];
+    private pointsLine: any=[{x:[1,2,3,4,5,1,4,8,9,1,4,5],y:[-1,2,3,4,5,6,7,8,9,10,11,12,13],name:"test1"},{x:[1,2,3,4,5,1,4,8,9,1,8,9,4,4,4,5],y:[-1,2,3,4,5,6,7,8,9,10,11,12,13],name:"test2"}];
+    private graphTitle = "test";
 
   constructor() {
   }

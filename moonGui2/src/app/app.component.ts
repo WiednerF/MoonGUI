@@ -10,7 +10,7 @@ export class AppComponent {
         connect: false,
         running: false,
         status: "",
-        progressBar: {show: false, value: 0, max: 100}
+        progressBar: {show: true, value: 50, max: 100}
     };
     public title: string = "Test";
 

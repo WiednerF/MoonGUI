@@ -64,7 +64,7 @@ end
 
 local app = turbo.web.Application:new({
 	-- Serve single index.html file on root requests.
-	{"^/$", turbo.web.StaticFileHandler, "index.html"},
+	{"^/$", turbo.web.StaticFileHandler, "moonGui2/dist/index.html"},
 	-- Serve log data
 	{"^/log/(.*)$", MoonGenStdOutHandler},
 	-- Serve start processes
@@ -72,7 +72,7 @@ local app = turbo.web.Application:new({
         -- Serve kill processes
         {"^/killprocess$", ProcessKillerHandler},
 	-- Serve contents of directory.
-	{"^/(.*)$", turbo.web.StaticFileHandler, "files/"}
+	{"^/(.*)$", turbo.web.StaticFileHandler, "moonGui2/dist/"}
 })	
 
 local srv = turbo.httpserver.HTTPServer(app)
