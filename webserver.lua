@@ -27,6 +27,7 @@ function MoonGenStartHandler:post()
 end
 function MoonGenStartHandler:get()
 	print("Get Informationen List of PIDs")
+	self:write({execution=executionNumber})
 end
 
 local app = turbo.web.Application:new({
