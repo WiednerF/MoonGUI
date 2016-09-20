@@ -13,10 +13,19 @@ function ConnectHandler:head()
 		print("Connection Tested to REST API")
 end
 local MoonGenStartHandler = class("MoonGenStartHandler", turbo.web.RequestHandler)
-function ConnectHandler:post() 
+function MoonGenStartHandler:post() 
 	print("Start MoonGen Process")
+	executionNumber = math.random(1000)
+	local cmd ="mkdir -p history/"..executionNumber.."/"
+	local historyFile = io.open("history/history-number","a")
+	print(cmd)
+	os.execute(cmd)
+	historyFile:write(executionNumber.."\n")
+	historyFile:close()
+	print("Execution number:"..executionNumber)
+	self:write({execution=executionNumber})
 end
-function ConnectHandler:get()
+function MoonGenStartHandler:get()
 	print("Get Informationen List of PIDs")
 end
 
@@ -26,7 +35,7 @@ local app = turbo.web.Application:new({
 	-- Serve Connection availability
 	{"^/rest/$",ConnectHandler},
 	-- Start the MoonGen Handler Function
-	{"^/rest/moongen/$",MoonGenStartHandler}
+	{"^/rest/moongen/$",MoonGenStartHandler},
 	-- Serve contents of directory.
 	{"^/(.*)$", turbo.web.StaticFileHandler, "moonGui2/dist/"}
 })	
