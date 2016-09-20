@@ -43,7 +43,7 @@ end
 local pidresult = ''
 local ProcessStarterHandler = class("ProcessStarterHandler", turbo.web.RequestHandler)
 function ProcessStarterHandler:get()
-	local cmd = "nohup ../build/MoonGen ../examples/l3-load-latency.lua 8 9 > ansi2html > " .. filename .. ".log & echo $! > " .. filename .. "-pid.log "
+	local cmd = "nohup ../MoonGen ../examples/l3-load-latency.lua 8 9 > ansi2html > " .. filename .. ".log & echo $! > " .. filename .. "-pid.log "
 	print (cmd)
 	os.execute(cmd)
 	local handle = io.input(filename .. "-pid.log")
