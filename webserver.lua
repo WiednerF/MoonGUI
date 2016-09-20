@@ -62,9 +62,17 @@ function ProcessKillerHandler:get()
         self:write({pid = pidresult})
 end
 
+local ConnectHandler = class("ConnectHandler", turbo.web.RequestHandler)
+function ConnectHandler:head()
+		print("Connection Tested to REST API")
+		self.write();
+end
+
 local app = turbo.web.Application:new({
 	-- Serve single index.html file on root requests.
 	{"^/$", turbo.web.StaticFileHandler, "moonGui2/dist/index.html"},
+	-- Serve Connection availability
+	{"^/rest/$",ConnectHandler},
 	-- Serve log data
 	{"^/log/(.*)$", MoonGenStdOutHandler},
 	-- Serve start processes
