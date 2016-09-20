@@ -12,6 +12,7 @@ import { ConfigPartComponent } from './config-part/config-part.component';
 import { GraphHistogramComponent } from './graph/graph-histogram/graph-histogram.component';
 import { GraphLineComponent } from './graph/graph-line/graph-line.component';
 import { ConfigStartComponent } from './config/config-start/config-start.component';
+import {MoonConnectServiceService} from "./services/moon-connect-service.service";
 
 @NgModule({
   declarations: [
@@ -31,7 +32,7 @@ import { ConfigStartComponent } from './config/config-start/config-start.compone
     HttpModule,
     PerfectScrollbarModule
   ],
-  providers: [],
+  providers: [MoonConnectServiceService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
