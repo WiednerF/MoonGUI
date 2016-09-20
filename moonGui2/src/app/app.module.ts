@@ -11,6 +11,7 @@ import { MainComponent } from './main/main.component';
 import { ConfigPartComponent } from './config-part/config-part.component';
 import { GraphHistogramComponent } from './graph/graph-histogram/graph-histogram.component';
 import { GraphLineComponent } from './graph/graph-line/graph-line.component';
+import { ConfigStartComponent } from './config/config-start/config-start.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { GraphLineComponent } from './graph/graph-line/graph-line.component';
     MainComponent,
     ConfigPartComponent,
     GraphHistogramComponent,
-    GraphLineComponent
+    GraphLineComponent,
+    ConfigStartComponent
   ],
   imports: [
     NgbModule,

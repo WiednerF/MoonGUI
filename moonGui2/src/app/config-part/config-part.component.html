@@ -1,7 +1,22 @@
-<ngb-tabset type="tabs" [activeId]="tabs[0].title">
-    <ngb-tab *ngFor="let tab of tabs" [id]="tab.title" [title]="tab.title" [disabled]="tab.disabled">
+<ngb-tabset type="tabs">
+    <ngb-tab title="Start/Stop" [disabled]="tabs[0].disabled">
         <template ngbTabContent>
-            {{ tab.content }}
+            <app-config-start></app-config-start>
+        </template>
+    </ngb-tab>
+    <ngb-tab title="Configuration" [disabled]="tabs[1].disabled">
+        <template ngbTabContent>
+            TODO
+        </template>
+    </ngb-tab>
+    <ngb-tab title="System" [disabled]="tabs[2].disabled">
+        <template ngbTabContent>
+            TODO
+        </template>
+    </ngb-tab>
+    <ngb-tab title="Graph" [disabled]="tabs[3].disabled">
+        <template ngbTabContent>
+            TODO
         </template>
     </ngb-tab>
 </ngb-tabset>

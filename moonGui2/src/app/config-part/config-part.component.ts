@@ -7,11 +7,8 @@ import {Component, OnInit} from '@angular/core';
 })
 export class ConfigPartComponent implements OnInit {
 
-    private tabs: [{}] = [{title: "Start/Stop", disabled: false, content: "TODO"}, {
-        title: "Configuration",
-        disabled: false,
-        content: "TODO"
-    }, {title: "System", disabled: false, content: "TODO"}, {title: "Graph", disabled: true, content: "TODO"}];
+    private tabs: [{}] = [{disabled: false}, {
+        disabled: false}, { disabled: false}, {disabled: true}];
 
     constructor() {
     }
