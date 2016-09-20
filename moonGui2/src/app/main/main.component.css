@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: row;
     position: relative;
-    height:80%;
+    height:90%;
     width:100%;
 }
 
@@ -20,7 +20,7 @@
 }
 .flex-log,.flex-graph{
     width:100%;
-    overflow:scroll;
+    overflow:auto;
 }
 .flex-graph{
     flex-grow:1;
