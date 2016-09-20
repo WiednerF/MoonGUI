@@ -65,7 +65,6 @@ end
 local ConnectHandler = class("ConnectHandler", turbo.web.RequestHandler)
 function ConnectHandler:head()
 		print("Connection Tested to REST API")
-		self.write();
 end
 
 local app = turbo.web.Application:new({
