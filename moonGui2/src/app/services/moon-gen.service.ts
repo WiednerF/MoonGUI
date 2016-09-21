@@ -19,7 +19,7 @@ export class MoonGenService {
 
   public startMoonGen(responseFunction:any,object:any):void{
       if(this.shouldRun) return null;
-      this.moonConnectService.put("/rest/moongen/",{test:"test"}).subscribe((response)=>{this.shouldRun=true;this.executionNumber=response.json().execution;responseFunction(response,false,object);},error=>{this.shouldRun=false;responseFunction(error,true,object);});
+      this.moonConnectService.post("/rest/moongen/",{test:"test"}).subscribe((response)=>{this.shouldRun=true;this.executionNumber=response.json().execution;responseFunction(response,false,object);},error=>{this.shouldRun=false;responseFunction(error,true,object);});
   }
 
   public stopMoonGen(responseFunction:any,object:any):void{
