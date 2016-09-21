@@ -29,6 +29,16 @@ function MoonGenStartHandler:get()
 	print("Get Informationen List of PIDs")
 	self:write({execution=executionNumber})
 end
+local MoonGenDefaultHandler = class("MoonGenDefaultHandler",turbo.web.RequestHandler)
+function MoonGenDefaultHandler:delete(execution)
+	print(execution.."-"..executionNumber)
+	if tonumber(execution)==executionNumber then
+		executionNumber=nil
+	else
+		self:set_status(404)
+	end
+
+end
 
 local app = turbo.web.Application:new({
 	-- Serve single index.html file on root requests.
@@ -37,6 +47,7 @@ local app = turbo.web.Application:new({
 	{"^/rest/$",ConnectHandler},
 	-- Start the MoonGen Handler Function
 	{"^/rest/moongen/$",MoonGenStartHandler},
+	{"^/rest/moongen/(.*)/$",MoonGenDefaultHandler},
 	-- Serve contents of directory.
 	{"^/(.*)$", turbo.web.StaticFileHandler, "moonGui2/dist/"}
 })	
