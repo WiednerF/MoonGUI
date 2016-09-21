@@ -2,22 +2,23 @@ import {Component, OnInit} from '@angular/core';
 import {Observable} from "rxjs";
 import {MoonConnectServiceService} from "./services/moon-connect-service.service";
 import {Response} from "@angular/http";
+import {MoonGenService} from "./services/moon-gen.service";
 
 @Component({
     selector: 'moon-gui',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css']
+    styleUrls: ['./app.component.css'],
+    providers:[MoonConnectServiceService,MoonGenService]
 })
 export class AppComponent implements OnInit{
-    public status: {connect: Observable<Response>,running: boolean, status: string, progressBar: {show: boolean, value: number, max: number}} = {
+    public status: {connect: Observable<Response>, status: string, progressBar: {show: boolean, value: number, max: number}} = {
         connect: null,
-        running: false,
         status: "",
         progressBar: {show: true, value: 50, max: 100}
     };
     public title: string = "Test";
 
-    constructor(private moonConnectService:MoonConnectServiceService) {
+    constructor(public moonConnectService:MoonConnectServiceService) {
         this.status.connect=this.moonConnectService.getConnection();
     }
 

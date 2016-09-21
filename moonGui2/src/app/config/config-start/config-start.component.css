@@ -1,0 +1,12 @@
+.tab-wrapper{
+    height:90%;
+    width: 90%;
+    margin: 4px auto;
+}
+.label{
+    float: left;
+    clear: left;
+}
+#startStopMoonGen{
+    float: right;
+}

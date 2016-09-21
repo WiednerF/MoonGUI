@@ -13,4 +13,5 @@ describe('Service: MoonConnectService', () => {
   it('should ...', inject([MoonConnectServiceService], (service: MoonConnectServiceService) => {
     expect(service).toBeTruthy();
   }));
+
 });

@@ -1,6 +1,7 @@
 import { Component, OnInit , Input, OnChanges } from '@angular/core';
 import {Observable} from "rxjs";
 import {Response} from "@angular/http";
+import {MoonGenService} from "../services/moon-gen.service";
 
 @Component({
   selector: 'app-status-bar',
@@ -9,17 +10,20 @@ import {Response} from "@angular/http";
 })
 export class StatusBarComponent implements OnInit,OnChanges {
     @Input() public connect: Observable<Response> = null;
-    @Input() public running: boolean = false;
+    private running: boolean = false;
     @Input() public status: string = "";
     @Input() public progressBar: {show : boolean, max: number, value: number};
     private connectStatus=false;
 
-  constructor() {
+  constructor(public moonGenService:MoonGenService) {
 
   }
 
   ngOnInit() {
-
+        var obs=Observable.interval(1000);//Check the running state
+        obs.subscribe(()=>{
+           this.running=this.moonGenService.getRunning();
+        });
   }
 
   ngOnChanges(changes){
