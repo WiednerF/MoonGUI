@@ -1,0 +1,46 @@
+#%RAML 1.0
+title: MoonGUI
+version: v1
+baseUri: /rest
+protocols:
+  - HTTP
+mediaType:
+  - application/JSON
+description: |
+  This API enables the Contact between
+  the Backend Server and The Frontend
+  GUI
+/:
+  head:
+    responses:
+      200:
+        description: Indicates that the Connection to the Resources is correct set
+/moongen/:
+  description: |
+    The Entry Point for the MoonGen Live handling to create or get the execution
+  get:
+    description: Returns the number of the running System
+    responses:
+      200:
+        description: Returns the Number of the Running System
+        body:
+          application/json:
+            type: {execution: number}
+      404:
+        description: The System is not longer running or was not started
+  post:
+    description: Starts MoonGen with the Specified Options
+    responses:
+      200:
+        description: Returns the Number of the Running System
+        body:
+          application/json:
+            type: {execution: number}
+  /{execution}/:
+    delete:
+      description: Stops the running System
+      responses:
+        200:
+          description: The Ressources was successfully stoped
+        404:
+          description: The System was not longer running

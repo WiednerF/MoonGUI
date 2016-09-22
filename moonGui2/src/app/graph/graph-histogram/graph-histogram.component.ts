@@ -45,7 +45,6 @@ export class GraphHistogramComponent implements OnInit,OnChanges {
           }
           Plotly.relayout(graphDiv,update);
       }
-      console.log(changes);
   }
 
 }

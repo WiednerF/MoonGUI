@@ -1,20 +1,20 @@
-<app-config-part [ngClass]="{'flex-grow':!toggle.output}" [hidden]="!toggle.config" class="flex-config">Loading...</app-config-part>
-<div class="stretch ui-splitbar animate-column">
-  <a (click)="toggleFirstLevel('right')" [hidden]="!toggle.output"><span class="ui-splitbar-icon ui-splitbar-icon-right"></span></a>
-  <a (click)="toggleFirstLevel('left')" [hidden]="!toggle.config"><span class="ui-splitbar-icon ui-splitbar-icon-left"></span></a>
+<app-config-part [ngClass]="{'flex-grow':!toggle.output.status}" [hidden]="!toggle.config.status" class="flex-config">Loading...</app-config-part>
+<div class="animate-column stretch ui-splitbar" (mousedown)="dragStart($event,'horizontal')">
+  <a (click)="toggleEvent(toggle.config,toggle.output)" [hidden]="!toggle.output.status"><span class="ui-splitbar-icon ui-splitbar-icon-right"></span></a>
+  <a (click)="toggleEvent(toggle.output,toggle.config)" [hidden]="!toggle.config.status"><span class="ui-splitbar-icon ui-splitbar-icon-left"></span></a>
 </div>
-<div [hidden]="!toggle.output" class="flex-output  ui-layout-row">
-    <div [hidden]="!toggle.graph" class="flex-graph">
+<div [hidden]="!toggle.output.status" class="flex-output  ui-layout-row">
+    <div [hidden]="!toggle.graph.status" class="flex-graph">
             <div>
                 <app-graph-histogram [title]="graphTitle" [points]="points"></app-graph-histogram>
                 <app-graph-line [title]="graphTitle"  [points]="pointsLine"></app-graph-line>
             </div>
     </div>
-    <div class="stretch ui-splitbar animate-row">
-        <a (click)="toggleSecondLevel('left')" [hidden]="!toggle.graph"><span class="ui-splitbar-icon ui-splitbar-icon-up"></span></a>
-        <a (click)="toggleSecondLevel('right')" [hidden]="!toggle.log"><span class="ui-splitbar-icon ui-splitbar-icon-down"></span></a>
+    <div class="stretch ui-splitbar animate-row" (mousedown)="dragStart($event,'vertical')">
+        <a (click)="toggleEvent(toggle.log,toggle.graph)" [hidden]="!toggle.graph.status"><span class="ui-splitbar-icon ui-splitbar-icon-up"></span></a>
+        <a (click)="toggleEvent(toggle.graph,toggle.log)" [hidden]="!toggle.log.status"><span class="ui-splitbar-icon ui-splitbar-icon-down"></span></a>
     </div>
-    <div [ngClass]="{'flex-grow':!toggle.graph}" [hidden]="!toggle.log" class="flex-log">
+    <div [ngClass]="{'flex-grow':!toggle.graph.status}" [hidden]="!toggle.log.status" class="flex-log">
             //TODO Log
     </div>
 </div>

@@ -45,7 +45,6 @@ export class GraphLineComponent implements OnInit,OnChanges {
             }
             Plotly.relayout(graphDiv,update);
         }
-        console.log(changes);
     }
 
 }
