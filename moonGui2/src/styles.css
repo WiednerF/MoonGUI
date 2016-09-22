@@ -12,3 +12,8 @@
     position: relative;
     flex: auto 1 1;
 }
+h1{
+    margin:auto;
+    line-height:100px;
+    vertical-align:middle;
+}

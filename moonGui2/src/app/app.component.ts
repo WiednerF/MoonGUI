@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit,ViewChild} from '@angular/core';
 import {Observable} from "rxjs";
 import {MoonConnectServiceService} from "./services/moon-connect-service.service";
 import {Response} from "@angular/http";
 import {MoonGenService} from "./services/moon-gen.service";
+import {MainAlertComponent} from "./main-alert/main-alert.component";
 
 @Component({
     selector: 'moon-gui',
@@ -11,6 +12,7 @@ import {MoonGenService} from "./services/moon-gen.service";
     providers:[MoonConnectServiceService,MoonGenService]
 })
 export class AppComponent implements OnInit{
+    @ViewChild(MainAlertComponent) mainAlert:MainAlertComponent;
     public status: {connect: Observable<Response>, status: string, progressBar: {show: boolean, value: number, max: number}} = {
         connect: null,
         status: "",

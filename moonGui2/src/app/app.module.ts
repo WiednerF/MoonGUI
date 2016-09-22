@@ -14,6 +14,7 @@ import { GraphLineComponent } from './graph/graph-line/graph-line.component';
 import { ConfigStartComponent } from './config/config-start/config-start.component';
 import {MoonConnectServiceService} from "./services/moon-connect-service.service";
 import {MoonGenService} from "./services/moon-gen.service";
+import { MainAlertComponent } from './main-alert/main-alert.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import {MoonGenService} from "./services/moon-gen.service";
     ConfigPartComponent,
     GraphHistogramComponent,
     GraphLineComponent,
-    ConfigStartComponent
+    ConfigStartComponent,
+    MainAlertComponent
   ],
   imports: [
     NgbModule,

@@ -1,0 +1,7 @@
+:host{
+    position: fixed;
+    width: 500px;
+    top: 0;
+    left: 50%;
+    margin-left: -250px; /* Negative half of width. */
+}
