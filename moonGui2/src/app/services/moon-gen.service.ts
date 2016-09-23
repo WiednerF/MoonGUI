@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {MoonConnectServiceService} from "./moon-connect-service.service";
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {Response} from "@angular/http";
 /**
  * This is the MoonGen Class for the Complete API Behind the point /rest/moongen
@@ -21,11 +21,15 @@ export class MoonGenService {
      * @type {boolean}
      */
   private running:boolean=false;
+    private runningChange:Subject<boolean>=new Subject<boolean>();
     /**
      * The actual part of the file which should be send
      * @type {number}
      */
   private logLineNumber:number=0;
+
+    private title:string="";
+    private titleChange: Subject<string> = new Subject<string>();
 
     /**
      * Needs the Connection Service for accessing the Connection
@@ -41,7 +45,11 @@ export class MoonGenService {
   private testRunning(){
       var obs=Observable.interval(1000);
       obs.subscribe(()=>{
+          var running=this.running;
           this.running = this.shouldRun != false;//TODO Routine for checking connect
+          if(this.running!=running){
+              this.runningChange.next(this.running);
+          }
       })
   }
 
@@ -76,6 +84,14 @@ export class MoonGenService {
     }
 
     /**
+     * Get if the thing is running
+     * @returns {boolean}
+     */
+    public getRunningSubscribe():Subject<boolean>{
+        return this.runningChange;
+    }
+
+    /**
      * The ExecutionNumber for checking the Execution
      * @returns {number}
      */
@@ -86,6 +102,15 @@ export class MoonGenService {
     public getLogFile(){
         if(!this.shouldRun&&this.logLineNumber==0) return null;
         return this.moonConnectService.get("/rest/moongen/"+this.executionNumber+"/log/?lines="+this.logLineNumber);
+    }
+
+    public setTitle(title:string):void{
+        this.title=title;//TODO With Server
+        this.titleChange.next(this.title);
+    }
+
+    public getTitle():Subject<string>{
+        return this.titleChange;//TODO With Server
     }
 
 }

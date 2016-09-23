@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MoonGenService} from "../../services/moon-gen.service";
 import {Response} from "@angular/http";
 
@@ -9,10 +9,12 @@ import {Response} from "@angular/http";
 })
 export class ConfigStartComponent implements OnInit {
   status = 0;
+  private title:string;
 
   constructor(public moonGenService:MoonGenService) { }
 
   ngOnInit() {
+      this.moonGenService.getTitle().subscribe((value)=>{this.title=value});
   }
 
   startMoonGen(){
@@ -34,6 +36,13 @@ export class ConfigStartComponent implements OnInit {
         if(error){
             component.status=1;
         }
+    }
+
+    /**
+     * Change the Title of the Component
+     */
+    public changeTitle($event){
+        this.moonGenService.setTitle($event.target.value);
     }
 
 }

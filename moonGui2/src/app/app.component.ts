@@ -25,11 +25,6 @@ export class AppComponent implements OnInit{
         status: "",
         progressBar: {show: true, value: 50, max: 100}
     };
-    /**
-     * The Title of the Main Application
-     * @type {string}
-     */
-    public title: string = "LIVE";
 
     /**
      * Instantiate the MoonConnect

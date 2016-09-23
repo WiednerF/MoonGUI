@@ -12,8 +12,6 @@ declare var $:any;
  * The Class for the Inner MainPart of MoonGUI
  */
 export class MainComponent implements OnInit {
-    @Input() public title:string;//The Title
-    @Output() public titleChange:EventEmitter<string> = new EventEmitter<string>();//The title change
     @Input() public status:{running: boolean, status: string, progressBar : {show: boolean, value: number, max: number}};
     @Output() public statusChange:EventEmitter<{}> = new EventEmitter();//The Statusbar
     private toggle : {output: {status: boolean}, config:{status: boolean}, log: {status: boolean}, graph:{status: boolean}}={output:{status:true},config:{status:true}, log: {status:true}, graph: {status:true}};

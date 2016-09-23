@@ -1,4 +1,5 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import {MoonGenService} from "../services/moon-gen.service";
 
 @Component({
   selector: 'app-header',
@@ -8,19 +9,16 @@ import { Component, Input, OnChanges } from '@angular/core';
 /**
  * The Class for the Header Component
  */
-export class HeaderComponent implements OnChanges{
+export class HeaderComponent implements OnInit{
 
-  @Input() public title:string = "";//The Title
+  public title:string = "";//The Title
 
-  constructor() {
+  constructor(private moonGen:MoonGenService) {
 
   }
 
-  /**
-   * Changes the Page title if necessary
-   */
-  ngOnChanges(changes) {
-        document.title = this.title!=""?"MoonGen - "+this.title:"MoonGen";
-    }
+  ngOnInit(){
+      this.moonGen.getTitle().subscribe((value)=>{this.title=value;document.title = this.title!=""?"MoonGen - "+this.title:"MoonGen";});
+  }
 
 }

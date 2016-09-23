@@ -34,10 +34,7 @@ export class StatusBarComponent implements OnInit,OnChanges {
   }
 
   ngOnInit() {//Check the Sunning Syste,
-        var obs=Observable.interval(1000);//Check the running state
-        obs.subscribe(()=>{
-           this.running=this.moonGenService.getRunning();
-        });
+        this.moonGenService.getRunningSubscribe().subscribe((value)=>this.running=value);
   }
 
   ngOnChanges(changes){
