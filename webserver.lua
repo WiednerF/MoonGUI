@@ -5,6 +5,14 @@ if #arg < 1 then
 	print('Usage: port for webserver')
 	os.exit()
 end
+
+function readAll(file)
+    local f = io.open(file, "rb")
+    local content = f:read("*all")
+    f:close()
+    return content
+end
+
 local executionNumber = nil
 local port = tonumber(arg[1])
 
@@ -31,7 +39,6 @@ function MoonGenStartHandler:get()
 end
 local MoonGenDefaultHandler = class("MoonGenDefaultHandler",turbo.web.RequestHandler)
 function MoonGenDefaultHandler:delete(execution)
-	print(execution.."-"..executionNumber)
 	if tonumber(execution)==executionNumber then
 		executionNumber=nil
 	else
@@ -39,6 +46,15 @@ function MoonGenDefaultHandler:delete(execution)
 	end
 
 end
+local MoonGenLogHandler = class("MoonGenLogHandler",turbp.web.RequestHandler)
+function MoonGenLogHandler:get(execution)
+		if tonumber(execution)==executionNumber then
+			print(self:get_json(true));
+			self:write(readAll("history/history-number"))
+		else
+			self:set_status(404)
+		end
+end 
 
 local app = turbo.web.Application:new({
 	-- Serve single index.html file on root requests.
@@ -47,6 +63,7 @@ local app = turbo.web.Application:new({
 	{"^/rest/$",ConnectHandler},
 	-- Start the MoonGen Handler Function
 	{"^/rest/moongen/$",MoonGenStartHandler},
+	{"^/rest/moongen/(.*)/log/$",MoonGenLogHandler},
 	{"^/rest/moongen/(.*)/$",MoonGenDefaultHandler},
 	-- Serve contents of directory.
 	{"^/(.*)$", turbo.web.StaticFileHandler, "moonGui2/dist/"}
