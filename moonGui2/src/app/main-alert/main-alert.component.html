@@ -1,3 +1,3 @@
-<p *ngFor="let alert of alerts">
-  <template ngbAlert [type]="alert.type" [dismissOnTimeout]="5000">{{ alert.content }}</template>
+<p>
+  <template ngbAlert *ngFor="let alert of alerts" [type]="alert.type">{{ alert.content }}</template>
 </p>

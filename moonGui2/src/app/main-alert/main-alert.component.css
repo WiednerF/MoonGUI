@@ -4,4 +4,5 @@
     top: 0;
     left: 50%;
     margin-left: -250px; /* Negative half of width. */
+    z-index: 99999;
 }
