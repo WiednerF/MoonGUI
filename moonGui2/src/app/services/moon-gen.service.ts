@@ -21,6 +21,11 @@ export class MoonGenService {
      * @type {boolean}
      */
   private running:boolean=false;
+    /**
+     * The actual part of the file which should be send
+     * @type {number}
+     */
+  private logLineNumber:number=0;
 
     /**
      * Needs the Connection Service for accessing the Connection
@@ -48,7 +53,7 @@ export class MoonGenService {
      */
   public startMoonGen(responseFunction:any,object:any):void{
       if(this.shouldRun) return null;
-      this.moonConnectService.post("/rest/moongen/",{test:"test"}).subscribe((response)=>{this.shouldRun=true;this.executionNumber=response.json().execution;responseFunction(response,false,object);},error=>{this.shouldRun=false;this.moonConnectService.addAlert("danger","MoonGen Start not working:"+error);responseFunction(error,true,object);});
+      this.moonConnectService.post("/rest/moongen/",{test:"test"}).subscribe((response)=>{this.shouldRun=true;this.logLineNumber=0;this.executionNumber=response.json().execution;responseFunction(response,false,object);},error=>{this.shouldRun=false;this.moonConnectService.addAlert("danger","MoonGen Start not working:"+error);responseFunction(error,true,object);});
   }
 
     /**
@@ -68,6 +73,19 @@ export class MoonGenService {
      */
   public getRunning():boolean{
       return this.running;
+    }
+
+    /**
+     * The ExecutionNumber for checking the Execution
+     * @returns {number}
+     */
+   public getExecutionNumber(){
+       return this.executionNumber;
+   }
+
+    public getLogFile(){
+        if(!this.shouldRun&&this.logLineNumber==0) return null;
+        return this.moonConnectService.get("/rest/moongen/"+this.executionNumber+"/");
     }
 
 }
