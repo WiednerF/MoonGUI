@@ -85,7 +85,7 @@ export class MoonGenService {
 
     public getLogFile(){
         if(!this.shouldRun&&this.logLineNumber==0) return null;
-        return this.moonConnectService.get("/rest/moongen/"+this.executionNumber+"/");
+        return this.moonConnectService.get("/rest/moongen/"+this.executionNumber+"/log/?lines="+this.logLineNumber);
     }
 
 }

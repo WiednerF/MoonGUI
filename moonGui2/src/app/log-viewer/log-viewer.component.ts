@@ -15,7 +15,7 @@ export class LogViewerComponent implements OnInit {
 
     private executionNumber:number=-1;
 
-  constructor(private moonGenService:MoonGenService) {
+  constructor(private moonGenService:MoonGenService,private connectService:MoonConnectServiceService) {
 
   }
 
@@ -43,6 +43,10 @@ export class LogViewerComponent implements OnInit {
      * Get the Log from extern
      */
   private getLog(){
+      let logFile=this.moonGenService.getLogFile();
+        if(logFile!=null){
+            logFile.subscribe((response)=>console.log(response),(error)=>this.connectService.addAlert("danger","Log File Error: "+error));
+        }
       //TODO
   }
     /**
