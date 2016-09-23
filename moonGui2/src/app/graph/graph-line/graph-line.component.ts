@@ -7,6 +7,9 @@ declare var document: any;
   selector: 'app-graph-line',
   templateUrl: './graph-line.component.html'
 })
+/**
+ * Generates a standard graph template for a line graph
+ */
 export class GraphLineComponent implements OnInit,OnChanges {
   @Input() public points:any;
   @Input() public title:string;

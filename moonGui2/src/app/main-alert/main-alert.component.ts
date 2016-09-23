@@ -1,29 +1,32 @@
 import { Component, OnInit,Input } from '@angular/core';
-import {NgbSelfClosingAlertConfig} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-main-alert',
   templateUrl: './main-alert.component.html',
-  styleUrls: ['./main-alert.component.css'],
-    providers: [NgbSelfClosingAlertConfig]
+  styleUrls: ['./main-alert.component.css']
 })
+/**
+ * The Class for the Main Alerts on the top of the Page
+ */
 export class MainAlertComponent implements OnInit {
 
   @Input()
-  public alerts: Array<{type:string,content:string}> = [{type:"info",content:"test"}];
+  public alerts: Array<{type:string,content:string}> = [];//All the Alert types
 
-    /**
-     * Configuration of the Alert Time
-     * @param selfClosingAlertConfig
-     */
-  constructor(selfClosingAlertConfig:NgbSelfClosingAlertConfig) {
-      selfClosingAlertConfig.dismissible = true;
-      selfClosingAlertConfig.dismissOnTimeout = 5000;
+  constructor() {
   }
 
   ngOnInit() {
 
   }
+
+    /**
+     * Internal for Closing the Alerts
+     * @param i
+     */
+    public closeAlert(i:number):void {
+        this.alerts.splice(i, 1);
+    }
 
   /**
    * Add a new Alert to the see type

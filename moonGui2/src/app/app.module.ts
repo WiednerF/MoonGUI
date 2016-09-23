@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
+import {Ng2BootstrapModule} from 'ng2-bootstrap'
 import { PerfectScrollbarModule } from 'angular2-perfect-scrollbar'
 import { AppComponent } from './app.component';
 import { StatusBarComponent } from './status-bar/status-bar.component';
@@ -15,6 +15,7 @@ import { ConfigStartComponent } from './config/config-start/config-start.compone
 import {MoonConnectServiceService} from "./services/moon-connect-service.service";
 import {MoonGenService} from "./services/moon-gen.service";
 import { MainAlertComponent } from './main-alert/main-alert.component';
+import { LogViewerComponent } from './log-viewer/log-viewer.component';
 
 @NgModule({
   declarations: [
@@ -26,10 +27,11 @@ import { MainAlertComponent } from './main-alert/main-alert.component';
     GraphHistogramComponent,
     GraphLineComponent,
     ConfigStartComponent,
-    MainAlertComponent
+    MainAlertComponent,
+    LogViewerComponent
   ],
   imports: [
-    NgbModule,
+    Ng2BootstrapModule,
     BrowserModule,
     FormsModule,
     HttpModule,
@@ -38,4 +40,7 @@ import { MainAlertComponent } from './main-alert/main-alert.component';
   providers: [MoonConnectServiceService,MoonGenService],
   bootstrap: [AppComponent]
 })
+/**
+ * The Main Class for the MoonGUI Application
+ */
 export class AppModule {}

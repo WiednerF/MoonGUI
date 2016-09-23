@@ -7,6 +7,9 @@ declare var document: any;
   selector: 'app-graph-histogram',
   templateUrl: './graph-histogram.component.html'
 })
+/**
+ * Generates a standard graph template for a histogram
+ */
 export class GraphHistogramComponent implements OnInit,OnChanges {
   @Input() public points:any;
   @Input() public title:string;

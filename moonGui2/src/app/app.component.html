@@ -1,10 +1,10 @@
 <div class="wrap">
   <div class="flex flex-column">
     <app-header [title]="title"></app-header><!--HEADER-->
-    <app-main [(title)]="title" [(status)]="status">
-    </app-main><!--CONTENT-->
+   <app-main [(title)]="title" [(status)]="status">
+   </app-main><!--CONTENT-->
   </div>
 </div>
 <!--Footer-->
-<app-status-bar [alert]="mainAlert" [connect]="status.connect" [status]="status.status" [progressBar]="status.progressBar"></app-status-bar>
+<app-status-bar [connect]="status.connect" [status]="status.status" [progressBar]="status.progressBar"></app-status-bar>
 <app-main-alert></app-main-alert>

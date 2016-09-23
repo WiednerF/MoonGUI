@@ -1,6 +1,5 @@
 import {
-    Component, OnInit, AfterViewInit, Input, Output, EventEmitter, ElementRef, HostListener,
-    Renderer
+    Component, OnInit, Input, Output, EventEmitter, ElementRef, HostListener
 } from '@angular/core';
 
 declare var $:any;
@@ -9,11 +8,14 @@ declare var $:any;
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })
-export class MainComponent implements OnInit,AfterViewInit {
-    @Input() public title:string;
-    @Output() public titleChange:EventEmitter<string> = new EventEmitter<string>();
+/**
+ * The Class for the Inner MainPart of MoonGUI
+ */
+export class MainComponent implements OnInit {
+    @Input() public title:string;//The Title
+    @Output() public titleChange:EventEmitter<string> = new EventEmitter<string>();//The title change
     @Input() public status:{running: boolean, status: string, progressBar : {show: boolean, value: number, max: number}};
-    @Output() public statusChange:EventEmitter<{}> = new EventEmitter();
+    @Output() public statusChange:EventEmitter<{}> = new EventEmitter();//The Statusbar
     private toggle : {output: {status: boolean}, config:{status: boolean}, log: {status: boolean}, graph:{status: boolean}}={output:{status:true},config:{status:true}, log: {status:true}, graph: {status:true}};
     /**
      * For using to be able to resize the container
@@ -25,7 +27,11 @@ export class MainComponent implements OnInit,AfterViewInit {
     private pointsLine: any=[{x:[1,2,3,4,5,1,4,8,9,1,4,5],y:[-1,2,3,4,5,6,7,8,9,10,11,12,13],name:"test1"},{x:[1,2,3,4,5,1,4,8,9,1,8,9,4,4,4,5],y:[-1,2,3,4,5,6,7,8,9,10,11,12,13],name:"test2"}];
     private graphTitle = "test";
 
-  constructor(public element:ElementRef,public renderer: Renderer) {
+    /**
+     * Get the Element for DOM Manipulation
+     * @param element
+     */
+  constructor(public element:ElementRef) {
 
   }
 
@@ -95,10 +101,6 @@ export class MainComponent implements OnInit,AfterViewInit {
           this.stretch.vertical.position=-1;
           this.stretch.vertical.size=-1;
       }
-  }
-
-  ngAfterViewInit(){
-
   }
 
     /**

@@ -44,3 +44,19 @@ description: |
           description: The Ressources was successfully stoped
         404:
           description: The System was not longer running
+    /log:
+      get:
+        description: Returns the Log File and the number of read Lines
+        body:
+          application/json:
+            default: {line:number}
+        responses:
+          200:
+            description: File exists and is returned
+            body:
+              application/text:
+                default: {lines:number,content:file}
+          304:
+            description: Nothing Changed
+          404:
+            description: File did not exist

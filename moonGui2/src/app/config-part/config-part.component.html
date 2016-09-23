@@ -1,22 +1,14 @@
-<ngb-tabset type="tabs">
-    <ngb-tab title="Start/Stop" [disabled]="tabs[0].disabled">
-        <template ngbTabContent>
+<tabset>
+    <tab heading="Start/Stop" [disabled]="tabs[0].disabled">
             <app-config-start></app-config-start>
-        </template>
-    </ngb-tab>
-    <ngb-tab title="Configuration" [disabled]="tabs[1].disabled">
-        <template ngbTabContent>
-            TODO
-        </template>
-    </ngb-tab>
-    <ngb-tab title="System" [disabled]="tabs[2].disabled">
-        <template ngbTabContent>
-            TODO
-        </template>
-    </ngb-tab>
-    <ngb-tab title="Graph" [disabled]="tabs[3].disabled">
-        <template ngbTabContent>
-            TODO
-        </template>
-    </ngb-tab>
-</ngb-tabset>
+    </tab>
+    <tab heading="Configuration" [disabled]="tabs[1].disabled">
+        //TODO
+    </tab>
+    <tab heading="System" [disabled]="tabs[2].disabled">
+        //TODO
+    </tab>
+    <tab heading="Graph" [disabled]="tabs[3].disabled">
+        //TODO
+    </tab>
+</tabset>

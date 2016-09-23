@@ -1,14 +1,10 @@
 <div class="tab-wrapper">
  <div class="label"><label for="startStopMoonGen">MoonGen</label></div>
-<div [(ngModel)]="status" ngbRadioGroup name="radioBasic" id="startStopMoonGen">
-  <label class="btn btn-primary" (click)="startMoonGen()">
-    <input type="radio" [value]="1">Start
-  </label>
-  <label class="btn btn-primary" (click)="stopMoonGen()">
-    <input type="radio" [value]="0"> Stop
-  </label>
-  <label class="btn btn-primary">
-    <input type="radio" [value]="2"> Restart
-  </label>
-</div>
+  <div class="btn-group" id="startStopMoonGen">
+    <label class="btn btn-primary" [(ngModel)]="status"
+           [btnRadio]="1" (click)="startMoonGen()">Start</label>
+    <label class="btn btn-primary" (click)="stopMoonGen()" [(ngModel)]="status" [btnRadio]="0">Stop</label>
+    <label class="btn btn-primary" [(ngModel)]="status"
+           [btnRadio]="2">Restart</label>
+  </div>
 </div>

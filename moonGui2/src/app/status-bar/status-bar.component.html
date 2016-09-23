@@ -7,7 +7,7 @@
 <div class="statusDivider"></div>
 <div class="statusContent" id="statusMessage">{{status }}</div>
 <div class="statusDivider"></div>
-<div class="statusContent"><ngb-progressbar type="info" [animated]="true" [striped]="true" [hidden]="!progressBar.show" [max]="progressBar.max" [value]="progressBar.value"></ngb-progressbar></div>
+<div class="statusContent"><progress class="progress progress-striped progress-animated progress-info" [hidden]="!progressBar.show" [max]="progressBar.max" [value]="progressBar.value"><span style="color:white; white-space:nowrap;">{{progressBarvalue}} / {{progressBarmax}}</span></progress></div>
 <div class="statusDivider"></div>
 <div class="statusContent">
   <div [ngClass]="{'statusRunning':running,'statusNotRunning':(!running)}">

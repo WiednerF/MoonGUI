@@ -5,14 +5,21 @@ import { Component, Input, OnChanges } from '@angular/core';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
+/**
+ * The Class for the Header Component
+ */
+export class HeaderComponent implements OnChanges{
 
-  @Input() public title:string = "";
+  @Input() public title:string = "";//The Title
 
   constructor() {
 
   }
-  ngOnChanges() {
+
+  /**
+   * Changes the Page title if necessary
+   */
+  ngOnChanges(changes) {
         document.title = this.title!=""?"MoonGen - "+this.title:"MoonGen";
     }
 
