@@ -1,11 +1,13 @@
 local io = require "io"
 local mg = require "moongen"
+local timer = require "timer"
+local ts = require "timestamping"
+local hist = require "histogram"
 local memory = require "memory"
 local stats = require "stats"
 local log = require "log"
 local device = require "device"
-local pipe = require "pipe"
-local turbo = require "turbo"
+local zmq = require "zmq"
 
 function configure(parser)
 	parser:argument("rxDev","The device to receive from"):convert(tonumber)
@@ -17,38 +19,26 @@ end
 
 function master(args)
 	--TODO Test
+	--PIPE Part
+	local ctx = zmq.init()
+	local s = ctx:socket(zmq.REQ)
+	s:connect("tcp://localhost:5555")
+
 	local txDev = device.config{port = args.txDev,dropEnable = false}
 	local rxDev = device.config{port = args.rxDev, dropEnable = false}
 	device.waitForLinks()
-	local p = pipe:newSlowPipe()
-	mg.startTask("dumpSlave",rxDev:getRxQueue(0),txDev:getTxQueue(0),p)
-	mg.startTask("server",p,args)
+	mg.startTask("dumpSlave",rxDev:getRxQueue(0),txDev:getTxQueue(0))
 	mg.waitForTasks()
+	s:close()
+	ctx:term()
 end
 
-function dumpSlave(rxQueue,txQueue,p)
-	local bufs = memory.bufArray()
-	local pktCtr = stats:newPktRxCounter("Packets counted","plain")
+function dumpSlave(rxQueue,txQueue)
+	local timestamper = ts:newTimestamper(txQueue, rxQueue)
+	local hist = hist:new()
 	while mg.running() do
-		local rx = rxQueue:tryRecv(bufs, 100)
-		for i=1, rx do
-			local buf = bufs[i]
-			buf:dump()
-			pktCtr:countPacket(buf)
-	
-		end
-		bufs:free(rx)
-		pktCtr:update()
+		hist:update(timestamper:measureLatency())
+		print(hist:avg())
 	end
-	pktCtr:finalize()
-end
-
-function server(p,args)
-	
-	turbo.web.Application({
-	}):listen(args.port)
-	print('Server started, listening on port:'..args.port)
-	
-	turbo.ioloop.instance():start()
-
+	hist:print()
 end
