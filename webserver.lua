@@ -7,11 +7,14 @@ if #arg < 1 then
 	os.exit()
 end
 
-function readAll(file)
-    local f = io.open(file, "rb")
-    local content = f:read("*all")
-    f:close()
-    return content
+function split(str, delim)
+    -- Eliminate bad cases...
+    if string.find(str, delim) == nil then return { str } end
+
+    local result,pat,lastpos = {},"(.-)" .. delim .. "()",nil
+    for part, pos in string.gfind(str, pat) do table.insert(result, part); lastPos = pos; end
+    table.insert(result, string.sub(str, lastPos))
+    return result
 end
 
 function readLog(file,lines)
@@ -19,16 +22,17 @@ function readLog(file,lines)
 	if log == nil then
 		return {}
 	end
-	local output={}
-	local i=0
-	for line in log:lines() do
-		if i>=lines then
-			table.insert(output,line)
-		end
-		i=i+1
+	local content = log:read("*a")
+	print(content)
+	local output = split(content, "\n")
+	print(output)
+	if output==nil or table.getn(output)<= lines then
+		return {}
 	end
-	print(table.getn(output))
-	return output
+	if lines == 0 then
+		return output
+	end 
+	return table.remove(output,lines)
 end
 
 local executionNumber = nil
@@ -88,7 +92,7 @@ local MoonGenLogHandler = class("MoonGenLogHandler",turbo.web.RequestHandler)
 function MoonGenLogHandler:get(execution)
 		if tonumber(execution)==executionNumber then
 			local lineNumber = tonumber(self:get_argument("lines","0"))
-			local log=readLog("history/"..executionNumber.."/run.log",lineNumber)
+			local log=readLog("history/"..executionNumber.."/run.log",lineNumber)--TODO Error
 			self:write({log=log,lines=(table.getn(log)+lineNumber)})
 		else
 			self:set_status(404)
