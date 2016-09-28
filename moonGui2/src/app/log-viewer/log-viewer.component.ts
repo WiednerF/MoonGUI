@@ -56,7 +56,7 @@ export class LogViewerComponent implements OnInit {
                 this.lineNumber = response.lines;
                 this.response = true;
                 var result = response.log;
-                for(var i=0;i<result.length();i++){
+                for(var i=0;i<result.length;i++){
                     result[i]=ansi_up.ansi_to_html(result[i]);
                 }
                 this.log.push(result);
