@@ -16,7 +16,7 @@ export class LogViewerComponent implements OnInit {
     private executionNumber:number=-1;
     private lineNumber:number=0;
     private response:boolean=true;
-    private log: any = [];
+    private log: [] = [];
 
   constructor(private moonGenService:MoonGenService,private connectService:MoonConnectServiceService) {
 
@@ -51,7 +51,7 @@ export class LogViewerComponent implements OnInit {
       let logFile=this.moonGenService.getLogFile(this.lineNumber);
         this.response=false;//TODO Problems Getting Array correct
         if(logFile!=null){
-            logFile.map(response=>response.json()).subscribe(response=>{this.lineNumber=response.lines;this.response=true;this.log=this.log.concat(response.log);console.log(this.log);console.log(response)},(error)=>{this.connectService.addAlert("danger","Log File Error: "+error);this.response=false});
+            logFile.map(response=>response.json()).subscribe(response=>{this.lineNumber=response.lines;this.response=true;this.log.push(response.log);console.log(this.log);console.log(response)},(error)=>{this.connectService.addAlert("danger","Log File Error: "+error);this.response=false});
         }
         //tODO
   }
