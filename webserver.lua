@@ -23,9 +23,7 @@ function readLog(file,lines)
 		return {}
 	end
 	local content = log:read("*a")
-	print(content)
 	local output = split(content, "\n")
-	print(output)
 	if output==nil or table.getn(output)<= lines then
 		return {}
 	end
