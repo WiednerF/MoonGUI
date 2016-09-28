@@ -31,7 +31,7 @@ function readLog(file,lines)
 	return output
 end
 
-local executionNumber = 173
+local executionNumber = nil
 local port = tonumber(arg[1])
 
 local ConnectHandler = class("ConnectHandler", turbo.web.RequestHandler)
@@ -89,7 +89,7 @@ function MoonGenLogHandler:get(execution)
 		if tonumber(execution)==executionNumber then
 			local lineNumber = tonumber(self:get_argument("lines","0"))
 			local log=readLog("history/"..executionNumber.."/run.log",lineNumber)
-			self:write({log=log,lines=table.getn(log)})
+			self:write({log=log,lines=(table.getn(log)+lineNumber)})
 		else
 			self:set_status(404)
 		end
