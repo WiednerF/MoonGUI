@@ -1,5 +1,6 @@
 local turbo = require "turbo"
 local io =    require "io"
+local zmq = require "zmq"
 
 if #arg < 1 then
 	print('Usage: port for webserver')
@@ -20,33 +21,53 @@ local ConnectHandler = class("ConnectHandler", turbo.web.RequestHandler)
 function ConnectHandler:head()
 		print("Connection Tested to REST API")
 end
+--*********************************************
+--Starting of MOONGEN
 local MoonGenStartHandler = class("MoonGenStartHandler", turbo.web.RequestHandler)
 function MoonGenStartHandler:post() 
 	print("Start MoonGen Process")
+	--Generating the Execution Number
 	executionNumber = math.random(1000)
+	--Making folder and write number to history file
 	local cmd ="mkdir -p history/"..executionNumber.."/"
-	local historyFile = io.open("history/history-number","a")
-	print(cmd)
 	os.execute(cmd)
+	local historyFile = io.open("history/history-number","a")
 	historyFile:write(executionNumber.."\n")
 	historyFile:close()
+	--Executing Standard MoonGen Script
+	cmd = "nohup moongen/moongen.sh "..executionNumber.." > ansi2html > history/"..executionNumber.."/run.log & echo $! > history/"..executionNumber.."/pid.log"
+	print(cmd)
+	os.execute(cmd)
 	print("Execution number:"..executionNumber)
 	self:write({execution=executionNumber})
 end
 function MoonGenStartHandler:get()
-	print("Get Informationen List of PIDs")
+	print("Get Informationen List of Execution Number")
 	self:write({execution=executionNumber})
 end
+--*********************************************
+--Normal MoonGen Behaviour
 local MoonGenDefaultHandler = class("MoonGenDefaultHandler",turbo.web.RequestHandler)
 function MoonGenDefaultHandler:delete(execution)
 	if tonumber(execution)==executionNumber then
+		--TODO Stop process
+		--TODO Get Process Status
 		executionNumber=nil
 	else
 		self:set_status(404)
 	end
 
 end
-local MoonGenLogHandler = class("MoonGenLogHandler",turbp.web.RequestHandler)
+function MoonGenDefaultHandler:get(execution)
+	if tonumber(execution)==executionNumber then
+		print(self:get_json(true));
+		self:write(readAll("history/"..execution.."/data.json"))
+	else
+		self:set_status(404)
+	end
+end
+
+local MoonGenLogHandler = class("MoonGenLogHandler",turbo.web.RequestHandler)
 function MoonGenLogHandler:get(execution)
 		if tonumber(execution)==executionNumber then
 			print(self:get_json(true));

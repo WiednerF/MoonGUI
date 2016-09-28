@@ -7,18 +7,12 @@ local memory = require "memory"
 local stats = require "stats"
 local log = require "log"
 local device = require "device"
-local zmq = require "zmq"
 
 
 
 local PKT_SIZE = 60
 
 local NUM_PKTS = 10^20
---START PIPE
-local ctx = zmq.init()
-local s = ctx:socket(zmq.REQ)
-  s:connect("tcp://localhost:5555")
---END PIPE
 
 function configure(parser)
 	parser:argument("rxDev","The device to receive from"):convert(tonumber)
@@ -34,10 +28,8 @@ function master(args)
 	local rxDev = device.config{port = args.rxDev, dropEnable = false}
 	device.waitForLinks()
 	mg.startTask("txTimestamper", txDev:getTxQueue(0))
-	mg.startTask("rxTimestamper", rxDev:getRxQueue(0))
+	mg.startTask("rxTimestamper", rxDev:getRxQueue(0),args)
 	mg.waitForTasks()
-	s:close()
-	ctx:term()
 end
 
 --TODO Load
@@ -63,13 +55,15 @@ function txTimestamper(queue)
 	mg.stop()
 end
 
-function rxTimestamper(queue)
+function rxTimestamper(queue,args)
 	local tscFreq = mg.getCyclesFrequency()
 	local bufs = memory.bufArray(64)
 	-- use whatever filter appropriate for your packet type
 	queue:filterUdpTimestamps()
 	local results = {}
 	local rxts = {}
+	print(args.execution)
+	local output = io.open("history/"..args.execution.."/data.json")
 	while mg.running() do
 		local numPkts = queue:recvWithTimestamps(bufs)
 		for i = 1, numPkts do
@@ -77,10 +71,11 @@ function rxTimestamper(queue)
 			local txTs = bufs[i]:getSoftwareTxTimestamp()
 			results[#results + 1] = tonumber(rxTs - txTs) / tscFreq * 10^9 -- to nanoseconds
 			rxts[#rxts + 1] = tonumber(rxTs)
-			s:send(tostring({results=results[#results],rxts=rxts[#rxts]}))--TODO All Values
+			output:write(tostring({results=results[#results],rxts=rxts[#rxts]}).."\n")
 		end
 		bufs:free(numPkts)
 	end
+	output:close()
 	local f = io.open("pings.txt", "w+")
 	for i, v in ipairs(results) do
 		f:write(v .. "\n")
