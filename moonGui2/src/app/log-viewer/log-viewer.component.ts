@@ -59,7 +59,7 @@ export class LogViewerComponent implements OnInit {
                 for(var i=0;i<result.length();i++){
                     result[i]=ansi_up.ansi_to_html(result[i]);
                 }
-                this.log.push(response.log);
+                this.log.push(result);
             }, (error)=> {
                 this.connectService.addAlert("danger", "Log File Error: " + error);
                 this.response = false
