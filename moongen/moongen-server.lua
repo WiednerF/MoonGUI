@@ -13,7 +13,7 @@ local zmq = require "zmq"
 
 local PKT_SIZE = 60
 
-local NUM_PKTS = 10^6
+local NUM_PKTS = 10^20
 --START PIPE
 local ctx = zmq.init()
 local s = ctx:socket(zmq.REQ)
@@ -77,8 +77,7 @@ function rxTimestamper(queue)
 			local txTs = bufs[i]:getSoftwareTxTimestamp()
 			results[#results + 1] = tonumber(rxTs - txTs) / tscFreq * 10^9 -- to nanoseconds
 			rxts[#rxts + 1] = tonumber(rxTs)
-			print(results[#results].." rxTS: "..rxts[#rxts])
-			s:send(tostring(results[#results]))--TODO All Values
+			s:send(tostring({results=results[#results],rxts=rxts[#rxts]}))--TODO All Values
 		end
 		bufs:free(numPkts)
 	end
