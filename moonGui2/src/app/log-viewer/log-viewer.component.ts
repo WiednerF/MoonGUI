@@ -16,7 +16,7 @@ export class LogViewerComponent implements OnInit {
     private executionNumber:number=-1;
     private lineNumber:number=0;
     private response:boolean=true;
-    private log: [] = [];
+    private log: any = [];
 
   constructor(private moonGenService:MoonGenService,private connectService:MoonConnectServiceService) {
 
