@@ -22,12 +22,6 @@ export class MoonGenService {
      */
   private running:boolean=false;
     private runningChange:Subject<boolean>=new Subject<boolean>();
-    /**
-     * The actual part of the file which should be send
-     * @type {number}
-     */
-  private logLineNumber:number=0;
-
     private title:string="";
     private titleChange: Subject<string> = new Subject<string>();
 
@@ -46,7 +40,7 @@ export class MoonGenService {
       var obs=Observable.interval(1000);
       obs.subscribe(()=>{
           var running=this.running;
-          this.running = this.shouldRun != false;//TODO Routine for checking connect
+          this.running = this.shouldRun;//TODO Routine for checking connect
           if(this.running!=running){
               this.runningChange.next(this.running);
           }
@@ -61,7 +55,7 @@ export class MoonGenService {
      */
   public startMoonGen(responseFunction:any,object:any):void{
       if(this.shouldRun) return null;
-      this.moonConnectService.post("/rest/moongen/",{test:"test"}).subscribe((response)=>{this.shouldRun=true;this.logLineNumber=0;this.executionNumber=response.json().execution;responseFunction(response,false,object);},error=>{this.shouldRun=false;this.moonConnectService.addAlert("danger","MoonGen Start not working:"+error);responseFunction(error,true,object);});
+      this.moonConnectService.post("/rest/moongen/",{test:"test"}).subscribe((response)=>{this.shouldRun=true;this.executionNumber=response.json().execution;responseFunction(response,false,object);},error=>{this.shouldRun=false;this.moonConnectService.addAlert("danger","MoonGen Start not working:"+error);responseFunction(error,true,object);});
   }
 
     /**
@@ -99,9 +93,9 @@ export class MoonGenService {
        return this.executionNumber;
    }
 
-    public getLogFile(){
-        if(!this.shouldRun&&this.logLineNumber==0) return null;
-        return this.moonConnectService.get("/rest/moongen/"+this.executionNumber+"/log/?lines="+this.logLineNumber);
+    public getLogFile(lineNumber:number){
+        if(!this.shouldRun&&lineNumber==0) return null;
+        return this.moonConnectService.get("/rest/moongen/"+this.executionNumber+"/log/?lines="+lineNumber);
     }
 
     public setTitle(title:string):void{

@@ -2,7 +2,6 @@ import { Component, OnInit , Input, OnChanges } from '@angular/core';
 import {Observable} from "rxjs";
 import {Response} from "@angular/http";
 import {MoonGenService} from "../services/moon-gen.service";
-import {MainAlertComponent} from "../main-alert/main-alert.component";
 import {MoonConnectServiceService} from "../services/moon-connect-service.service";
 
 @Component({

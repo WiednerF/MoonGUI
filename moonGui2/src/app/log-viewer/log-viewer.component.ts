@@ -14,6 +14,9 @@ import {MoonConnectServiceService} from "../services/moon-connect-service.servic
 export class LogViewerComponent implements OnInit {
 
     private executionNumber:number=-1;
+    private lineNumber:number=0;
+    private response:boolean=true;
+    private log: any = [];
 
   constructor(private moonGenService:MoonGenService,private connectService:MoonConnectServiceService) {
 
@@ -31,10 +34,12 @@ export class LogViewerComponent implements OnInit {
           if(this.moonGenService.getRunning()==true){
             if(this.executionNumber!=this.moonGenService.getExecutionNumber()){
                 this.executionNumber=this.moonGenService.getExecutionNumber();
-                if(this.executionNumber!=-1)this.cleanLog();
+                if(this.executionNumber!=null)this.cleanLog();
                 this.initiateLog();
             }
-            this.getLog();
+            if(this.response){
+                this.getLog();
+            }
           }
       });
   }
@@ -43,11 +48,12 @@ export class LogViewerComponent implements OnInit {
      * Get the Log from extern
      */
   private getLog(){
-      let logFile=this.moonGenService.getLogFile();
+      let logFile=this.moonGenService.getLogFile(this.lineNumber);
+        this.response=false;//TODO Problems Getting Array correct
         if(logFile!=null){
-            logFile.subscribe((response)=>console.log(response),(error)=>this.connectService.addAlert("danger","Log File Error: "+error));
+            logFile.map(response=>response.json()).subscribe(response=>{this.lineNumber=response.lines;this.response=true;this.log=this.log.concat(response.log);console.log(this.log);console.log(response)},(error)=>{this.connectService.addAlert("danger","Log File Error: "+error);this.response=false});
         }
-      //TODO
+        //tODO
   }
     /**
      * Clean the old log for a new one
@@ -60,6 +66,8 @@ export class LogViewerComponent implements OnInit {
      * Initiate the DOM for the Log
      */
   private initiateLog(){
+      this.lineNumber=0;
+        this.log=[];
       //TODO
   }
 
