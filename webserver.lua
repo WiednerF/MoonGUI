@@ -14,7 +14,24 @@ function readAll(file)
     return content
 end
 
-local executionNumber = nil
+function readLog(file,lines)
+	local log = io.open(file,"r")
+	if log == nil then
+		return {}
+	end
+	local output={}
+	local i=0
+	for line in log:lines() do
+		if i>=lines then
+			table.insert(output,line)
+		end
+		i=i+1
+	end
+	print(table.getn(output))
+	return output
+end
+
+local executionNumber = 173
 local port = tonumber(arg[1])
 
 local ConnectHandler = class("ConnectHandler", turbo.web.RequestHandler)
@@ -35,7 +52,7 @@ function MoonGenStartHandler:post()
 	historyFile:write(executionNumber.."\n")
 	historyFile:close()
 	--Executing Standard MoonGen Script
-	cmd = "nohup moongen/moongen.sh "..executionNumber.." > ansi2html > history/"..executionNumber.."/run.log & echo $! > history/"..executionNumber.."/pid.log"
+	cmd = "nohup moongen/moongen.sh "..executionNumber.." > history/"..executionNumber.."/run.log & echo $! > history/"..executionNumber.."/pid.log"
 	print(cmd)
 	os.execute(cmd)
 	print("Execution number:"..executionNumber)
@@ -70,8 +87,9 @@ end
 local MoonGenLogHandler = class("MoonGenLogHandler",turbo.web.RequestHandler)
 function MoonGenLogHandler:get(execution)
 		if tonumber(execution)==executionNumber then
-			print(self:get_json(true));
-			self:write(readAll("history/history-number"))
+			local lineNumber = tonumber(self:get_argument("lines","0"))
+			local log=readLog("history/"..executionNumber.."/run.log",lineNumber)
+			self:write({log=log,lines=table.getn(log)})
 		else
 			self:set_status(404)
 		end
