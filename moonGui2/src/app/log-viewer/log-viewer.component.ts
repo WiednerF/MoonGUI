@@ -17,6 +17,7 @@ export class LogViewerComponent implements OnInit {
     private lineNumber: number = 0;
     private response: boolean = true;
     private log: any = [];
+    private seek: number = 0;
 
     constructor(private moonGenService: MoonGenService, private connectService: MoonConnectServiceService) {
 
@@ -50,11 +51,12 @@ export class LogViewerComponent implements OnInit {
      * Get the Log from extern
      */
     private getLog() {
-        let logFile = this.moonGenService.getLogFile(this.lineNumber);
+        let logFile = this.moonGenService.getLogFile(this.lineNumber, this.seek);
         this.response = false;
         if (logFile != null) {
             logFile.map(response=>response.json()).subscribe(response=> {
                 this.lineNumber = response.lines;
+                this.seek = response.seek;
                 this.response = true;
                 var result = response.log;//TODO Error
                 console.log(result);
@@ -81,6 +83,7 @@ export class LogViewerComponent implements OnInit {
     private initiateLog() {
         this.lineNumber = 0;
         this.log = [];
+        this.seek = 0;
         //TODO
     }
 

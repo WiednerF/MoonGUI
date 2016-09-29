@@ -93,9 +93,9 @@ export class MoonGenService {
        return this.executionNumber;
    }
 
-    public getLogFile(lineNumber:number){
+    public getLogFile(lineNumber:number,seek:number){
         if(!this.shouldRun&&lineNumber==0) return null;
-        return this.moonConnectService.get("/rest/moongen/"+this.executionNumber+"/log/?lines="+lineNumber);
+        return this.moonConnectService.get("/rest/moongen/"+this.executionNumber+"/log/?lines="+lineNumber+"&seek="+seek);
     }
 
     public setTitle(title:string):void{
