@@ -3,6 +3,8 @@ import {MoonGenService} from "../services/moon-gen.service";
 import {Observable} from "rxjs";
 import {MoonConnectServiceService} from "../services/moon-connect-service.service";
 
+declare var document:any;
+
 @Component({
     selector: 'app-log-viewer',
     templateUrl: './log-viewer.component.html',
@@ -57,11 +59,13 @@ export class LogViewerComponent implements OnInit {
                 this.lineNumber = response.lines;
                 this.seek = response.seek;
                 this.response = true;
-                var result = response.log;//TODO Error
+                var result = response.log;
                 console.log(result);
                 for(var i=0;i<result.length;i++) {
                     this.log.push(decodeURIComponent(result[i]));
                 }
+                var elem = document.getElementsByClassName("flex-log")[0];
+                elem.scrollTop = elem.scrollHeight;
             }, (error)=> {
                 this.connectService.addAlert("danger", "Log File Error: " + error);
                 this.response = false

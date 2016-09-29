@@ -15,6 +15,7 @@ export class ConfigStartComponent implements OnInit {
 
   ngOnInit() {
       this.moonGenService.getTitle().subscribe((value)=>{this.title=value});
+      this.moonGenService.getRunningSubscribe().subscribe(value=>{if(value){this.status=1;}else{this.status=0;}})
   }
 
   startMoonGen(){
