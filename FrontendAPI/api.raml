@@ -4,12 +4,12 @@ version: v1
 baseUri: /rest
 protocols:
   - HTTP
-mediaType:
-  - application/JSON
 description: |
   This API enables the Contact between
   the Backend Server and The Frontend
   GUI
+mediaType:
+  - application/json
 /:
   head:
     responses:
@@ -46,10 +46,10 @@ description: |
           description: The System was not longer running
     /log:
       get:
-        description: Returns the Log File and the number of read Lines
+        description: Returns the Log File and the number of read Lines as well as the seek position
         body:
           application/json:
-            default: {line:number}
+            default: {line:number,seek:number,log:array}
         responses:
           200:
             description: File exists and is returned
@@ -64,3 +64,6 @@ description: |
           line:
             type: number
             description: The line number from which we should start
+          seek:
+            type: number
+            description: The position in the file for reading

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {MoonConnectServiceService} from "./moon-connect-service.service";
 import {Observable, Subject} from "rxjs";
-import {Response} from "@angular/http";
 /**
  * This is the MoonGen Class for the Complete API Behind the point /rest/moongen
  */
@@ -32,6 +31,7 @@ export class MoonGenService {
   constructor(private moonConnectService:MoonConnectServiceService) {
       this.testRunning();
   }
+  //TODO Autoscroll, delete, status, data, restart
 
     /**
      * Test if the System run if it should run
@@ -40,11 +40,20 @@ export class MoonGenService {
       var obs=Observable.interval(1000);
       obs.subscribe(()=>{
           var running=this.running;
-          this.running = this.shouldRun;//TODO Routine for checking connect
-          if(this.running!=running){
-              this.runningChange.next(this.running);
+          if(this.shouldRun) {
+              this.moonConnectService.get("/rest/moongen/"+this.executionNumber+"/").subscribe((response)=>this.resultRunning(true,running),(error)=>this.resultRunning(false,running));
+              this.running=true;
+          }else{
+              this.resultRunning(false,this.running);
           }
       })
+  }
+
+  private resultRunning(running:boolean,previous:boolean){
+      this.running=running;
+      if (running != previous) {
+          this.runningChange.next(this.running);
+      }
   }
 
     /**

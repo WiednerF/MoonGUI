@@ -36,7 +36,6 @@ export class LogViewerComponent implements OnInit {
                 if (this.executionNumber != this.moonGenService.getExecutionNumber()) {
                     this.executionNumber = this.moonGenService.getExecutionNumber();
                     if (this.executionNumber != null){
-                        this.cleanLog();
                         this.initiateLog();
                     }
                 }
@@ -71,20 +70,12 @@ export class LogViewerComponent implements OnInit {
     }
 
     /**
-     * Clean the old log for a new one
-     */
-    private cleanLog() {
-        //TODO
-    }
-
-    /**
      * Initiate the DOM for the Log
      */
     private initiateLog() {
         this.lineNumber = 0;
         this.log = [];
         this.seek = 0;
-        //TODO
     }
 
 }
