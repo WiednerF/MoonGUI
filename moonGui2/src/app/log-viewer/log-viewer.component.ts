@@ -57,10 +57,12 @@ export class LogViewerComponent implements OnInit {
             logFile.map(response=>response.json()).subscribe(response=> {
                 this.lineNumber = response.lines;
                 this.response = true;
-                var result = response.log;
+                var result = response.log;//TODO Error
+                console.log(result);
                 for(var i=0;i<result.length;i++){
                     result[i]=ansi_up.ansi_to_html(decodeURI(result[i]));
                 }
+                console.log(result);
                 this.log.push(result);
             }, (error)=> {
                 this.connectService.addAlert("danger", "Log File Error: " + error);
