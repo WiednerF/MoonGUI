@@ -15,6 +15,7 @@ export class MoonGenService {
      * @type {boolean}
      */
   private shouldRun:boolean=false;
+    private response:boolean=true;
     /**
      * If moonGen is really running
      * @type {boolean}
@@ -31,7 +32,7 @@ export class MoonGenService {
   constructor(private moonConnectService:MoonConnectServiceService) {
       this.testRunning();
   }
-  //TODO Autoscroll, delete, status, data, restart
+  //TODO delete, data, restart
 
     /**
      * Test if the System run if it should run
@@ -40,11 +41,20 @@ export class MoonGenService {
       var obs=Observable.interval(10000);
       obs.subscribe(()=>{
           var running=this.running;
-          if(this.shouldRun) {
-              this.moonConnectService.head("/rest/moongen/"+this.executionNumber+"/").subscribe((response)=>this.resultRunning(true,running),(error)=>{if(running){this.moonConnectService.addAlert("danger","MoonGen stopped")}this.resultRunning(false,running);});
-              this.running=true;
-          }else{
-              this.resultRunning(false,this.running);
+          if(this.response) {
+              if (this.shouldRun) {
+                  this.response=false;
+                  this.moonConnectService.head("/rest/moongen/" + this.executionNumber + "/").subscribe((response)=>{this.response=true;this.resultRunning(true, running)}, (error)=> {
+                      if (running) {
+                          this.moonConnectService.addAlert("danger", "MoonGen stopped")
+                      }
+                      this.response=true;
+                      this.resultRunning(false, running);
+                  });
+                  this.running = true;
+              } else {
+                  this.resultRunning(false, this.running);
+              }
           }
       })
   }
