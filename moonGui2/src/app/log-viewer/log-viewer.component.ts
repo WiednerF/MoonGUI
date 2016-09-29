@@ -31,12 +31,14 @@ export class LogViewerComponent implements OnInit {
      * Starts the Process for Fetching Log File
      */
     private runningLogFile() {
-        Observable.interval(100).subscribe(()=> {
+        Observable.interval(1000).subscribe(()=> {
             if (this.moonGenService.getRunning() == true) {
                 if (this.executionNumber != this.moonGenService.getExecutionNumber()) {
                     this.executionNumber = this.moonGenService.getExecutionNumber();
-                    if (this.executionNumber != null)this.cleanLog();
-                    this.initiateLog();
+                    if (this.executionNumber != null){
+                        this.cleanLog();
+                        this.initiateLog();
+                    }
                 }
                 if (this.response) {
                     this.getLog();
@@ -57,7 +59,7 @@ export class LogViewerComponent implements OnInit {
                 this.response = true;
                 var result = response.log;
                 for(var i=0;i<result.length;i++){
-                    result[i]=ansi_up.ansi_to_html(result[i]);
+                    result[i]=ansi_up.ansi_to_html(decodeURI(result[i]));
                 }
                 this.log.push(result);
             }, (error)=> {
