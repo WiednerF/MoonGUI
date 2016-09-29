@@ -47,7 +47,7 @@ function readLog(file,lines,seek)
 	return output,seekEnd
 end
 
-local executionNumber = nil
+local executionNumber = 484
 local port = tonumber(arg[1])
 
 local ConnectHandler = class("ConnectHandler", turbo.web.RequestHandler)
@@ -91,10 +91,17 @@ function MoonGenDefaultHandler:delete(execution)
 	end
 
 end
-function MoonGenDefaultHandler:get(execution)
+function MoonGenDefaultHandler:head(execution)
 	if tonumber(execution)==executionNumber then
-		print(self:get_json(true));
-		self:write(readAll("history/"..execution.."/data.json"))
+		local f = io.open("history/"..executionNumber.."/pid.log","r")
+		local pid = tonumber(f:read("*number"))
+		local status = io.popen("ps -q "..pid.." | grep "..pid)
+		local result = status:read("*line")
+		if result == nil then
+			self:set_status(412)
+		else
+			self:set_status(200)
+		end
 	else
 		self:set_status(404)
 	end
@@ -105,7 +112,7 @@ function MoonGenLogHandler:get(execution)
 		if tonumber(execution)==executionNumber then
 			local seek = tonumber(self:get_argument("seek","0"))
 			local lineNumber = tonumber(self:get_argument("lines","0"))
-			local log,seek=readLog("history/"..executionNumber.."/run.log",lineNumber,seek)--TODO Error
+			local log,seek=readLog("history/"..executionNumber.."/run.log",lineNumber,seek)
 			self:write({log=log,lines=(table.getn(log)+lineNumber),seek=seek})
 		else
 			self:set_status(404)
