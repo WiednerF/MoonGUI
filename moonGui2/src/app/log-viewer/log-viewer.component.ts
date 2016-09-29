@@ -52,7 +52,7 @@ export class LogViewerComponent implements OnInit {
      */
     private getLog() {
         let logFile = this.moonGenService.getLogFile(this.lineNumber);
-        this.response = false;//TODO Problems Getting Array correct
+        this.response = false;
         if (logFile != null) {
             logFile.map(response=>response.json()).subscribe(response=> {
                 this.lineNumber = response.lines;
@@ -60,14 +60,13 @@ export class LogViewerComponent implements OnInit {
                 var result = response.log;//TODO Error
                 console.log(result);
                 for(var i=0;i<result.length;i++) {
-                    this.log.push(ansi_up.ansi_to_html(decodeURIComponent(result[i])));
+                    this.log.push(ansi_up.ansi_to_html(ansi_up.escape_for_html(decodeURIComponent(result[i]))));
                 }
             }, (error)=> {
                 this.connectService.addAlert("danger", "Log File Error: " + error);
                 this.response = false
             });
         }
-        //tODO
     }
 
     /**
