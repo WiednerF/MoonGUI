@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {MoonGenService} from "../services/moon-gen.service";
 import {Observable} from "rxjs";
 import {MoonConnectServiceService} from "../services/moon-connect-service.service";
-declare var ansi_up: any;
 
 @Component({
     selector: 'app-log-viewer',
