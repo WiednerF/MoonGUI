@@ -16,28 +16,27 @@ function urlencode(str)
    return str    
 end
 
---SOURCE: http://tinybrain.de:8080/tb/show-snippet.php?id=1004715
-function toLines(str)
-  local t = {}
-  local function helper(line) table.insert(t,line) return "" end
-  helper((str:gsub("(.-)\r?\n", helper)))
-  return t
-end
-
-function readLog(file,lines)
+function readLog(file,lines,seek)
 	local log = io.open(file,"r")
 	if log == nil then
 		return {}
 	end
-	local content = log:read("*a")
-	local output = toLines(content)
-	if output==nil or table.getn(output)<= lines then
-		return {}
+	local MAX = 100
+	local x = 0
+	local output = {}
+	local seekEnd = seek
+	log:seek("cur",seek)
+	for line in log:lines() do
+		if not  string.find(line,"descriptor 53") then
+			table.insert(output, line)
+			x= x +1
+		end
+		if x > MAX then
+			break
+		end
 	end
+	seekEnd = log:seek()
 
-	if lines > 0 then
-		output=table.remove(output,lines)
-	end
 	for i,v in ipairs(output) do
 		local f = assert(io.popen("echo '"..v.."' | ./ansi2html.sh --body-only "))
 		local s = assert(f:read("*a"))
@@ -45,10 +44,10 @@ function readLog(file,lines)
 		output[i]=urlencode(s)
 	end
 	
-	return output
+	return output,seekEnd
 end
 
-local executionNumber = 361 -- TODO Change to nil
+local executionNumber = nil
 local port = tonumber(arg[1])
 
 local ConnectHandler = class("ConnectHandler", turbo.web.RequestHandler)
@@ -104,9 +103,10 @@ end
 local MoonGenLogHandler = class("MoonGenLogHandler",turbo.web.RequestHandler)
 function MoonGenLogHandler:get(execution)
 		if tonumber(execution)==executionNumber then
+			local seek = tonumber(self:get_argument("seek","0"))
 			local lineNumber = tonumber(self:get_argument("lines","0"))
-			local log=readLog("history/"..executionNumber.."/run.log",lineNumber)--TODO Error
-			self:write({log=log,lines=(table.getn(log)+lineNumber)})
+			local log,seek=readLog("history/"..executionNumber.."/run.log",lineNumber,seek)--TODO Error
+			self:write({log=log,lines=(table.getn(log)+lineNumber),seek=seek})
 		else
 			self:set_status(404)
 		end
