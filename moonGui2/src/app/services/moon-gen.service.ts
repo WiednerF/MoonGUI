@@ -82,8 +82,8 @@ export class MoonGenService {
      * Get if the thing is running
      * @returns {boolean}
      */
-  public getRunning():boolean{
-      return this.running;
+  public getShouldRun():boolean{
+      return this.shouldRun;
     }
 
     /**

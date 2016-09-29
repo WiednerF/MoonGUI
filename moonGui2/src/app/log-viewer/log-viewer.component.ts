@@ -34,7 +34,7 @@ export class LogViewerComponent implements OnInit {
      */
     private runningLogFile() {
         Observable.interval(1000).subscribe(()=> {
-            if (this.moonGenService.getRunning() == true) {
+            if (this.moonGenService.getShouldRun() == true) {
                 if (this.executionNumber != this.moonGenService.getExecutionNumber()) {
                     this.executionNumber = this.moonGenService.getExecutionNumber();
                     if (this.executionNumber != null){
