@@ -37,7 +37,7 @@ export class MoonGenService {
      * Test if the System run if it should run
      */
   private testRunning(){
-      var obs=Observable.interval(1000);
+      var obs=Observable.interval(10000);
       obs.subscribe(()=>{
           var running=this.running;
           if(this.shouldRun) {
