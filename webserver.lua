@@ -19,7 +19,7 @@ end
 --SOURCE: http://tinybrain.de:8080/tb/show-snippet.php?id=1004715
 function toLines(str)
   local t = {}
-  local function helper(line) table.insert(t, urlencode(line)) return "" end
+  local function helper(line) table.insert(t,line) return "" end
   helper((str:gsub("(.-)\r?\n", helper)))
   return t
 end
@@ -34,13 +34,21 @@ function readLog(file,lines)
 	if output==nil or table.getn(output)<= lines then
 		return {}
 	end
-	if lines == 0 then
-		return output
-	end 
-	return table.remove(output,lines)
+
+	if lines > 0 then
+		output=table.remove(output,lines)
+	end
+	for i,v in ipairs(output) do
+		local f = assert(io.popen("echo '"..v.."' | ./ansi2html.sh --body-only "))
+		local s = assert(f:read("*a"))
+		f:close()
+		output[i]=urlencode(s)
+	end
+	
+	return output
 end
 
-local executionNumber = 59 -- TODO Change to nil
+local executionNumber = 361 -- TODO Change to nil
 local port = tonumber(arg[1])
 
 local ConnectHandler = class("ConnectHandler", turbo.web.RequestHandler)
