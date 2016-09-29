@@ -41,7 +41,7 @@ export class MoonGenService {
       obs.subscribe(()=>{
           var running=this.running;
           if(this.shouldRun) {
-              this.moonConnectService.get("/rest/moongen/"+this.executionNumber+"/").subscribe((response)=>this.resultRunning(true,running),(error)=>this.resultRunning(false,running));
+              this.moonConnectService.head("/rest/moongen/"+this.executionNumber+"/").subscribe((response)=>this.resultRunning(true,running),(error)=>this.resultRunning(false,running));
               this.running=true;
           }else{
               this.resultRunning(false,this.running);
