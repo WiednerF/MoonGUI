@@ -7,14 +7,23 @@ if #arg < 1 then
 	os.exit()
 end
 
-function split(str, delim)
-    -- Eliminate bad cases...
-    if string.find(str, delim) == nil then return { str } end
+--SOURCE: https://gist.github.com/ignisdesign/4323051
+function urlencode(str)
+   if (str) then
+      str = string.gsub (str, "\n", "\r\n")
+      str = string.gsub (str, "([^%w ])",
+         function (c) return string.format ("%%%02X", string.byte(c)) end)
+      str = string.gsub (str, " ", "+")
+   end
+   return str    
+end
 
-    local result,pat,lastpos = {},"(.-)" .. delim .. "()",nil
-    for part, pos in string.gfind(str, pat) do table.insert(result, part); lastPos = pos; end
-    table.insert(result, string.sub(str, lastPos))
-    return result
+--SOURCE: http://tinybrain.de:8080/tb/show-snippet.php?id=1004715
+function toLines(str)
+  local t = {}
+  local function helper(line) table.insert(t, urlencode(line)) return "" end
+  helper((str:gsub("(.-)\r?\n", helper)))
+  return t
 end
 
 function readLog(file,lines)
@@ -23,7 +32,7 @@ function readLog(file,lines)
 		return {}
 	end
 	local content = log:read("*a")
-	local output = split(content, "\n")
+	local output = toLines(content)
 	if output==nil or table.getn(output)<= lines then
 		return {}
 	end
@@ -33,7 +42,7 @@ function readLog(file,lines)
 	return table.remove(output,lines)
 end
 
-local executionNumber = nil
+local executionNumber = 59 -- TODO Change to nil
 local port = tonumber(arg[1])
 
 local ConnectHandler = class("ConnectHandler", turbo.web.RequestHandler)
