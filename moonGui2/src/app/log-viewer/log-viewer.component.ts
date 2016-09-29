@@ -64,8 +64,10 @@ export class LogViewerComponent implements OnInit {
                 for(var i=0;i<result.length;i++) {
                     this.log.push(decodeURIComponent(result[i]));
                 }
-                var elem = document.getElementsByClassName("flex-log")[0];
-                elem.scrollTop = elem.scrollHeight;
+                if(result.length>0){
+                    var elem = document.getElementsByClassName("flex-log")[0];
+                    elem.scrollTop = elem.scrollHeight;
+                }
             }, (error)=> {
                 this.connectService.addAlert("danger", "Log File Error: " + error);
                 this.response = false
