@@ -16,7 +16,6 @@ declare var document:any;
 export class LogViewerComponent implements OnInit {
 
     private executionNumber: number = -1;
-    private lineNumber: number = 0;
     private response: boolean = true;
     private log: any = [];
     private seek: number = 0;
@@ -33,12 +32,13 @@ export class LogViewerComponent implements OnInit {
      * Starts the Process for Fetching Log File
      */
     private runningLogFile() {
-        Observable.interval(1000).subscribe(()=> {
+        Observable.interval(3000).subscribe(()=> {
             if (this.moonGenService.getShouldRun() == true) {
                 if (this.executionNumber != this.moonGenService.getExecutionNumber()) {
                     this.executionNumber = this.moonGenService.getExecutionNumber();
                     if (this.executionNumber != null){
                         this.initiateLog();
+                        this.response = true;
                     }
                 }
                 if (this.response) {
@@ -52,11 +52,10 @@ export class LogViewerComponent implements OnInit {
      * Get the Log from extern
      */
     private getLog() {
-        let logFile = this.moonGenService.getLogFile(this.lineNumber, this.seek);
+        let logFile = this.moonGenService.getLogFile(this.seek);
         this.response = false;
         if (logFile != null) {
             logFile.timeout(3000,new Error("Timeout exceeded")).map(response=>response.json()).subscribe(response=> {
-                this.lineNumber = response.lines;
                 this.seek = response.seek;
                 this.response = true;
                 var result = response.log;
@@ -79,7 +78,6 @@ export class LogViewerComponent implements OnInit {
      * Initiate the DOM for the Log
      */
     private initiateLog() {
-        this.lineNumber = 0;
         this.log = [];
         this.seek = 0;
     }

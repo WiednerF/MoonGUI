@@ -23,7 +23,7 @@ export class AppComponent implements OnInit{
     public status: {connect: Observable<Response>, status: string, progressBar: {show: boolean, value: number, max: number}} = {
         connect: null,
         status: "",
-        progressBar: {show: true, value: 50, max: 100}
+        progressBar: {show: false, value: 50, max: 100}
     };
 
     /**

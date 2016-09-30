@@ -1,6 +1,8 @@
 import {
     Component, OnInit, Input, Output, EventEmitter, ElementRef, HostListener
 } from '@angular/core';
+import {MoonGenService} from "../services/moon-gen.service";
+import {Observable} from "rxjs";
 
 declare var $:any;
 @Component({
@@ -20,16 +22,18 @@ export class MainComponent implements OnInit {
      * @type {{horizontal: {size: number; position: number; element: any; bar: any}; vertical: {size: number; position: number; element: any; bar: any}}}
      */
     private stretch: {horizontal:{size:number,position:number,element:any,bar:any},vertical:{size:number,position:number,element:any,bar:any}}={horizontal:{size:-1,position:-1,element:null,bar:null},vertical:{size:-1,position:-1,element:null,bar:null}};
-   //TODO Remove
-    private points: any=[{x:[1,2,3,4,5,1,4,8,9,1,4,5],name:"test1"},{x:[1,2,3,4,5,1,4,8,9,1,8,9,4,4,4,5],name:"test2"}];
-    private pointsLine: any=[{x:[1,2,3,4,5,1,4,8,9,1,4,5],y:[-1,2,3,4,5,6,7,8,9,10,11,12,13],name:"test1"},{x:[1,2,3,4,5,1,4,8,9,1,8,9,4,4,4,5],y:[-1,2,3,4,5,6,7,8,9,10,11,12,13],name:"test2"}];
-    private graphTitle = "test";
+    private seekData:number = 0;
+    private responseData: boolean = true;
+    private executionNumber:number = null;
+    private points: any=[{x:[],name:"Latency Distribution"}];
+    private pointsLine: any=[{x:[],y:[],name:"Latency"}];
 
     /**
      * Get the Element for DOM Manipulation
      * @param element
+     * @param moonGenService
      */
-  constructor(public element:ElementRef) {
+  constructor(public element:ElementRef,public moonGenService:MoonGenService) {
 
   }
 
@@ -39,6 +43,7 @@ export class MainComponent implements OnInit {
       this.stretch.horizontal.bar=this.element.nativeElement.children[1];
       this.stretch.vertical.element=this.element.nativeElement.children[2].children[2];
       this.stretch.vertical.bar=this.element.nativeElement.children[2].children[1];
+      //TODO Add Listen to Data
   }
   @HostListener('mouseup',['$event'])
   onMouseUp(event){
@@ -113,5 +118,60 @@ export class MainComponent implements OnInit {
           first.status=true;
       }
   }
+
+    /**
+     * Starts the Process for Fetching Log File
+     */
+    private runningData() {
+        Observable.interval(3000).subscribe(()=> {
+            if (this.moonGenService.getShouldRun() == true) {
+                if (this.executionNumber != this.moonGenService.getExecutionNumber()) {
+                    this.executionNumber = this.moonGenService.getExecutionNumber();
+                    if (this.executionNumber != null){
+                        this.initiateData();
+                        this.response = true;
+                    }
+                }
+                if (this.response) {
+                    this.getData();
+                }
+            }
+        });
+    }
+
+    /**
+     * Get the Data from extern
+     */
+    private getData() {
+        let data = this.moonGenService.getData(this.seek);
+        this.response = false;
+        if (data != null) {
+            data.timeout(3000,new Error("Timeout exceeded")).map(response=>response.json()).subscribe(response=> {
+                this.seek = response.seek;
+                this.response = true;
+                var result = response.data;
+                console.log(result);
+            }, (error)=> {
+                this.connectService.addAlert("danger", "Data Error: " + error);
+                this.response = true;
+            });
+        }
+    }
+
+    /**
+     * Initiate the DOM for the data
+     */
+    private initiateData() {
+        this.seek = 0;
+        for(var i=0;i<this.points.length;i++){
+            this.points[i].x=[];
+        }
+        for(var i=0;i<this.points.length;i++){
+            this.pointsLine[i].x=[];
+            this.pointsLine[i].y=[];
+        }
+        this.points=JSON.parse(JSON.stringify(this.points));
+        this.pointsLine=JSON.parse(JSON.stringify(this.pointsLine));
+    }
 
 }
