@@ -16,16 +16,18 @@ function urlencode(str)
    return str    
 end
 
-function readLog(file,lines,seek)
+function readLog(file,seek)
 	local log = io.open(file,"r")
 	if log == nil then
-		return {}
+		return {},0
+	end
+	if seek == log:seek("end") then
+		return {},seek
 	end
 	local MAX = 100
 	local x = 0
 	local output = {}
-	local seekEnd = seek
-	log:seek("cur",seek)
+	log:seek("set",seek)
 	for line in log:lines() do
 		if not  string.find(line,"descriptor 53") then
 			table.insert(output, line)
@@ -35,7 +37,7 @@ function readLog(file,lines,seek)
 			break
 		end
 	end
-	seekEnd = log:seek()
+	seek = log:seek()
 
 	for i,v in ipairs(output) do
 		local f = assert(io.popen("echo '"..v.."' | ./ansi2html.sh --body-only "))
@@ -44,11 +46,12 @@ function readLog(file,lines,seek)
 		output[i]=urlencode(s)
 	end
 	
-	return output,seekEnd
+	return output,seek
 end
 
 local executionNumber = 484
 local port = tonumber(arg[1])
+local pid = nil
 
 local ConnectHandler = class("ConnectHandler", turbo.web.RequestHandler)
 function ConnectHandler:head()
@@ -83,8 +86,15 @@ end
 local MoonGenDefaultHandler = class("MoonGenDefaultHandler",turbo.web.RequestHandler)
 function MoonGenDefaultHandler:delete(execution)
 	if tonumber(execution)==executionNumber then
-		--TODO Stop process
-		--TODO Get Process Status
+		if pid == nil then
+			local f = io.open("history/"..executionNumber.."/pid.log","r")
+			pid = tonumber(f:read("*number"))
+		end
+		local cmd = "kill "..pid --TODO Error Deleting not working
+		print(cmd)
+		local f = io.popen(cmd)
+		f:read("*all")
+		pid = nil
 		executionNumber=nil
 	else
 		self:set_status(404)
@@ -93,8 +103,10 @@ function MoonGenDefaultHandler:delete(execution)
 end
 function MoonGenDefaultHandler:head(execution)
 	if tonumber(execution)==executionNumber then
-		local f = io.open("history/"..executionNumber.."/pid.log","r")
-		local pid = tonumber(f:read("*number"))
+		if pid == nil then
+			local f = io.open("history/"..executionNumber.."/pid.log","r")
+			pid = tonumber(f:read("*number"))
+		end
 		local status = io.popen("ps -q "..pid.." | grep "..pid)
 		local result = status:read("*line")
 		if result == nil then
@@ -106,14 +118,22 @@ function MoonGenDefaultHandler:head(execution)
 		self:set_status(404)
 	end
 end
+function MoonGenDefaultHandler:get(execution)
+	if tonumber(execution)==executionNumber then
+		local seek=tonumber(self:get_argument("seek","0"))
+		--TODO Read from file and print out
+		self:write({seek=seek,data={}})
+	else
+		self:set_status(404)
+	end
+end
 
 local MoonGenLogHandler = class("MoonGenLogHandler",turbo.web.RequestHandler)
 function MoonGenLogHandler:get(execution)
 		if tonumber(execution)==executionNumber then
 			local seek = tonumber(self:get_argument("seek","0"))
-			local lineNumber = tonumber(self:get_argument("lines","0"))
-			local log,seek=readLog("history/"..executionNumber.."/run.log",lineNumber,seek)
-			self:write({log=log,lines=(table.getn(log)+lineNumber),seek=seek})
+			local log,seek=readLog("history/"..executionNumber.."/run.log",seek)
+			self:write({log=log,seek=seek})
 		else
 			self:set_status(404)
 		end

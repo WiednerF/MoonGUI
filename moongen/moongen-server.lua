@@ -35,15 +35,15 @@ function master(args)
 end
 
 function server(p,args)
-	local file = io.open("history/"..args.execution.."/data.json","a")
 	while mg.running() do
 		local a = p:tryRecv(0)
 		if a ~=nil then
+			local file = io.open("history/"..args.execution.."/data.json","a")
 			print(a)
 			file:write(a,"\n")
+			file:close()
 		end
 	end
-	file:close()
 end
 
 --TODO Load
@@ -83,9 +83,8 @@ function rxTimestamper(queue,p)
 			local txTs = bufs[i]:getSoftwareTxTimestamp()
 			results[#results + 1] = tonumber(rxTs - txTs) / tscFreq * 10^9 -- to nanoseconds
 			rxts[#rxts + 1] = tonumber(rxTs)
-			p:send("{'results'="..results[#results]..",'rxts'="..rxts[#rxts].."}")
+			p:send("{results="..results[#results]..",rxts="..rxts[#rxts].."}")
 		end
 		bufs:free(numPkts)
 	end
-	f:close()
 end
