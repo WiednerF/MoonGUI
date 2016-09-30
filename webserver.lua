@@ -49,7 +49,29 @@ function readLog(file,seek)
 	return output,seek
 end
 
-local executionNumber = 484
+function readData(file,seek)
+	local file = io.open(file,"r")
+	if file==nil then
+		return {},seek
+	end
+	if seek==file:seek("end") then
+		return {},seek
+	end
+	local MAX = 10
+	local x = 0
+	local output = {}
+	file:seek("set",seek)
+	for line in file:lines() do
+		local result = loadstring("return "..line)
+		local result2 = result();
+		result2.results=(math.floor(tonumber(result2.results)*10^18+0,5)/10^18);		
+		table.insert(output,result2)
+	end
+	seek = file:seek()
+	return output,seek
+end
+
+local executionNumber = 646
 local port = tonumber(arg[1])
 local pid = nil
 
@@ -121,8 +143,8 @@ end
 function MoonGenDefaultHandler:get(execution)
 	if tonumber(execution)==executionNumber then
 		local seek=tonumber(self:get_argument("seek","0"))
-		--TODO Read from file and print out
-		self:write({seek=seek,data={{results=10,rxts=10},{results=12,rxts=11},{results=10,rxts=12}}})
+		local data,seek = readData("history/"..executionNumber.."/data.json",seek)
+		self:write({seek=seek,data=data})
 	else
 		self:set_status(404)
 	end
