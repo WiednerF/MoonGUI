@@ -32,7 +32,7 @@ export class MoonGenService {
   constructor(private moonConnectService:MoonConnectServiceService) {
       this.testRunning();
   }
-  //TODO delete, data, restart
+  //TODO data, restart
 
     /**
      * Test if the System run if it should run
@@ -112,9 +112,14 @@ export class MoonGenService {
        return this.executionNumber;
    }
 
-    public getLogFile(lineNumber:number,seek:number){
-        if(!this.shouldRun&&lineNumber==0) return null;
-        return this.moonConnectService.get("/rest/moongen/"+this.executionNumber+"/log/?lines="+lineNumber+"&seek="+seek);
+    public getLogFile(seek:number){
+        if(!this.shouldRun) return null;
+        return this.moonConnectService.get("/rest/moongen/"+this.executionNumber+"/log/?seek="+seek);
+    }
+
+    public getData(seek:number){
+        if(!this.shouldRun) return null;
+        return this.moonConnectService.get("/rest/moongen/"+this.executionNumber+"/?seek="+seek);
     }
 
     public setTitle(title:string):void{

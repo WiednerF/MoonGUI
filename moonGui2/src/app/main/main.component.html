@@ -6,8 +6,8 @@
 <div [hidden]="!toggle.output.status" class="flex-output  ui-layout-row"><!--Graph and Logfile-->
     <div [hidden]="!toggle.graph.status" class="flex-graph"><!--Logfile-->
             <div>
-                <app-graph-histogram [title]="graphTitle" [points]="points"></app-graph-histogram>
-                <app-graph-line [title]="graphTitle"  [points]="pointsLine"></app-graph-line>
+                <app-graph-histogram [title]="'Distribution of Latency'" [points]="points"></app-graph-histogram>
+                <app-graph-line [title]="'Live Latency'"  [points]="pointsLine"></app-graph-line>
             </div>
     </div>
     <div class="stretch ui-splitbar animate-row" (mousedown)="dragStart($event,'vertical')"><!--Splitbar-->
