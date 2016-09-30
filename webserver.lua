@@ -122,7 +122,7 @@ function MoonGenDefaultHandler:get(execution)
 	if tonumber(execution)==executionNumber then
 		local seek=tonumber(self:get_argument("seek","0"))
 		--TODO Read from file and print out
-		self:write({seek=seek,data={}})
+		self:write({seek=seek,data={{results=10,rxts=10},{results=12,rxts=11},{results=10,rxts=12}}})
 	else
 		self:set_status(404)
 	end
