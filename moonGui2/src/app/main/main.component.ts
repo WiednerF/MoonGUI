@@ -154,8 +154,8 @@ export class MainComponent implements OnInit {
                 var result = response.data;
                 for(var i = 0;i<result.length;i++){
                     this.points[0].x.push(result[i].results);
-                    this.pointsLine[0].x.push(result[i].results);
-                    this.pointsLine[0].y.push(result[i].rxts);
+                    this.pointsLine[0].y.push(result[i].results);
+                    this.pointsLine[0].x.push(result[i].rxts);
                 }
                 if(result.length>0) {
                     this.points = JSON.parse(JSON.stringify(this.points));//TODO Error because of undefined
