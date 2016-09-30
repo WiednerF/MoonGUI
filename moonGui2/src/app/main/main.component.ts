@@ -152,7 +152,6 @@ export class MainComponent implements OnInit {
                 this.seekData = response.seek;
                 this.responseData = true;
                 var result = response.data;
-                console.log(result);
             }, (error)=> {
                 this.connectService.addAlert("danger", "Data Error: " + error);
                 this.responseData = true;
@@ -172,8 +171,7 @@ export class MainComponent implements OnInit {
             this.pointsLine[i].x=[];
             this.pointsLine[i].y=[];
         }
-        this.points=JSON.parse(JSON.stringify(this.points));
-        this.pointsLine=JSON.parse(JSON.stringify(this.pointsLine));
+        console.log(JSON.stringify(this.points));
     }
 
 }
