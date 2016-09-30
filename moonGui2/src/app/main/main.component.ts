@@ -152,6 +152,15 @@ export class MainComponent implements OnInit {
                 this.seekData = response.seek;
                 this.responseData = true;
                 var result = response.data;
+                for(var i = 0;i<result.length;i++){
+                    this.points[0].x.push(result[i].results);
+                    this.pointsLine[0].x.push(result[i].results);
+                    this.pointsLine[0].y.push(result[i].rxts);
+                }
+                if(result.length>0) {
+                    this.points = JSON.parse(JSON.stringify(this.points));//TODO Error because of undefined
+                    this.pointsLine = JSON.parse(JSON.stringify(this.pointsLine));
+                }
             }, (error)=> {
                 this.connectService.addAlert("danger", "Data Error: " + error);
                 this.responseData = true;
@@ -171,7 +180,8 @@ export class MainComponent implements OnInit {
             this.pointsLine[i].x=[];
             this.pointsLine[i].y=[];
         }
-        this.points=JSON.parse(JSON.stringify(this.points));
+        this.points=JSON.parse(JSON.stringify(this.points));//TODO Error because of undefined
+        this.pointsLine=JSON.parse(JSON.stringify(this.pointsLine));
     }
 
 }
