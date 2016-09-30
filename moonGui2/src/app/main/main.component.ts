@@ -171,7 +171,7 @@ export class MainComponent implements OnInit {
             this.pointsLine[i].x=[];
             this.pointsLine[i].y=[];
         }
-        console.log(JSON.parse(JSON.stringify(this.points)));
+        this.points=JSON.parse(JSON.stringify(this.points));
     }
 
 }
