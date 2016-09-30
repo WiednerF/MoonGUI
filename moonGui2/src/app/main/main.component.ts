@@ -3,6 +3,7 @@ import {
 } from '@angular/core';
 import {MoonGenService} from "../services/moon-gen.service";
 import {Observable} from "rxjs";
+import {MoonConnectServiceService} from "../services/moon-connect-service.service";
 
 declare var $:any;
 @Component({
@@ -32,8 +33,9 @@ export class MainComponent implements OnInit {
      * Get the Element for DOM Manipulation
      * @param element
      * @param moonGenService
+     * @param connectService
      */
-  constructor(public element:ElementRef,public moonGenService:MoonGenService) {
+  constructor(public element:ElementRef,public moonGenService:MoonGenService,public connectService:MoonConnectServiceService) {
 
   }
 
@@ -129,10 +131,10 @@ export class MainComponent implements OnInit {
                     this.executionNumber = this.moonGenService.getExecutionNumber();
                     if (this.executionNumber != null){
                         this.initiateData();
-                        this.response = true;
+                        this.responseData = true;
                     }
                 }
-                if (this.response) {
+                if (this.responseData) {
                     this.getData();
                 }
             }
@@ -143,17 +145,17 @@ export class MainComponent implements OnInit {
      * Get the Data from extern
      */
     private getData() {
-        let data = this.moonGenService.getData(this.seek);
-        this.response = false;
+        let data = this.moonGenService.getData(this.seekData);
+        this.responseData = false;
         if (data != null) {
             data.timeout(3000,new Error("Timeout exceeded")).map(response=>response.json()).subscribe(response=> {
-                this.seek = response.seek;
-                this.response = true;
+                this.seekData = response.seek;
+                this.responseData = true;
                 var result = response.data;
                 console.log(result);
             }, (error)=> {
                 this.connectService.addAlert("danger", "Data Error: " + error);
-                this.response = true;
+                this.responseData = true;
             });
         }
     }
@@ -162,7 +164,7 @@ export class MainComponent implements OnInit {
      * Initiate the DOM for the data
      */
     private initiateData() {
-        this.seek = 0;
+        this.seekData = 0;
         for(var i=0;i<this.points.length;i++){
             this.points[i].x=[];
         }
