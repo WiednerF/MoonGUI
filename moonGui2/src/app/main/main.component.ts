@@ -158,8 +158,8 @@ export class MainComponent implements OnInit {
                     this.pointsLine[0].x.push(result[i].rxts);
                 }
                 if(result.length>0) {
-                    this.points = JSON.parse(JSON.stringify(this.points));//TODO Error because of undefined
-                    this.pointsLine = JSON.parse(JSON.stringify(this.pointsLine));
+                    //this.points = JSON.parse(JSON.stringify(this.points));//TODO Error because of undefined
+                    //this.pointsLine = JSON.parse(JSON.stringify(this.pointsLine));
                 }
             }, (error)=> {
                 this.connectService.addAlert("danger", "Data Error: " + error);
@@ -180,7 +180,8 @@ export class MainComponent implements OnInit {
             this.pointsLine[i].x=[];
             this.pointsLine[i].y=[];
         }
-        this.pointsLine=JSON.parse(JSON.stringify(this.pointsLine));
+        //this.points=JSON.parse(JSON.stringify(this.points));//TODO Error because of undefined
+        //this.pointsLine=JSON.parse(JSON.stringify(this.pointsLine));
     }
 
 }
