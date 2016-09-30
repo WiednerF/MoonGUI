@@ -55,7 +55,7 @@ export class LogViewerComponent implements OnInit {
         let logFile = this.moonGenService.getLogFile(this.lineNumber, this.seek);
         this.response = false;
         if (logFile != null) {
-            logFile.map(response=>response.json()).subscribe(response=> {
+            logFile.timeout(3000,new Error("Timeout exceeded")).map(response=>response.json()).subscribe(response=> {
                 this.lineNumber = response.lines;
                 this.seek = response.seek;
                 this.response = true;
@@ -70,7 +70,7 @@ export class LogViewerComponent implements OnInit {
                 }
             }, (error)=> {
                 this.connectService.addAlert("danger", "Log File Error: " + error);
-                this.response = false
+                this.response = true;
             });
         }
     }
