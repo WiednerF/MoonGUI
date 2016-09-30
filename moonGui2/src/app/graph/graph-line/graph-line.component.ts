@@ -45,8 +45,8 @@ export class GraphLineComponent implements OnInit,OnChanges {
                 var update = {
                     title: changes.title.currentValue
                 };
+                Plotly.relayout(graphDiv,update);
             }
-            Plotly.relayout(graphDiv,update);
         }
     }
 

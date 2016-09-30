@@ -26,8 +26,8 @@ export class MainComponent implements OnInit {
     private seekData:number = 0;
     private responseData: boolean = true;
     private executionNumber:number = null;
-    private points: any=[{x:[],name:"Latency Distribution"}];
-    private pointsLine: any=[{x:[],y:[],name:"Latency"}];
+    private points: any=[{x:[0,1,2,45,7,4,1],name:"Latency Distribution"}];
+    private pointsLine: any=[{x:[0],y:[0],name:"Latency"}];
 
     /**
      * Get the Element for DOM Manipulation
@@ -45,8 +45,9 @@ export class MainComponent implements OnInit {
       this.stretch.horizontal.bar=this.element.nativeElement.children[1];
       this.stretch.vertical.element=this.element.nativeElement.children[2].children[2];
       this.stretch.vertical.bar=this.element.nativeElement.children[2].children[1];
-      this.runningData()
+      this.runningData();
   }
+
   @HostListener('mouseup',['$event'])
   onMouseUp(event){
       if(this.stretch.horizontal.size!=-1) {
@@ -158,8 +159,8 @@ export class MainComponent implements OnInit {
                     this.pointsLine[0].x.push(result[i].rxts);
                 }
                 if(result.length>0) {
-                    //this.points = JSON.parse(JSON.stringify(this.points));//TODO Error because of undefined
-                    //this.pointsLine = JSON.parse(JSON.stringify(this.pointsLine));
+                    this.points = JSON.parse(JSON.stringify(this.points));
+                    this.pointsLine = JSON.parse(JSON.stringify(this.pointsLine));
                 }
             }, (error)=> {
                 this.connectService.addAlert("danger", "Data Error: " + error);
@@ -180,8 +181,8 @@ export class MainComponent implements OnInit {
             this.pointsLine[i].x=[];
             this.pointsLine[i].y=[];
         }
-        //this.points=JSON.parse(JSON.stringify(this.points));//TODO Error because of undefined
-        //this.pointsLine=JSON.parse(JSON.stringify(this.pointsLine));
+        this.points=JSON.parse(JSON.stringify(this.points));
+        this.pointsLine=JSON.parse(JSON.stringify(this.pointsLine));
     }
 
 }
