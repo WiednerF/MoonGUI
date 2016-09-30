@@ -33,7 +33,6 @@ export class GraphHistogramComponent implements OnInit,OnChanges {
   ngOnChanges(changes){
       if(this.data!=[]&& this.data.length!=0) {
           var graphDiv=document.getElementById(this.name);
-          console.log(changes);
           if (changes.points) {
               var update1:any = {x:[]};
               for(let travers of changes.points.currentValue){

@@ -180,7 +180,6 @@ export class MainComponent implements OnInit {
             this.pointsLine[i].x=[];
             this.pointsLine[i].y=[];
         }
-        this.points=JSON.parse(JSON.stringify(this.points));//TODO Error because of undefined
         this.pointsLine=JSON.parse(JSON.stringify(this.pointsLine));
     }
 

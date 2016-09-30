@@ -32,7 +32,6 @@ export class MoonGenService {
   constructor(private moonConnectService:MoonConnectServiceService) {
       this.testRunning();
   }
-  //TODO data, restart
 
     /**
      * Test if the System run if it should run
