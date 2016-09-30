@@ -45,7 +45,7 @@ export class MainComponent implements OnInit {
       this.stretch.horizontal.bar=this.element.nativeElement.children[1];
       this.stretch.vertical.element=this.element.nativeElement.children[2].children[2];
       this.stretch.vertical.bar=this.element.nativeElement.children[2].children[1];
-      //TODO Add Listen to Data
+      this.runningData()
   }
   @HostListener('mouseup',['$event'])
   onMouseUp(event){
