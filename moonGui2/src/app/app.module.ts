@@ -16,6 +16,7 @@ import {MoonConnectServiceService} from "./services/moon-connect-service.service
 import {MoonGenService} from "./services/moon-gen.service";
 import { MainAlertComponent } from './main-alert/main-alert.component';
 import { LogViewerComponent } from './log-viewer/log-viewer.component';
+import { SystemComponent } from './config/system/system.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { LogViewerComponent } from './log-viewer/log-viewer.component';
     GraphLineComponent,
     ConfigStartComponent,
     MainAlertComponent,
-    LogViewerComponent
+    LogViewerComponent,
+    SystemComponent
   ],
   imports: [
     Ng2BootstrapModule,
