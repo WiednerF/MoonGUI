@@ -1,6 +1,6 @@
 local turbo = require "turbo"
 local io =    require "io"
-local zmq = require "zmq"
+local jit = require "jit"
 
 if #arg < 1 then
 	print('Usage: port for webserver')
@@ -159,6 +159,17 @@ function MoonGenLogHandler:get(execution)
 		else
 			self:set_status(404)
 		end
+end
+--*******************SYSTEM
+local SystemHandler = class("SystemHandler",turbo.web.RequestHandler)
+function SystemHandler:get()
+	local command = io.popen("hostname","r")
+	local hostname = command:read()
+	command = io.popen("whoami","r")
+	local user = command:read()
+	command = io.popen("nproc","r")
+	local nproc = tonumber(command:read())
+	self:write({os=jit.os,arch=jit.arch,hostname=hostname,user=user,lua={version=jit.version,status=jit.status()},cores=nproc})
 end 
 
 local app = turbo.web.Application:new({
@@ -170,6 +181,8 @@ local app = turbo.web.Application:new({
 	{"^/rest/moongen/$",MoonGenStartHandler},
 	{"^/rest/moongen/(.*)/log/$",MoonGenLogHandler},
 	{"^/rest/moongen/(.*)/$",MoonGenDefaultHandler},
+	--Get System Information
+	{"^/rest/system/$",SystemHandler},
 	-- Serve contents of directory.
 	{"^/(.*)$", turbo.web.StaticFileHandler, "moonGui2/dist/"}
 })	
