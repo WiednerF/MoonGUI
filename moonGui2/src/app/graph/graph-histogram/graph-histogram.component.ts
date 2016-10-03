@@ -37,7 +37,7 @@ export class GraphHistogramComponent implements OnInit,OnChanges {
               var update1:any = {x:[],xbins:[]};
               for(let travers of changes.points.currentValue){
                   update1.x.push(travers.x);
-                  update1.xbins ={start:Math.min.apply(Math,travers.x),end:Math.max.apply(Math,travers.x),size:0.1};
+                  update1.xbins.push({start:Math.min.apply(Math,travers.x),end:Math.max.apply(Math,travers.x),size:0.1});
               }
               Plotly.restyle(graphDiv,update1);
           }
