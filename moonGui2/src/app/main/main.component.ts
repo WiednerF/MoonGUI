@@ -157,6 +157,10 @@ export class MainComponent implements OnInit {
                     this.points[0].x.push(result[i].results);
                     this.pointsLine[0].y.push(result[i].results);
                     this.pointsLine[0].x.push(result[i].rxts);
+                    if(this.pointsLine[0].x.length>100){
+                        this.pointsLine[0].x.pop();
+                        this.pointsLine[0].y.pop();
+                    }
                 }
                 if(result.length>0) {
                     this.points = JSON.parse(JSON.stringify(this.points));
