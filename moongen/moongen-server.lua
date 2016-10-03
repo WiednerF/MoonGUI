@@ -81,7 +81,7 @@ function rxTimestamper(queue,p)
 		for i = 1, numPkts do
 			local rxTs = bufs[i].udata64
 			local txTs = bufs[i]:getSoftwareTxTimestamp()
-			results[#results + 1] = tonumber(rxTs - txTs) / tscFreq * 10^9 -- to nanoseconds
+			results[#results + 1] = tonumber(rxTs - txTs) / tscFreq -- to nanoseconds
 			rxts[#rxts + 1] = tonumber(rxTs)
 			p:send("{results="..results[#results]..",rxts="..rxts[#rxts].."}")
 		end
