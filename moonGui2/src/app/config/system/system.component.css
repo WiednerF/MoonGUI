@@ -1,0 +1,16 @@
+.tab-wrapper{
+    height:90%;
+    width: 90%;
+    margin: 4px auto;
+}
+.headline{
+    display: block;
+    font-size: 1.17em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    webkit-box-shadow: 2px 2px 16px 4px rgba(0,0,0,0.22);
+    -moz-box-shadow: 2px 2px 16px 4px rgba(0,0,0,0.22);
+    box-shadow: 2px 2px 16px 4px rgba(0,0,0,0.22);
+}
