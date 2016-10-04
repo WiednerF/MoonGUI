@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {MoonConnectServiceService} from "./moon-connect-service.service";
 import {Observable, Subject} from "rxjs";
+import {MoonConfigurationService} from "./moon-configuration.service";
 /**
  * This is the MoonGen Class for the Complete API Behind the point /rest/moongen
  */
@@ -22,14 +23,13 @@ export class MoonGenService {
      */
   private running:boolean=false;
     private runningChange:Subject<boolean>=new Subject<boolean>();
-    private title:string="";
-    private titleChange: Subject<string> = new Subject<string>();
 
     /**
      * Needs the Connection Service for accessing the Connection
-      * @param moonConnectService
+     * @param moonConnectService
+     * @param configurationService
      */
-  constructor(private moonConnectService:MoonConnectServiceService) {
+  constructor(private moonConnectService:MoonConnectServiceService, private configurationService:MoonConfigurationService) {
       this.testRunning();
   }
 
@@ -73,7 +73,7 @@ export class MoonGenService {
      */
   public startMoonGen(responseFunction:any,object:any):void{
       if(this.shouldRun) return null;
-      this.moonConnectService.post("/rest/moongen/",{test:"test"}).subscribe((response)=>{this.shouldRun=true;this.executionNumber=response.json().execution;responseFunction(response,false,object);},error=>{this.shouldRun=false;this.moonConnectService.addAlert("danger","MoonGen Start not working:"+error);responseFunction(error,true,object);});
+      this.moonConnectService.post("/rest/moongen/",this.configurationService.getConfigurationObject()).subscribe((response)=>{this.shouldRun=true;this.executionNumber=response.json().execution;responseFunction(response,false,object);},error=>{this.shouldRun=false;this.moonConnectService.addAlert("danger","MoonGen Start not working:"+error);responseFunction(error,true,object);});
   }
 
     /**
@@ -122,12 +122,11 @@ export class MoonGenService {
     }
 
     public setTitle(title:string):void{
-        this.title=title;//TODO With Server
-        this.titleChange.next(this.title);
+        this.configurationService.setTitle(title);
     }
 
     public getTitle():Subject<string>{
-        return this.titleChange;//TODO With Server
+        return this.configurationService.getTitleSubscribe();
     }
 
 }

@@ -17,6 +17,7 @@ import {MoonGenService} from "./services/moon-gen.service";
 import { MainAlertComponent } from './main-alert/main-alert.component';
 import { LogViewerComponent } from './log-viewer/log-viewer.component';
 import { SystemComponent } from './config/system/system.component';
+import {MoonConfigurationService} from "./services/moon-configuration.service";
 
 @NgModule({
   declarations: [
@@ -39,7 +40,7 @@ import { SystemComponent } from './config/system/system.component';
     HttpModule,
     PerfectScrollbarModule
   ],
-  providers: [MoonConnectServiceService,MoonGenService],
+  providers: [MoonConnectServiceService,MoonGenService, MoonConfigurationService],
   bootstrap: [AppComponent]
 })
 /**

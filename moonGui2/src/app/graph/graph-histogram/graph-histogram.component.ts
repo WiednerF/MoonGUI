@@ -14,7 +14,7 @@ export class GraphHistogramComponent implements OnInit,OnChanges {
   @Input() public points:any;
   @Input() public title:string;
     private name:string="graph-histogram";
-  private configuration:any={showLink: false,displaylogo: false};
+  private configuration:any={showLink: false, displaylogo: false};
   private layout:any= {title: this.title,bargap: 0.05,bargrourgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value"}};
   private data:any=[];
 
