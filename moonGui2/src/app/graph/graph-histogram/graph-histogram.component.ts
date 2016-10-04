@@ -17,13 +17,14 @@ export class GraphHistogramComponent implements OnInit,OnChanges {
   private configuration:any={showLink: false, displaylogo: false};
   private layout:any= {title: this.title,bargap: 0.05,bargrourgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value"}};
   private data:any=[];
+    private size:number = 100;
 
   constructor() {
   }
 
   ngOnInit() {
       for(let travers of this.points){
-          this.data.push({name: travers.name , x: travers.x, type: 'histogram', autobinx: false, xbins:{start:Math.min.apply(Math,travers.x),end:Math.max.apply(Math,travers.x),size:0.1}});
+          this.data.push({name: travers.name , x: travers.x, type: 'histogram', autobinx: false, xbins:{start:Math.min.apply(Math,travers.x),end:Math.max.apply(Math,travers.x),size:this.size}});
       }
       this.layout.title=this.title;
       Plotly.newPlot(this.name, this.data,this.layout,this.configuration);
@@ -37,7 +38,7 @@ export class GraphHistogramComponent implements OnInit,OnChanges {
               var update1:any = {x:[],xbins:[]};
               for(let travers of changes.points.currentValue){
                   update1.x.push(travers.x);
-                  update1.xbins.push({start:Math.min.apply(Math,travers.x),end:Math.max.apply(Math,travers.x),size:0.1});
+                  update1.xbins.push({start:Math.min.apply(Math,travers.x),end:Math.max.apply(Math,travers.x),size:this.size});
               }
               Plotly.restyle(graphDiv,update1);
           }
