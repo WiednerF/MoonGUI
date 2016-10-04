@@ -1,6 +1,7 @@
 local turbo = require "turbo"
 local io =    require "io"
 local jit = require "jit"
+local json = require "dkjson"
 
 if #arg < 1 then
 	print('Usage: port for webserver')
@@ -85,12 +86,16 @@ local MoonGenStartHandler = class("MoonGenStartHandler", turbo.web.RequestHandle
 function MoonGenStartHandler:post() 
 	print("Start MoonGen Process")
 	--Generating the Execution Number
+	local configurationObject = self:get_json(true)
 	executionNumber = math.random(1000)
 	--Making folder and write number to history file
 	local cmd ="mkdir -p history/"..executionNumber.."/"
 	os.execute(cmd)
+	local configurationFile = io.open("history/"..executionNumber.."/config.json","a")
+	configurationFile:write(json.encode(configurationObject,{indent= true}))
+	configurationFile:close()
 	local historyFile = io.open("history/history-number","a")
-	historyFile:write(executionNumber.."\n")
+	historyFile:write(executionNumber..";"..configurationObject.title.."\n")
 	historyFile:close()
 	--Executing Standard MoonGen Script
 	cmd = "nohup moongen/moongen.sh "..executionNumber.." > history/"..executionNumber.."/run.log & echo $! > history/"..executionNumber.."/pid.log"
