@@ -18,6 +18,7 @@ import { MainAlertComponent } from './main-alert/main-alert.component';
 import { LogViewerComponent } from './log-viewer/log-viewer.component';
 import { SystemComponent } from './config/system/system.component';
 import {MoonConfigurationService} from "./services/moon-configuration.service";
+import { ConfigComponent } from './config/config/config.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import {MoonConfigurationService} from "./services/moon-configuration.service";
     ConfigStartComponent,
     MainAlertComponent,
     LogViewerComponent,
-    SystemComponent
+    SystemComponent,
+    ConfigComponent
   ],
   imports: [
     Ng2BootstrapModule,

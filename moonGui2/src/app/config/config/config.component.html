@@ -1,0 +1,11 @@
+<div class="tab-wrapper form-horizontal">
+  <div class="form-group">
+    <label class="control-label col-sm-4" for="numberOfPackets-moongui">Number of Packets (10^):</label>
+    <div class="col-sm-7">
+      <input [(ngModel)]="numberOfPackets" (input)="changeNumberOfPackets($event)" (change)="changeNumberOfPackets($event)" class="form-control" type="range" min="1" max="100" step="1" name="numberOfPackets-moongui" id="numberOfPackets-moongui">
+    </div>
+    <div class="col-sm-1">
+      {{ numberOfPackets }}
+  </div>
+  </div>
+</div>

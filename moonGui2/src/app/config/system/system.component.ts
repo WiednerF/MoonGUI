@@ -9,7 +9,7 @@ import {Observable} from "rxjs";
 })
 export class SystemComponent {
 
-  private sys:{arch:string,os:string,user:string,cores:number,lua:{version:string,status:boolean}}={lua:{}};
+  private sys:{arch:string,os:string,user:string,cores:number,lua:{version:string,status:boolean}}={arch:"",os:"",user:"",cores:0,lua:{version:"",status:false}};
 
   constructor(public moonConnect:MoonConnectServiceService) {
       Observable.timer(2000).take(1).subscribe(()=>this.getInformation(moonConnect));

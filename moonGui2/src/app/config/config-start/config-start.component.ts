@@ -11,7 +11,8 @@ export class ConfigStartComponent implements OnInit {
   status = 0;
   private title:string;
 
-  constructor(public moonGenService:MoonGenService) { }
+  constructor(public moonGenService:MoonGenService) {
+  }
 
   ngOnInit() {
       this.moonGenService.getTitle().subscribe((value)=>{this.title=value});
