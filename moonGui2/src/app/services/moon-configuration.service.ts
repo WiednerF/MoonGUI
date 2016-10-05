@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import {Subject} from "rxjs";
+import {Subject, Observable} from "rxjs";
+import {Response} from "@angular/http";
+import {MoonConnectServiceService} from "./moon-connect-service.service";
 
 @Injectable()
 export class MoonConfigurationService {
@@ -8,9 +10,13 @@ export class MoonConfigurationService {
   private titleChange:Subject<string>=new Subject<string>();
   private packetNumber:number = 10;
     private packetNumberChange:Subject<number>=new Subject<number>();
+   private interfaceTx:number=0;
+    private interfaceTxChange:Subject<number>=new Subject<number>();
+    private interfaceRx:number=1;
+    private interfaceRxChange:Subject<number>=new Subject<number>();
+//TODO Interface include in Configuration
 
-
-  constructor() {
+  constructor(public connectService:MoonConnectServiceService) {
 
   }
 
@@ -36,10 +42,34 @@ export class MoonConfigurationService {
         this.packetNumber=PacketNumber;
         this.packetNumberChange.next(PacketNumber);
     }
+    public getInterfaceList():Observable<Response>{
+        return this.connectService.get("/rest/interfaces/");
+    }
+    public getInterfaceTx():number{
+        return this.interfaceTx;
+    }
+    public getInterfaceTxSubscribe():Subject<number>{
+        return this.interfaceTxChange;
+    }
+    public setInterfaceTx(interface1:number):void{
+        this.interfaceTx=interface1;
+        this.interfaceTxChange.next(inteface1);
+    }
+    public getInterfaceRx():number{
+        return this.interfaceRx;
+    }
+    public getInterfaceRxSubscribe():Subject<number>{
+        return this.interfaceRxChange;
+    }
+    public setInterfaceRx(interface2:number):void{
+        this.interfaceRx=interface2;
+        this.interfaceRxChange.next(inteface2);
+    }
+
 
 
 
     public getConfigurationObject():any{
-        return {title:this.getTitle(),packetNr:this.getPacketNumber()};
+        return {title:this.getTitle(),packetNr:this.getPacketNumber(),interfaces:{tx:this.getInterfaceTx(),rx:this.getInterfaceRx()}};
     }
 }
