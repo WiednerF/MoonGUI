@@ -8,6 +8,7 @@ local stats = require "stats"
 local log = require "log"
 local device = require "device"
 local pipe = require "pipe"
+local json = require "dkjson"
 
 
 local PKT_SIZE = 60
@@ -23,13 +24,17 @@ end
 
 function master(args)
 	--TODO TEST
-	--TODO Packet number, size, rateLimit as Config parameters
+	--TODO size, rateLimit as Config parameters
+	local configFile = assert(io.open("history/"..args.execution.."/config.json"))
+	local configString = configFile:read("*all")
+	local config,pos,error = json.decode(configString,1,nil)
 	local txDev = device.config{port = args.txDev,dropEnable = false}
 	local rxDev = device.config{port = args.rxDev, dropEnable = false}
 	local p = pipe:newSlowPipe()
+	
 	device.waitForLinks()
-	mg.startTask("txTimestamper", txDev:getTxQueue(0))
-	mg.startTask("rxTimestamper", rxDev:getRxQueue(0),p)
+	mg.startTask("txTimestamper", txDev:getTxQueue(0),config)
+	mg.startTask("rxTimestamper", rxDev:getRxQueue(0),config,p)
 	mg.startTask("server",p,args)
 	mg.waitForTasks()
 end
@@ -47,7 +52,10 @@ function server(p,args)
 end
 
 --TODO Load
-function txTimestamper(queue)
+function txTimestamper(queue,config)
+	if config.packetNr then
+		NUM_PKTS = 10^(config.packetNr)
+	end
 	local mem = memory.createMemPool(function(buf)
 		-- just to use the default filter here
 		-- you can use whatever packet type you want
@@ -69,7 +77,7 @@ function txTimestamper(queue)
 	mg.stop()
 end
 
-function rxTimestamper(queue,p)
+function rxTimestamper(queue,config,p)
 	local tscFreq = mg.getCyclesFrequency()
 	local bufs = memory.bufArray(64)
 	-- use whatever filter appropriate for your packet type

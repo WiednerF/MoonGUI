@@ -175,6 +175,17 @@ function SystemHandler:get()
 	command = io.popen("nproc","r")
 	local nproc = tonumber(command:read())
 	self:write({os=jit.os,arch=jit.arch,hostname=hostname,user=user,lua={version=jit.version,status=jit.status()},cores=nproc})
+end
+local InterfaceHandler = class("InterfaceHandler",turbo.web.RequestHandler)
+function InterfaceHandler:get()
+	local file = assert(io.popen("./dpdk-interfaces.py --status"))
+	local output = {}
+	local i = 0
+	for line in file:lines() do
+	    table.insert(output,{show=line,index=i})
+	    i=i+1
+	end
+	self:write(output)
 end 
 
 local app = turbo.web.Application:new({
@@ -188,6 +199,7 @@ local app = turbo.web.Application:new({
 	{"^/rest/moongen/(.*)/$",MoonGenDefaultHandler},
 	--Get System Information
 	{"^/rest/system/$",SystemHandler},
+	{"^/rest/interfaces/$",InterfaceHandler},
 	-- Serve contents of directory.
 	{"^/(.*)$", turbo.web.StaticFileHandler, "moonGui2/dist/"}
 })	
