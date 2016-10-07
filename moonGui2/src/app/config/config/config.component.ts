@@ -26,8 +26,7 @@ export class ConfigComponent implements OnInit {
      * @param $event
      */
     public changeInterfaceTx($event){
-        console.log($event);
-        this.configuration.setInterfaceTx($event.target.value);
+        this.configuration.setInterfaceTx($event);
     }
 
     /**
@@ -35,7 +34,7 @@ export class ConfigComponent implements OnInit {
      * @param $event
      */
     public changeInterfaceRx($event){
-        this.configuration.setInterfaceRx($event.target.value);
+        this.configuration.setInterfaceRx($event);
     }
 
     private getInterfaceList(){
