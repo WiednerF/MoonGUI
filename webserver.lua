@@ -25,15 +25,17 @@ function readLog(file,seek)
 	if seek == log:seek("end") then
 		return {},seek
 	end
+	local seekEnd = log:seek("end")
 	local MAX = 100
 	local x = 0
 	local output = {}
 	log:seek("set",seek)
+	if seek+MAX>seekEnd then
+		MAX = seekEnd-seek
+	end
 	for line in log:lines() do
-		if not  string.find(line,"descriptor 53") then
-			table.insert(output, line)
-			x= x +1
-		end
+		table.insert(output, line)
+		x= x +1
 		if x > MAX then
 			break
 		end
@@ -58,7 +60,7 @@ function readData(file,seek)
 	if seek==file:seek("end") then
 		return {},seek
 	end
-	local MAX = 10
+	local MAX = 1
 	local x = 0
 	local output = {}
 	file:seek("set",seek)

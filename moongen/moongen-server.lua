@@ -16,20 +16,16 @@ local PKT_SIZE = 60
 local NUM_PKTS = 10^20
 
 function configure(parser)
-	parser:argument("rxDev","The device to receive from"):convert(tonumber)
-	parser:argument("txDev","The Device to send to"):convert(tonumber)
 	parser:argument("execution","The number of the current execution"):convert(tonumber)
 end
 
 
 function master(args)
-	--TODO TEST
-	--TODO size, rateLimit as Config parameters
 	local configFile = assert(io.open("history/"..args.execution.."/config.json"))
 	local configString = configFile:read("*all")
 	local config,pos,error = json.decode(configString,1,nil)
-	local txDev = device.config{port = args.txDev,dropEnable = false}
-	local rxDev = device.config{port = args.rxDev, dropEnable = false}
+	local txDev = device.config{port = config.interfaces.rx,dropEnable = false}
+	local rxDev = device.config{port = config.interfaces.tx, dropEnable = false}
 	local p = pipe:newSlowPipe()
 	
 	device.waitForLinks()
@@ -44,7 +40,6 @@ function server(p,args)
 		local a = p:tryRecv(0)
 		if a ~=nil then
 			local file = io.open("history/"..args.execution.."/data.json","a")
-			print(a)
 			file:write(a,"\n")
 			file:close()
 		end
@@ -64,7 +59,7 @@ function txTimestamper(queue,config)
 	end)
 	mg.sleepMillis(1000) -- ensure that the load task is running
 	local bufs = mem:bufArray(1)
-	local rateLimit = timer:new(0.0000000000000000001) -- 1000kpps timestamped packets
+	local rateLimit = timer:new(0.0001) -- 1000kpps timestamped packets
 	local i = 0
 	while i < NUM_PKTS and mg.running() do
 		bufs:alloc(PKT_SIZE)
