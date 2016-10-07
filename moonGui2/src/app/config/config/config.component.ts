@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {MoonConfigurationService} from "../../services/moon-configuration.service";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-config',
@@ -36,6 +37,18 @@ export class ConfigComponent implements OnInit {
         this.configuration.setInterfaceRx($event.target.value);
     }
 
+    private getInterfaceList(){
+        this.getInterfaceListHTTP();
+        Observable.interval(100000).subscribe(()=>{
+            this.getInterfaceListHTTP();
+        });
+    }
+    private getInterfaceListHTTP(){
+        this.configuration.getInterfaceList().map((response)=>response.json()).subscribe((response)=>{
+            this.interfaceList=response;
+        },(error)=>console.log("Error: "+error));
+    }
+
 
   constructor(public configuration:MoonConfigurationService) {
       this.numberOfPackets=configuration.getPacketNumber();
@@ -44,6 +57,7 @@ export class ConfigComponent implements OnInit {
   }
 
   ngOnInit() {
+      this.getInterfaceList();
       this.configuration.getPacketNumberSubscribe().subscribe((value)=>{this.numberOfPackets=value});
       this.configuration.getInterfaceTxSubscribe().subscribe((value)=>{this.interfaceTx=value});
       this.configuration.getInterfaceRxSubscribe().subscribe((value)=>{this.interfaceRx=value});

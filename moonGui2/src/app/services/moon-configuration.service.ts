@@ -51,9 +51,9 @@ export class MoonConfigurationService {
     public getInterfaceTxSubscribe():Subject<number>{
         return this.interfaceTxChange;
     }
-    public setInterfaceTx(interface1:number):void{
-        this.interfaceTx=interface1;
-        this.interfaceTxChange.next(inteface1);
+    public setInterfaceTx(interfaceTx:number):void{
+        this.interfaceTx=interfaceTx;
+        this.interfaceTxChange.next(interfaceTx);
     }
     public getInterfaceRx():number{
         return this.interfaceRx;
@@ -61,9 +61,9 @@ export class MoonConfigurationService {
     public getInterfaceRxSubscribe():Subject<number>{
         return this.interfaceRxChange;
     }
-    public setInterfaceRx(interface2:number):void{
-        this.interfaceRx=interface2;
-        this.interfaceRxChange.next(inteface2);
+    public setInterfaceRx(interfaceRx:number):void{
+        this.interfaceRx=interfaceRx;
+        this.interfaceRxChange.next(interfaceRx);
     }
 
 
