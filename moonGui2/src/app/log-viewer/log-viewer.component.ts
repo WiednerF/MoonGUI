@@ -55,7 +55,7 @@ export class LogViewerComponent implements OnInit {
         let logFile = this.moonGenService.getLogFile(this.seek);
         this.response = false;
         if (logFile != null) {
-            logFile.timeout(3000,new Error("Timeout exceeded")).map(response=>response.json()).subscribe(response=> {
+            logFile.timeout(30000,new Error("Timeout exceeded")).map(response=>response.json()).subscribe(response=> {
                 this.seek = response.seek;
                 this.response = true;
                 var result = response.log;
