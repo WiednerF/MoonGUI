@@ -26,6 +26,7 @@ export class ConfigComponent implements OnInit {
      * @param $event
      */
     public changeInterfaceTx($event){
+        console.log($event);
         this.configuration.setInterfaceTx($event.target.value);
     }
 

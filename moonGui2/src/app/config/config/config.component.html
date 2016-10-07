@@ -1,5 +1,5 @@
 <div class="tab-wrapper form-horizontal">
-  <div class="form-group">
+  <div class="form-group row">
     <label class="control-label col-sm-4" for="numberOfPackets-moongui">Number of Packets (10^):</label>
     <div class="col-sm-7">
       <input [(ngModel)]="numberOfPackets" (input)="changeNumberOfPackets($event)" (change)="changeNumberOfPackets($event)" class="form-control" type="range" min="1" max="100" step="1" name="numberOfPackets-moongui" id="numberOfPackets-moongui">
@@ -8,7 +8,7 @@
       {{ numberOfPackets }}
   </div>
   </div>
-  <div class="form-group">
+  <div class="form-group row">
     <label class="control-label col-sm-4" for="tx">TX Interface:</label>
     <div class="col-sm-8">
         <select id="tx" class="form-control" [(ngModel)]="interfaceTx" (ngModelChange)="changeInterfaceTx($event)">
@@ -16,7 +16,7 @@
         </select>
     </div>
   </div>
-  <div class="form-group">
+  <div class="form-group row">
     <label class="control-label col-sm-4" for="rx">RX Interface:</label>
     <div class="col-sm-8">
       <select id="rx" class="form-control" [(ngModel)]="interfaceRx" (ngModelChange)="changeInterfaceRx($event)">
