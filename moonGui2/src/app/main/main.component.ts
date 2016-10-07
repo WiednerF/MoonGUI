@@ -158,8 +158,8 @@ export class MainComponent implements OnInit {
                     this.pointsLine[0].y.push(result[i].results);
                     this.pointsLine[0].x.push(result[i].rxts);
                     if(this.pointsLine[0].x.length>100){
-                        this.pointsLine[0].x.pop();
-                        this.pointsLine[0].y.pop();
+                        this.pointsLine[0].x.splice(0, 1);
+                        this.pointsLine[0].y.splice(0, 1);
                     }
                 }
                 if(result.length>0) {
