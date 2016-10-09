@@ -2,13 +2,14 @@ local turbo = require "turbo"
 local io =    require "io"
 local jit = require "jit"
 local json = require "dkjson"
+local zmq = require"lzmq"
 
 if #arg < 1 then
 	print('Usage: port for webserver')
 	os.exit()
 end
 
-local executionNumber = nil
+local executionNumber = 260
 local port = tonumber(arg[1])
 local pid = nil
 
@@ -57,26 +58,24 @@ function readLog(file,seekInput)
 	return output,seek
 end
 
-function readData(file,seek)
-	local file = io.open(file,"r")
-	if file==nil then
-		return {},seek
+local ctx = nil
+local s = nil
+
+
+function readData()
+	if ctx==nil then
+		ctx = zmq.context()
+		s = ctx:socket(zmq.REQ)
+		s:connect("tcp://127.0.0.1:5556")
 	end
-	if seek==file:seek("end") then
-		return {},seek
+	s:send("GetData")
+        local data, err = s:recv()
+       	if err then
+		print(err)
+		return err
 	end
-	local MAX = 1
-	local x = 0
-	local output = {}
-	file:seek("set",seek)
-	for line in file:lines() do
-		local result = loadstring("return "..line)
-		local result2 = result();
-		result2.results=(math.floor(tonumber(result2.results)*10^18+0,5)/10^18);		
-		table.insert(output,result2)
-	end
-	seek = file:seek()
-	return output,seek
+	local result = loadstring("return "..data)	
+	return result()
 end
 
 local ConnectHandler = class("ConnectHandler", turbo.web.RequestHandler)
@@ -87,7 +86,6 @@ end
 --Starting of MOONGEN
 local MoonGenStartHandler = class("MoonGenStartHandler", turbo.web.RequestHandler)
 function MoonGenStartHandler:post() 
-	--TODO Control and Exit
 	print("Start MoonGen Process")
 	--Generating the Execution Number
 	local configurationObject = self:get_json(true)
@@ -108,9 +106,10 @@ function MoonGenStartHandler:post()
 	print("Execution number:"..executionNumber)
 	self:write({execution=executionNumber})
 end
+
 function MoonGenStartHandler:get()--Generates the Number of the current execution
-	print("Get Informationen List of Execution Number")
-	if not executionNumber==nil then	
+	print("Get Information List of Execution Number")
+	if executionNumber~=nil then	
 		self:write({execution=executionNumber})
 	else
 		self:write({})
@@ -131,6 +130,10 @@ function MoonGenDefaultHandler:delete(execution)
 		f:read("*all")
 		pid = nil
 		executionNumber=nil
+		s:close()
+		ctx:term()
+		s=nil
+		ctx=nil
 	else
 		self:set_status(404)
 	end
@@ -155,8 +158,7 @@ function MoonGenDefaultHandler:head(execution)
 end
 function MoonGenDefaultHandler:get(execution)
 	if tonumber(execution)==executionNumber then
-		local seek=tonumber(self:get_argument("seek","0"))
-		local data,seek = readData("history/"..executionNumber.."/data.json",seek)
+		local data = readData()
 		self:write({seek=seek,data=data})
 	else
 		self:set_status(404)

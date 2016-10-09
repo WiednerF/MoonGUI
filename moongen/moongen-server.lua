@@ -7,13 +7,15 @@ local memory = require "memory"
 local stats = require "stats"
 local log = require "log"
 local device = require "device"
-local pipe = require "pipe"
 local json = require "dkjson"
+local pipe = require "pipe"
+local zmq = require"lzmq"
 
 
 local PKT_SIZE = 60
 
 local NUM_PKTS = 10^20
+
 
 function configure(parser)
 	parser:argument("execution","The number of the current execution"):convert(tonumber)
@@ -21,30 +23,46 @@ end
 
 
 function master(args)
+	--TODO Add the other scripts to the working one
 	local configFile = assert(io.open("history/"..args.execution.."/config.json"))
 	local configString = configFile:read("*all")
 	local config,pos,error = json.decode(configString,1,nil)
 	local txDev = device.config{port = config.interfaces.rx,dropEnable = false}
 	local rxDev = device.config{port = config.interfaces.tx, dropEnable = false}
-	local p = pipe:newSlowPipe()
+	local p = pipe.newSlowPipe()
 	
 	device.waitForLinks()
 	mg.startTask("txTimestamper", txDev:getTxQueue(0),config)
 	mg.startTask("rxTimestamper", rxDev:getRxQueue(0),config,p)
-	mg.startTask("server",p,args)
+	mg.startTask("zmqServer",p,args)
 	mg.waitForTasks()
 end
 
-function server(p,args)
+function zmqServer(p,args)
+	local ctx = zmq.context()
+        local s = ctx:socket(zmq.REP)
+        s:bind("tcp://127.0.0.1:5556")
+	local file = io.open("history/"..args.execution.."/data.json","a")
 	while mg.running() do
+		local str = "{"
+		assert(s:recv())
 		local a = p:tryRecv(0)
-		if a ~=nil then
-			print(a)
-			local file = io.open("history/"..args.execution.."/data.json","a")
+		local i=0	
+		while a~=nil and i<100 do
 			file:write(a,"\n")
-			file:close()
+			str=str..a..","
+			i=i+1
+			if i<100 then
+				a=p:tryRecv(0)
+			end
 		end
+		if str~="{" then
+			str=string.sub(str,1,-2)	
+		end
+		str=str.."}"
+	 	assert(s:send(str))
 	end
+	file:close()	
 end
 
 --TODO Load
