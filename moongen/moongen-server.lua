@@ -39,6 +39,7 @@ function server(p,args)
 	while mg.running() do
 		local a = p:tryRecv(0)
 		if a ~=nil then
+			print(a)
 			local file = io.open("history/"..args.execution.."/data.json","a")
 			file:write(a,"\n")
 			file:close()

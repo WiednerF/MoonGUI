@@ -8,6 +8,10 @@ if #arg < 1 then
 	os.exit()
 end
 
+local executionNumber = nil
+local port = tonumber(arg[1])
+local pid = nil
+
 --SOURCE: https://gist.github.com/ignisdesign/4323051
 function urlencode(str)
    if (str) then
@@ -16,8 +20,9 @@ function urlencode(str)
    end
    return str    
 end
-
-function readLog(file,seek)
+--Read the log file with less access
+function readLog(file,seekInput)
+	local seek = seekInput
 	local log = io.open(file,"r")
 	if log == nil then
 		return {},0
@@ -34,20 +39,20 @@ function readLog(file,seek)
 		MAX = seekEnd-seek
 	end
 	for line in log:lines() do
-		table.insert(output, line)
-		x= x +1
+		if not string.find(line,"descriptor 53") then		
+			local f = assert(io.popen("echo '"..line.."' | ./ansi2html.sh --body-only "))
+			local s = assert(f:read("*a"))
+			f:close()
+			table.insert(output, urlencode(s))
+			x= x +1
+		end
+		seek= log:seek()
+		coroutine.yield(output,seek)
 		if x > MAX then
 			break
 		end
 	end
 	seek = log:seek()
-
-	for i,v in ipairs(output) do
-		local f = assert(io.popen("echo '"..v.."' | ./ansi2html.sh --body-only "))
-		local s = assert(f:read("*a"))
-		f:close()
-		output[i]=urlencode(s)
-	end
 	
 	return output,seek
 end
@@ -74,10 +79,6 @@ function readData(file,seek)
 	return output,seek
 end
 
-local executionNumber = 646
-local port = tonumber(arg[1])
-local pid = nil
-
 local ConnectHandler = class("ConnectHandler", turbo.web.RequestHandler)
 function ConnectHandler:head()
 		print("Connection Tested to REST API")
@@ -86,6 +87,7 @@ end
 --Starting of MOONGEN
 local MoonGenStartHandler = class("MoonGenStartHandler", turbo.web.RequestHandler)
 function MoonGenStartHandler:post() 
+	--TODO Control and Exit
 	print("Start MoonGen Process")
 	--Generating the Execution Number
 	local configurationObject = self:get_json(true)
@@ -106,9 +108,13 @@ function MoonGenStartHandler:post()
 	print("Execution number:"..executionNumber)
 	self:write({execution=executionNumber})
 end
-function MoonGenStartHandler:get()
+function MoonGenStartHandler:get()--Generates the Number of the current execution
 	print("Get Informationen List of Execution Number")
-	self:write({execution=executionNumber})
+	if not executionNumber==nil then	
+		self:write({execution=executionNumber})
+	else
+		self:write({})
+	end
 end
 --*********************************************
 --Normal MoonGen Behaviour
@@ -119,7 +125,7 @@ function MoonGenDefaultHandler:delete(execution)
 			local f = io.open("history/"..executionNumber.."/pid.log","r")
 			pid = tonumber(f:read("*number"))
 		end
-		local cmd = "kill "..pid --TODO Error Deleting not working
+		local cmd = "kill "..pid --TODO Error Deleting not working (Only delete nohup not MoonGen)
 		print(cmd)
 		local f = io.popen(cmd)
 		f:read("*all")
@@ -156,13 +162,26 @@ function MoonGenDefaultHandler:get(execution)
 		self:set_status(404)
 	end
 end
-
+--***********MOONGEN LOG*******************************
 local MoonGenLogHandler = class("MoonGenLogHandler",turbo.web.RequestHandler)
 function MoonGenLogHandler:get(execution)
 		if tonumber(execution)==executionNumber then
+			local start = os.time()			
 			local seek = tonumber(self:get_argument("seek","0"))
-			local log,seek=readLog("history/"..executionNumber.."/run.log",seek)
-			self:write({log=log,seek=seek})
+			local co = coroutine.create(--Creates the coroutine for working on the thread
+				function(log,seek)
+					return readLog(log,seek)
+				end			
+			)	
+			local errorstatus,log,seekNew = coroutine.resume(co,"history/"..executionNumber.."/run.log",seek)			
+			while coroutine.status(co) ~= "dead" and os.time()-start<3000 do--Get each line, so stopping is possible
+					errorstatus,log,seekNew = coroutine.resume(co)		
+			end
+			if not seekNew~=nil then
+				self:write({log=log,seek=seekNew})
+			else
+				self:write({log=log,seek=seek})			
+			end
 		else
 			self:set_status(404)
 		end

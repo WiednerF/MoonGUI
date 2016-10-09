@@ -185,9 +185,9 @@ done
 span { display: inline-block; }
 */
 '
-[ "$body_only" ] || [ "$css_only" ] && printf '%s\n' \
-'To use the css generated from --css-only, do: '\
-'<head><link rel="stylesheet" type="text/css" href="style.css"></head>' >&2
+#[ "$body_only" ] || [ "$css_only" ] && printf '%s\n' \
+#'To use the css generated from --css-only, do: '\
+#'<head><link rel="stylesheet" type="text/css" href="style.css"></head>' >&2
 [ "$css_only" ] && exit
 [ "$body_only" ] || printf '%s' '</style>
 </head>
@@ -195,7 +195,7 @@ span { display: inline-block; }
 <body class="f9 b9">
 <pre>
 '
-[ "$body_only" ] && printf '%s\n' 'Be sure to use <body class="f9 b9"> and <pre>' >&2
+#[ "$body_only" ] && printf '%s\n' 'Be sure to use <body class="f9 b9"> and <pre>' >&2
 
 p='\x1b\['        #shortcut to match escape codes
 
