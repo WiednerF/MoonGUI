@@ -23,7 +23,6 @@ export class MainComponent implements OnInit {
      * @type {{horizontal: {size: number; position: number; element: any; bar: any}; vertical: {size: number; position: number; element: any; bar: any}}}
      */
     private stretch: {horizontal:{size:number,position:number,element:any,bar:any},vertical:{size:number,position:number,element:any,bar:any}}={horizontal:{size:-1,position:-1,element:null,bar:null},vertical:{size:-1,position:-1,element:null,bar:null}};
-    private seekData:number = 0;
     private responseData: boolean = true;
     private executionNumber:number = null;
     private points: any=[{x:[0,1,2,45,7,4,1],name:"Latency Distribution"}];
@@ -146,11 +145,10 @@ export class MainComponent implements OnInit {
      * Get the Data from extern
      */
     private getData() {
-        let data = this.moonGenService.getData(this.seekData);
+        let data = this.moonGenService.getData();
         this.responseData = false;
         if (data != null) {
             data.timeout(3000,new Error("Timeout exceeded")).map(response=>response.json()).subscribe(response=> {
-                this.seekData = response.seek;
                 this.responseData = true;
                 var result = response.data;
                 for(var i = 0;i<result.length;i++){
@@ -177,7 +175,6 @@ export class MainComponent implements OnInit {
      * Initiate the DOM for the data
      */
     private initiateData() {
-        this.seekData = 0;
         for(var i=0;i<this.points.length;i++){
             this.points[i].x=[];
         }

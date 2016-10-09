@@ -116,9 +116,9 @@ export class MoonGenService {
         return this.moonConnectService.get("/rest/moongen/"+this.executionNumber+"/log/?seek="+seek);
     }
 
-    public getData(seek:number){
+    public getData(){
         if(!this.shouldRun) return null;
-        return this.moonConnectService.get("/rest/moongen/"+this.executionNumber+"/?seek="+seek);
+        return this.moonConnectService.get("/rest/moongen/"+this.executionNumber+"/");
     }
 
     public setTitle(title:string):void{
