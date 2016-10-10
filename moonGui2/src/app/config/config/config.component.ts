@@ -17,15 +17,16 @@ export class ConfigComponent implements OnInit {
 
   constructor(public configuration:MoonConfigurationService) {
       this.numberOfPackets=configuration.getPacketNumber();
-      this.configurationObject=this.configuration.getConfiguration(this.configuration.getScript());
-      this.initScript();
+      let configurationObject=this.configuration.getConfiguration(this.configuration.getScript());
+      this.initScript(configurationObject);
+      this.configurationObject=configurationObject;
   }
 
-  private initScript(){
-      if(this.configurationObject.configuration){
-          if(this.configurationObject.configuration.interfaces){
+  private initScript(configurationObject){
+      if(configurationObject.configuration){
+          if(configurationObject.configuration.interfaces){
               this.interfaceNode=[];
-              for(let i:number=0;i<this.configurationObject.configuration.interfaces.length;i++){
+              for(let i:number=0;i<configurationObject.configuration.interfaces.length;i++){
                   this.interfaceNode.push(this.configuration.getInterface(i));
               }
           }
@@ -35,7 +36,7 @@ export class ConfigComponent implements OnInit {
   ngOnInit() {
       this.getInterfaceList();
       this.configuration.getPacketNumberSubscribe().subscribe((value)=>{this.numberOfPackets=value});
-      this.configuration.getScriptChange().subscribe(()=>{this.configurationObject=this.configuration.getConfiguration(this.configuration.getScript());this.initScript()});
+      this.configuration.getScriptChange().subscribe(()=>{let configurationObject=this.configuration.getConfiguration(this.configuration.getScript());this.initScript(configurationObject);this.configurationObject=configurationObject});
       this.configuration.getInterfaceChange().subscribe(value=>{this.interfaceNode[value.id]=value.value});
   }
 
