@@ -4,7 +4,7 @@
   <div class="form-group row" *ngFor="let interfaceItem of configurationObject.configuration.interfaces;let i=index">
     <label class="control-label col-sm-4">{{interfaceItem.name}}</label>
     <div class="col-sm-8">
-      <select class="form-control" [ngModel]="getProb('interfaceNode',i)" (ngModelChange)="changeInterface($event,i)">
+      <select class="form-control" [ngModel]="getProp('interfaceNode',i)" (ngModelChange)="changeInterface($event,i)">
         <option *ngFor="let interface of interfaceList" [ngValue]="interface.index">{{interface.show}}</option>
       </select>
     </div>
