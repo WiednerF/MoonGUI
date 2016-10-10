@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MoonGenService} from "../../services/moon-gen.service";
 import {Response} from "@angular/http";
+import {MoonConfigurationService} from "../../services/moon-configuration.service";
 
 @Component({
   selector: 'app-config-start',
@@ -10,13 +11,19 @@ import {Response} from "@angular/http";
 export class ConfigStartComponent implements OnInit {
   status = 0;
   private title:string;
+  private script:number;
+  private configurationList:any;
 
-  constructor(public moonGenService:MoonGenService) {
+  constructor(public configurationService:MoonConfigurationService, public moonGenService:MoonGenService) {
+      this.configurationList=this.configurationService.getConfigurationList();
+      this.script=this.configurationService.getScript();
+      this.title=this.configurationService.getTitle();
   }
 
   ngOnInit() {
-      this.moonGenService.getTitle().subscribe((value)=>{this.title=value});
-      this.moonGenService.getRunningSubscribe().subscribe(value=>{if(value){this.status=1;}else{this.status=0;}})
+      this.configurationService.getTitleSubscribe().subscribe((value)=>{this.title=value});
+      this.moonGenService.getRunningSubscribe().subscribe(value=>{if(value){this.status=1;}else{this.status=0;}});
+      this.configurationService.getScriptChange().subscribe(value=>{this.script=value});
   }
 
   startMoonGen(){
@@ -25,7 +32,6 @@ export class ConfigStartComponent implements OnInit {
 
   public static startMoonGenResult(result:Response, error:boolean, component:ConfigStartComponent){
         if(error){
-            console.log("Test"+result);
             component.status=0;
         }
   }
@@ -44,7 +50,13 @@ export class ConfigStartComponent implements OnInit {
      * Change the Title of the Component
      */
     public changeTitle($event){
-        this.moonGenService.setTitle($event.target.value);
+        this.configurationService.setTitle($event.target.value);
+    }
+    /**
+     * Change the Script of the Component
+     */
+    public changeScript($event){
+        this.configurationService.setScript($event);
     }
 
 }

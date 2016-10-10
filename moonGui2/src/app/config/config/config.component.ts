@@ -8,11 +8,36 @@ import {Observable} from "rxjs";
   styleUrls: ['./config.component.css']
 })
 export class ConfigComponent implements OnInit {
-  private numberOfPackets:number;
-  private interfaceList:any=[];
-  private interfaceTx:number=0;
-  private interfaceRx:number=1;
+  private configurationObject:any;
+    private interfaceList:any=[];
+    private interfaceNode:any=[];
+    private numberOfPackets:number;
     //TODO Add Interface to Config View
+
+
+  constructor(public configuration:MoonConfigurationService) {
+      this.numberOfPackets=configuration.getPacketNumber();
+      this.configurationObject=this.configuration.getConfiguration(this.configuration.getScript());
+      this.initScript();
+  }
+
+  private initScript(){
+      if(this.configurationObject.configuration){
+          if(this.configurationObject.configuration.interfaces){
+              this.interfaceNode=[];
+              for(let i:number=0;i<this.configurationObject.configuration.interfaces.length;i++){
+                  this.interfaceNode.push(this.configuration.getInterface(i));
+              }
+          }
+      }
+  }
+
+  ngOnInit() {
+      this.getInterfaceList();
+      this.configuration.getPacketNumberSubscribe().subscribe((value)=>{this.numberOfPackets=value});
+      this.configuration.getScriptChange().subscribe(()=>{this.configurationObject=this.configuration.getConfiguration(this.configuration.getScript());this.initScript()});
+      this.configuration.getInterfaceChange().subscribe(value=>{this.interfaceNode[value.id]=value.value});
+  }
 
     /**
      * Change the Number of Packets of the Component
@@ -22,19 +47,12 @@ export class ConfigComponent implements OnInit {
     }
 
     /**
-     * Changes the interface configuration
-     * @param $event
-     */
-    public changeInterfaceTx($event){
-        this.configuration.setInterfaceTx($event);
-    }
-
-    /**
      * Changes the Interface configuration
      * @param $event
+     * @param id
      */
-    public changeInterfaceRx($event){
-        this.configuration.setInterfaceRx($event);
+    public changeInterface($event,id){
+        this.configuration.setInterface(id,$event);
     }
 
     private getInterfaceList(){
@@ -49,18 +67,5 @@ export class ConfigComponent implements OnInit {
         },(error)=>console.log("Error: "+error));
     }
 
-
-  constructor(public configuration:MoonConfigurationService) {
-      this.numberOfPackets=configuration.getPacketNumber();
-      this.interfaceTx=configuration.getInterfaceTx();
-      this.interfaceRx=configuration.getInterfaceRx();
-  }
-
-  ngOnInit() {
-      this.getInterfaceList();
-      this.configuration.getPacketNumberSubscribe().subscribe((value)=>{this.numberOfPackets=value});
-      this.configuration.getInterfaceTxSubscribe().subscribe((value)=>{this.interfaceTx=value});
-      this.configuration.getInterfaceRxSubscribe().subscribe((value)=>{this.interfaceRx=value});
-  }
 
 }

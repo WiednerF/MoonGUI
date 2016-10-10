@@ -1,4 +1,17 @@
-<div class="tab-wrapper form-horizontal">
+<div class="tab-wrapper form-horizontal" *ngIf="configurationObject.configuration">
+  <div class="interfaces" *ngIf="configurationObject.configuration.interfaces.length!=0">
+  <!--INTERFACES TODO HEadline-->
+  <div class="form-group row" *ngFor="let interfaceItem of configurationObject.configuration.interfaces;let i=index">
+    <label class="control-label col-sm-4">{{interfaceItem.name}}</label>
+    <div class="col-sm-8">
+      <select class="form-control" [(ngModel)]="interfaceNode[i]" (ngModelChange)="changeInterface($event,i)">
+        <option *ngFor="let interface of interfaceList" [ngValue]="interface.index">{{interface.show}}</option>
+      </select>
+    </div>
+  </div>
+  </div>
+  <!--END Interfaces-->
+
   <div class="form-group row">
     <label class="control-label col-sm-4" for="numberOfPackets-moongui">Number of Packets (10^):</label>
     <div class="col-sm-7">
@@ -7,21 +20,5 @@
     <div class="col-sm-1">
       {{ numberOfPackets }}
   </div>
-  </div>
-  <div class="form-group row">
-    <label class="control-label col-sm-4" for="tx">TX Interface:</label>
-    <div class="col-sm-8">
-        <select id="tx" class="form-control" [(ngModel)]="interfaceTx" (ngModelChange)="changeInterfaceTx($event)">
-            <option *ngFor="let interface of interfaceList" [ngValue]="interface.index">{{interface.show}}</option>
-        </select>
-    </div>
-  </div>
-  <div class="form-group row">
-    <label class="control-label col-sm-4" for="rx">RX Interface:</label>
-    <div class="col-sm-8">
-      <select id="rx" class="form-control" [(ngModel)]="interfaceRx" (ngModelChange)="changeInterfaceRx($event)">
-        <option *ngFor="let interface of interfaceList" [ngValue]="interface.index">{{interface.show}}</option>
-      </select>
-    </div>
   </div>
 </div>
