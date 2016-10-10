@@ -46,7 +46,7 @@ export class MoonConfigurationService {
                  input:[
                      {
                          standard: 10,
-                         type: "slider",
+                         type: "range",
                          name: "PacketNumber in 10^",
                          unit: "10^",
                          conf: "pktNr",
@@ -66,14 +66,16 @@ export class MoonConfigurationService {
                             conf: "rx"
                         }
                     ],
-                    slider:[
+                    input:[
                         {
-                            standard: 10,
-                            name: "PacketNumber [10^]",
+                            standard: 50,
+                            type: "range",
+                            name: "PacketNumber in [10^]",
                             unit: "10^",
                             conf: "pktNr",
                             max: 150,
-                            min: 1
+                            min: 1,
+                            step: 2
                         }
                     ]
                 }
@@ -146,11 +148,14 @@ export class MoonConfigurationService {
     }
 
     public getConfigurationObject():any{
-        let result:any={title:this.getTitle(),packetNr:this.getPacketNumber()};
+        let result=<any>{};
+        result.title=this.getTitle();
+        result.packetNr=this.getPacketNumber();
+        result.script=this.configuration[this.getScript()].name;
         let conf=this.getConfiguration(this.getScript());
         if(conf.configuration){
             if(conf.configuration.interfaces){
-                result['interfaces']={};
+                result.interfaces={};
                 for(let i:number = 0;i<conf.configuration.interfaces.length;i++){
                     if(this.interfaceNodes[i]){
                         result['interfaces'][conf.configuration.interfaces[i].conf]=this.interfaceNodes[i];

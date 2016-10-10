@@ -53,7 +53,7 @@ export class ConfigComponent implements OnInit {
      */
     public changeInterface($event,id){
         this.configuration.setInterface(id,$event);
-        this.interfaceNode[id]=$event;
+        console.log(this);
     }
 
     private getInterfaceList(){
