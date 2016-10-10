@@ -68,5 +68,9 @@ export class ConfigComponent implements OnInit {
         },(error)=>console.log("Error: "+error));
     }
 
+    private getProp(name:string,id:number){
+        return this[name][id];
+    }
+
 
 }
