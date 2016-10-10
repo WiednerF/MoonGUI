@@ -115,8 +115,11 @@ export class MoonConfigurationService {
     }
     //***********Standard Values
     public getInterface(id:number):number{
+        console.log(id);
         if(this.configuration[this.script].configuration.interfaces.length>id){
+            console.log(id);
             if(this.interfaceNodes[id]){
+                console.log(id);
                 return this.interfaceNodes[id];
             }else{
                this.interfaceNodes[id] = this.configuration[this.script].configuration.interfaces[id].standard;
