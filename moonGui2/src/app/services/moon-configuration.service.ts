@@ -150,6 +150,7 @@ export class MoonConfigurationService {
         let conf=this.getConfiguration(this.getScript());
         if(conf.configuration){
             if(conf.configuration.interfaces){
+                result['interfaces']={};
                 for(let i:number = 0;i<conf.configuration.interfaces.length;i++){
                     if(this.interfaceNodes[i]){
                         result['interfaces'][conf.configuration.interfaces[i].conf]=this.interfaceNodes[i];
