@@ -123,6 +123,7 @@ export class MoonConfigurationService {
                 return this.interfaceNodes[id];
             }else{
                this.interfaceNodes[id] = this.configuration[this.script].configuration.interfaces[id].standard;
+                return this.interfaceNodes[id];
             }
         }
     }
