@@ -78,7 +78,7 @@ export class ConfigComponent implements OnInit {
      * @param $event
      * @param id
      */
-    public changeInterface($event,id){//TODO Use ngModelChange
+    public changeInterface($event,id){
         this.configuration.setInterface(id,$event);
         this.interfaceNode[id]=$event;
     }

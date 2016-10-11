@@ -6,7 +6,7 @@
 <div [hidden]="!toggle.output.status" class="flex-output  ui-layout-row"><!--Graph and Logfile-->
     <div [hidden]="!toggle.graph.status" class="flex-graph"><!--Logfile-->
             <div>
-                <app-graph-histogram [title]="'Distribution of Latency'" [points]="points"></app-graph-histogram>
+                <app-graph-histogram [title]="'Distribution of Latency'" [points]="points" [size]="0.1" [id]="'histogram-graph'" ></app-graph-histogram>
                 <app-graph-line [title]="'Live Latency'"  [points]="pointsLine"></app-graph-line>
             </div>
     </div>

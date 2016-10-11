@@ -25,7 +25,7 @@ export class MainComponent implements OnInit {
     private stretch: {horizontal:{size:number,position:number,element:any,bar:any},vertical:{size:number,position:number,element:any,bar:any}}={horizontal:{size:-1,position:-1,element:null,bar:null},vertical:{size:-1,position:-1,element:null,bar:null}};
     private responseData: boolean = true;
     private executionNumber:number = null;
-    private points: any=[{x:[0,1,2,45,7,4,1],name:"Latency Distribution"}];
+    private points: any=[0,1,2,45,7,4,1];
     private pointsLine: any=[{x:[0],y:[0],name:"Latency"}];
 
     /**
@@ -152,7 +152,7 @@ export class MainComponent implements OnInit {
                 this.responseData = true;
                 var result = response.data;
                 for(var i = 0;i<result.length;i++){
-                    this.points[0].x.push(result[i].results);
+                    this.points.push(result[i].results);
                     this.pointsLine[0].y.push(result[i].results);
                     this.pointsLine[0].x.push(result[i].rxts);
                     if(this.pointsLine[0].x.length>100){
