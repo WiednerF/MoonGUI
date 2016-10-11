@@ -8,7 +8,7 @@ import {Observable} from "rxjs";
   styleUrls: ['./config.component.css']
 })
 export class ConfigComponent implements OnInit {
-    private configurationObject:any;
+    private configurationObject:any={};
     private interfaceList:any=[];
     private interfaceNode:any=[];
     private input:any=[];

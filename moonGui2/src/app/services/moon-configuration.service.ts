@@ -23,7 +23,7 @@ export class MoonConfigurationService {
       this.configurationHttp();
   }
   public configurationHttp(){
-      this.connectService.get("/config/").map((result)=>result.json()).subscribe((result)=>this.writeConfiguration(result),(error)=>{console.log(error);this.configurationHttp()});
+      this.connectService.get("/config/").map((result)=>result.json()).subscribe((result)=>this.writeConfiguration(result),(error)=>{this.configurationHttp()});
     }
   public writeConfiguration(config:any){
       this.configuration=config;
