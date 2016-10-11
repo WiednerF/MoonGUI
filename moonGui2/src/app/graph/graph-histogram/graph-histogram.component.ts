@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, OnChanges, AfterViewInit, ElementRef} from '@angular/core';
+import {Component, Input, OnChanges, AfterViewInit, ElementRef} from '@angular/core';
 
 declare var Plotly: any;
 declare var document: any;

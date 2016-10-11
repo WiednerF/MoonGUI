@@ -4,6 +4,7 @@ import {
 import {MoonGenService} from "../services/moon-gen.service";
 import {Observable} from "rxjs";
 import {MoonConnectServiceService} from "../services/moon-connect-service.service";
+import {MoonConfigurationService} from "../services/moon-configuration.service";
 
 declare var $:any;
 @Component({
@@ -25,18 +26,44 @@ export class MainComponent implements OnInit {
     private stretch: {horizontal:{size:number,position:number,element:any,bar:any},vertical:{size:number,position:number,element:any,bar:any}}={horizontal:{size:-1,position:-1,element:null,bar:null},vertical:{size:-1,position:-1,element:null,bar:null}};
     private responseData: boolean = true;
     private executionNumber:number = null;
+
+    /**
+     * Graph Configuration
+     */
+    private configurationObject:any={graph:[]};
+    private pointData:any=[];
     private points: any=[0,1,2,45,7,4,1];
-    private pointsLine: any=[{x:[0],y:[0],name:"Latency"}];
+    private pointsLine: any={x:[0],y:[0]};
+
 
     /**
      * Get the Element for DOM Manipulation
      * @param element
      * @param moonGenService
      * @param connectService
+     * @param configuration
      */
-  constructor(public element:ElementRef,public moonGenService:MoonGenService,public connectService:MoonConnectServiceService) {
-
+  constructor(public element:ElementRef,public moonGenService:MoonGenService,public connectService:MoonConnectServiceService, public configuration:MoonConfigurationService) {
+        this.configuration.getWait().subscribe(value=>{if(value){
+            let configurationObject=this.configuration.getConfiguration(this.configuration.getScript());
+            this.initScript(configurationObject);
+            this.configurationObject=configurationObject;
+            this.configuration.getScriptChange().subscribe(()=>{let configurationObject=this.configuration.getConfiguration(this.configuration.getScript());this.initScript(configurationObject);this.configurationObject=configurationObject});
+        }});
   }
+
+    private initScript(configurationObject){
+        if(configurationObject.graph){
+            this.pointData=[];
+            for(let i:number=0;i<configurationObject.graph.length;i++){
+                if(configurationObject.graph[i].type=="histogram"){
+                    this.pointData[i]=[];
+                }else if(configurationObject.graph[i].type=="line"){
+                    this.pointData[i]={x:[],y:[]};
+                }
+            }
+        }
+    }
 
   ngOnInit() {
     //INIT For DRAG
@@ -130,7 +157,7 @@ export class MainComponent implements OnInit {
                 if (this.executionNumber != this.moonGenService.getExecutionNumber()) {
                     this.executionNumber = this.moonGenService.getExecutionNumber();
                     if (this.executionNumber != null){
-                        this.initiateData();
+                        this.initData();
                         this.responseData = true;
                     }
                 }
@@ -151,18 +178,26 @@ export class MainComponent implements OnInit {
             data.timeout(3000,new Error("Timeout exceeded")).map(response=>response.json()).subscribe(response=> {
                 this.responseData = true;
                 var result = response.data;
-                for(var i = 0;i<result.length;i++){
-                    this.points.push(result[i].results);
-                    this.pointsLine[0].y.push(result[i].results);
-                    this.pointsLine[0].x.push(result[i].rxts);
-                    if(this.pointsLine[0].x.length>100){
-                        this.pointsLine[0].x.splice(0, 1);
-                        this.pointsLine[0].y.splice(0, 1);
+                if(this.configurationObject&&this.configurationObject.graph&&this.configurationObject.graph.length!=0) {
+                    for(let x:number=0;x<this.configurationObject.graph.length;x++) {
+                        if(this.configurationObject.graph[x].type="histogram"){
+                            for (var i = 0; i < result.length; i++) {
+                                this.pointData[x].push(result[i][this.configurationObject.graph[x].x]);
+                            }
+                        }else if(this.configurationObject.graph[x].type="line"){
+                            for (var i = 0; i < result.length; i++) {
+                                this.pointData[x].x.push(result[i][this.configurationObject.graph[x].x]);
+                                this.pointData[x].y.push(result[i][this.configurationObject.graph[x].y]);
+                                if (this.pointData[x].x.length > this.configurationObject.graph[x].max) {
+                                    this.pointData[x].x.splice(0, 1);
+                                    this.pointData[x].y.splice(0, 1);
+                                }
+                            }
+                        }
+                        if (result.length > 0) {
+                            this.pointData[x] = JSON.parse(JSON.stringify(this.pointData[x]));
+                        }
                     }
-                }
-                if(result.length>0) {
-                    this.points = JSON.parse(JSON.stringify(this.points));
-                    this.pointsLine = JSON.parse(JSON.stringify(this.pointsLine));
                 }
             }, (error)=> {
                 this.connectService.addAlert("danger", "Data Error: " + error);
@@ -171,19 +206,15 @@ export class MainComponent implements OnInit {
         }
     }
 
-    /**
-     * Initiate the DOM for the data
-     */
-    private initiateData() {
-        for(var i=0;i<this.points.length;i++){
-            this.points[i].x=[];
+    initData(){
+        if(this.configurationObject.graph){
+            for(let i:number=0;i<this.configurationObject.graph.length;i++){
+                if(this.configurationObject.graph[i].type=="histogram"){
+                    this.pointData[i]=[];
+                }else if(this.configurationObject.graph[i].type=="line"){
+                    this.pointData[i]={x:[],y:[]};
+                }
+            }
         }
-        for(var i=0;i<this.points.length;i++){
-            this.pointsLine[i].x=[];
-            this.pointsLine[i].y=[];
-        }
-        this.points=JSON.parse(JSON.stringify(this.points));
-        this.pointsLine=JSON.parse(JSON.stringify(this.pointsLine));
     }
-
 }

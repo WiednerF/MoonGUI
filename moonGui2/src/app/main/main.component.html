@@ -1,21 +1,36 @@
-<app-config-part [ngClass]="{'flex-grow':!toggle.output.status}" [hidden]="!toggle.config.status" class="flex-config">Loading...</app-config-part><!--Config Part-->
+<app-config-part [ngClass]="{'flex-grow':!toggle.output.status}" [hidden]="!toggle.config.status" class="flex-config">
+    Loading...
+</app-config-part><!--Config Part-->
 <div class="animate-column stretch ui-splitbar" (mousedown)="dragStart($event,'horizontal')"><!--Splitbar-->
-  <a (click)="toggleEvent(toggle.config,toggle.output)" [hidden]="!toggle.output.status"><span class="ui-splitbar-icon ui-splitbar-icon-right"></span></a>
-  <a (click)="toggleEvent(toggle.output,toggle.config)" [hidden]="!toggle.config.status"><span class="ui-splitbar-icon ui-splitbar-icon-left"></span></a>
+    <a (click)="toggleEvent(toggle.config,toggle.output)" [hidden]="!toggle.output.status"><span
+            class="ui-splitbar-icon ui-splitbar-icon-right"></span></a>
+    <a (click)="toggleEvent(toggle.output,toggle.config)" [hidden]="!toggle.config.status"><span
+            class="ui-splitbar-icon ui-splitbar-icon-left"></span></a>
 </div>
 <div [hidden]="!toggle.output.status" class="flex-output  ui-layout-row"><!--Graph and Logfile-->
-    <div [hidden]="!toggle.graph.status" class="flex-graph"><!--Logfile-->
-            <div>
-                <app-graph-histogram [title]="'Distribution of Latency'" [points]="points" [size]="0.1" [id]="'histogram-graph'" ></app-graph-histogram>
-                <app-graph-line [title]="'Live Latency'"  [points]="pointsLine"></app-graph-line>
+    <div [hidden]="!toggle.graph.status" class="flex-graph"><!--Graph-->
+        <div *ngIf="configurationObject.graph.length!=0">
+            <div *ngFor="let graphItem of configurationObject.graph;let i=index">
+                <div *ngIf="graphItem.type=='histogram'">
+                    <app-graph-histogram [title]="graphItem.title"
+                                         [points]="pointData[i]" [size]="graphItem.size"
+                                         [id]="graphItem.id"></app-graph-histogram>
+                </div>
+                <div *ngIf="graphItem.type=='line'">
+                    <app-graph-line [title]="graphItem.title" [points]="pointData[i]"
+                                    [id]="graphItem.id"></app-graph-line>
+                </div>
             </div>
+        </div>
     </div>
     <div class="stretch ui-splitbar animate-row" (mousedown)="dragStart($event,'vertical')"><!--Splitbar-->
-        <a (click)="toggleEvent(toggle.log,toggle.graph)" [hidden]="!toggle.graph.status"><span class="ui-splitbar-icon ui-splitbar-icon-up"></span></a>
-        <a (click)="toggleEvent(toggle.graph,toggle.log)" [hidden]="!toggle.log.status"><span class="ui-splitbar-icon ui-splitbar-icon-down"></span></a>
+        <a (click)="toggleEvent(toggle.log,toggle.graph)" [hidden]="!toggle.graph.status"><span
+                class="ui-splitbar-icon ui-splitbar-icon-up"></span></a>
+        <a (click)="toggleEvent(toggle.graph,toggle.log)" [hidden]="!toggle.log.status"><span
+                class="ui-splitbar-icon ui-splitbar-icon-down"></span></a>
     </div>
-    <div [ngClass]="{'flex-grow':!toggle.graph.status}" [hidden]="!toggle.log.status" class="flex-log"><!--Log-->
-            <app-log-viewer></app-log-viewer>
+    <div [ngClass]="{'flex-grow':!toggle.graph.status}" [hidden]="!toggle.log.status" class="flex-log"><!--Logfile-->
+        <app-log-viewer></app-log-viewer>
     </div>
 </div>
 
