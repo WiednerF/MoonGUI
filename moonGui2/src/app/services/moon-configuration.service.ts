@@ -20,10 +20,10 @@ export class MoonConfigurationService {
     private wait:Subject<boolean>=new Subject<boolean>();
 
   constructor(public connectService:MoonConnectServiceService) {
-      this.getConfiguration();
+      this.configurationHttp();
   }
-  public getConfiguration(){
-      this.connectService.get("/config/").map((result)=>result.json()).subscribe((result)=>this.writeConfiguration(result),(error)=>this.getConfiguration());
+  public configurationHttp(){
+      this.connectService.get("/config/").map((result)=>result.json()).subscribe((result)=>this.writeConfiguration(result),(error)=>this.configurationHttp());
     }
   public writeConfiguration(config:any){
       this.configuration=config;
