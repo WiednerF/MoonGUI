@@ -47,6 +47,9 @@ export class MainComponent implements OnInit {
         this.configuration.getWait().subscribe(value=>{if(value){
             let configurationObject=this.configuration.getConfiguration(this.configuration.getScript());
             this.initScript(configurationObject);
+            if(!configurationObject.graph){
+                configurationObject.graph=[];
+            }
             this.configurationObject=configurationObject;
             this.configuration.getScriptChange().subscribe(()=>{let configurationObject=this.configuration.getConfiguration(this.configuration.getScript());this.initScript(configurationObject);this.configurationObject=configurationObject});
         }});
