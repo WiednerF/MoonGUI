@@ -59,12 +59,64 @@
                 "conf": "rx"
               }
             ],
-            "input":{
-
-            }
-          },
+            "input":[
+              {
+                "standard": 1000,
+                "type": "range",
+                "name": "Rate",
+                "unit": "bs",
+                "conf": "rate",
+                "max": 100000,
+                "min": 1,
+                "step": 10
+              },
+              {
+                "standard": 4,
+                "type": "range",
+                "name": "Frame",
+                "unit": "Count",
+                "conf": "frame",
+                "max": 100,
+                "min": 1,
+                "step": 1
+              }
+            ,
+              {
+                "standard": 4,
+                "type": "number",
+                "name": "Packet Size",
+                "unit": "B",
+                "conf": "frame",
+                "max": 100000,
+                "min": 10,
+                "step": 1
+              }
+            ]
+              },
           "graph":[
-
+            {
+              "type":"histogram",
+              "x":"latency",
+              "size":2,
+              "title":"Distribution of Latency",
+              "id":"hist"
+            },
+            {
+              "type":"line",
+              "x":"timer",
+              "y":"latency",
+              "id":"line",
+              "max":"1000",
+              "title":"Live Latency"
+            },
+            {
+              "type":"line",
+              "x":"timer",
+              "y":"rate",
+              "id":"lineRate",
+              "max":"1000",
+              "title":"Live Rate"
+            }
           ]
         }
 
