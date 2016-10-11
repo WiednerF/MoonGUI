@@ -180,11 +180,11 @@ export class MainComponent implements OnInit {
                 var result = response.data;
                 if(this.configurationObject&&this.configurationObject.graph&&this.configurationObject.graph.length!=0) {
                     for(let x:number=0;x<this.configurationObject.graph.length;x++) {
-                        if(this.configurationObject.graph[x].type="histogram"){
+                        if(this.configurationObject.graph[x].type=="histogram"){
                             for (var i = 0; i < result.length; i++) {
                                 this.pointData[x].push(result[i][this.configurationObject.graph[x].x]);
                             }
-                        }else if(this.configurationObject.graph[x].type="line"){
+                        }else if(this.configurationObject.graph[x].type=="line"){
                             for (var i = 0; i < result.length; i++) {
                                 this.pointData[x].x.push(result[i][this.configurationObject.graph[x].x]);
                                 this.pointData[x].y.push(result[i][this.configurationObject.graph[x].y]);
