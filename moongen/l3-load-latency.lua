@@ -32,10 +32,6 @@ local ARP_IP	= SRC_IP_BASE
 function configure(parser)
 	parser:description("Generates UDP traffic and measure latencies. Edit the source to modify constants like IPs.")
     parser:argument("execution","The number of the current execution"):convert(tonumber)
-    --TODO From here
-	parser:option("-r --rate", "Transmit rate in Mbit/s."):default(10000):convert(tonumber)
-	parser:option("-f --flows", "Number of flows (randomized source IP)."):default(4):convert(tonumber)
-	parser:option("-s --size", "Packet size."):default(60):convert(tonumber)
 end
 
 function master(args)
@@ -43,19 +39,20 @@ function master(args)
     local configFile = assert(io.open("history/"..args.execution.."/config.json"))
     local configString = configFile:read("*all")
     local config,pos,error = json.decode(configString,1,nil)
+    local p = pipe:newSlowPipe()
 
 	txDev = device.config{port = config.interfaces.tx, rxQueues = 3, txQueues = 3}
 	rxDev = device.config{port = config.interfaces.rx, rxQueues = 3, txQueues = 3}
 	device.waitForLinks()
 	-- max 1kpps timestamping traffic timestamping
 	-- rate will be somewhat off for high-latency links at low rates
-    --TODO From here
-	if args.rate > 0 then
-		txDev:getTxQueue(0):setRate(args.rate - (args.size + 4) * 8 / 1000)
+	if config.input.rate > 0 then
+		txDev:getTxQueue(0):setRate(config.input.rate - (config.input.size + 4) * 8 / 1000)
 	end
 
-	mg.startTask("loadSlave", txDev:getTxQueue(0), rxDev, args.size, args.flows)
-	mg.startTask("timerSlave", txDev:getTxQueue(1), rxDev:getRxQueue(1), args.size, args.flows)
+	mg.startTask("zmqServer",p,args)
+	mg.startTask("loadSlave", txDev:getTxQueue(0), rxDev, config.input.size, config.input.flows,p)
+	mg.startTask("timerSlave", txDev:getTxQueue(1), rxDev:getRxQueue(1), config.input.size, config.input.flows,p)
 	arp.startArpTask{
 		-- run ARP on both ports
 		{ rxQueue = rxDev:getRxQueue(2), txQueue = rxDev:getTxQueue(2), ips = RX_IP },
@@ -88,8 +85,35 @@ local function doArp()
 	end
 	log:info("Destination mac: %s", DST_MAC)
 end
+function zmqServer(p,args)
+	local ctx = zmq.context()
+	local s = ctx:socket(zmq.REP)
+	s:bind("tcp://127.0.0.1:5556")
+	local file = io.open("history/"..args.execution.."/data,json","a")
+	while mg.running() do
+		local str="{"
+		assert(s:recv())
+		local a = p:tryRecv(0)
+		local i=0
+		while a~=nil and i<100 do
+			file:write(a,"\n")
+			str=str..a..","
+			i=i+1
+			if i<100 then
+				a=p:tryRecv(0)
+			end
+		end
+		if str~="{" then
+			str=string.sub(str,1,-2)
+		end
+		str=str.."}"
+		assert(s:send(str))
+	end
+	file:close()
+end
+--TODO From here
 
-function loadSlave(queue, rxDev, size, flows)
+function loadSlave(queue, rxDev, size, flows, p)
 	doArp()
 	local mempool = memory.createMemPool(function(buf)
 		fillUdpPacket(buf, size)
@@ -116,7 +140,7 @@ function loadSlave(queue, rxDev, size, flows)
 	rxCtr:finalize()
 end
 
-function timerSlave(txQueue, rxQueue, size, flows)
+function timerSlave(txQueue, rxQueue, size, flows,p)
 	doArp()
 	if size < 84 then
 		log:warn("Packet size %d is smaller than minimum timestamp size 84. Timestamped packets will be larger than load packets.", size)
