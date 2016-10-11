@@ -124,9 +124,12 @@ function MoonGenDefaultHandler:delete(execution)
 			local f = io.open("history/"..executionNumber.."/pid.log","r")
 			pid = tonumber(f:read("*number"))
 		end
+		
 		local cmd = "kill "..pid --TODO Error Deleting not working (Only delete nohup not MoonGen)
 		print(cmd)
 		local f = io.popen(cmd)
+		f:read("*all")
+		f = io.popen("pkill MoonGen")
 		f:read("*all")
 		pid = nil
 		executionNumber=nil
