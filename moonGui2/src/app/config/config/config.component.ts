@@ -8,7 +8,34 @@ import {Observable} from "rxjs";
   styleUrls: ['./config.component.css']
 })
 export class ConfigComponent implements OnInit {
-    private configurationObject:any={};
+    private configurationObject:any={name:"moongen-server.lua",
+        configuration:{
+            interfaces:[
+                {
+                    standard: 0,
+                    name: "TX Interface",
+                    conf: "tx"
+                },
+                {
+                    standard:1,
+                    name: "RX Interface",
+                    conf: "rx"
+                }
+            ],
+            input:[
+                {
+                    standard: 10,
+                    type: "range",
+                    name: "PacketNumber in 10^",
+                    unit: "10^",
+                    conf: "pktNr",
+                    max: 100,
+                    min: 1,
+                    step: 1
+                }
+            ]
+        }
+    };
     private interfaceList:any=[];
     private interfaceNode:any=[];
     private input:any=[];
