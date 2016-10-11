@@ -11,24 +11,16 @@ export class MoonConfigurationService {
     private configuration: any;
     private script:number=0;
     private scriptChange:Subject<number>=new Subject<number>();
-
-//TODO Create Configuration for all different executionScripts
     private interfaceNodes:any=[];
     private interfacesChange:Subject<any>=new Subject<any>();
-    private slider:[number];
-    private sliderChange:Subject<any>=new Subject<any>();
-
-  private title:string="";
-  private titleChange:Subject<string>=new Subject<string>();
-  private packetNumber:number = 10;
-    private packetNumberChange:Subject<number>=new Subject<number>();
-   private interfaceTx:number=0;
-    private interfaceTxChange:Subject<number>=new Subject<number>();
-    private interfaceRx:number=1;
-    private interfaceRxChange:Subject<number>=new Subject<number>();
+    private input:any[]=[];
+    private inputChange:Subject<any>=new Subject<any>();
+    private title:string="";
+    private titleChange:Subject<string>=new Subject<string>();
+    private wait:Subject<boolean>=new Subject<boolean>();
 
   constructor(public connectService:MoonConnectServiceService) {
-        this.configuration=[//TODO Erweitern und Dokumentieren
+        this.configuration=[//TODO Move to Server Version and add to server with scripts
             {name:"moongen-server.lua",
              configuration:{
                  interfaces:[
@@ -69,19 +61,32 @@ export class MoonConfigurationService {
                     input:[
                         {
                             standard: 50,
-                            type: "range",
+                            type: "number",
                             name: "PacketNumber in [10^]",
                             unit: "10^",
-                            conf: "pktNr",
                             max: 150,
                             min: 1,
-                            step: 2
+                            step: 2,
+                            conf: "packetNr"
+                        },
+                        {
+                            standard: "10.20.10.125",
+                            type:"text",
+                            name: "IP",
+                            unit: "x.x.x.x",
+                            conf:"ip"
                         }
                     ]
                 }
             }
         ];
+      //TODO Load from server
       this.setTitle(this.configuration[this.script].name);
+      this.wait.next(true);
+  }
+
+  public getWait():Subject<boolean>{
+      return this.wait;
   }
 
   public getConfiguration(id:number):any{
@@ -97,6 +102,7 @@ export class MoonConfigurationService {
       this.setTitle(this.getConfigurationList()[script].name);
       this.script=script;
       this.interfaceNodes=[];
+      this.input=[];
       this.scriptChange.next(script);
   }
   public getScriptChange():Subject<number>{
@@ -115,11 +121,8 @@ export class MoonConfigurationService {
     }
     //***********Standard Values
     public getInterface(id:number):number{
-        console.log(id);
         if(this.configuration[this.script].configuration.interfaces.length>id){
-            console.log(id);
             if(this.interfaceNodes[id]){
-                console.log(id);
                 return this.interfaceNodes[id];
             }else{
                this.interfaceNodes[id] = this.configuration[this.script].configuration.interfaces[id].standard;
@@ -134,18 +137,22 @@ export class MoonConfigurationService {
         this.interfaceNodes[id] = value;
         this.interfacesChange.next({id:id,value:value});
     }
-
-  //TODO To new Format
-
-    public getPacketNumber():number{
-        return this.packetNumber;
+    public getInput(id:number):any{
+        if(this.configuration[this.script].configuration.input.length>id){
+            if(this.input[id]){
+                return this.input[id];
+            }else{
+                this.input[id] = this.configuration[this.script].configuration.input[id].standard;
+                return this.input[id];
+            }
+        }
     }
-    public getPacketNumberSubscribe():Subject<number>{
-        return this.packetNumberChange;
+    public getInputChange():Subject<any>{
+        return this.inputChange;
     }
-    public setPacketNumber(PacketNumber:number):void{
-        this.packetNumber=PacketNumber;
-        this.packetNumberChange.next(PacketNumber);
+    public setInput(id:number,value:any):void{
+        this.input[id] = value;
+        this.inputChange.next({id:id,value:value});
     }
     public getInterfaceList():Observable<Response>{
         return this.connectService.get("/rest/interfaces/");
@@ -154,7 +161,6 @@ export class MoonConfigurationService {
     public getConfigurationObject():any{
         let result=<any>{};
         result.title=this.getTitle();
-        result.packetNr=this.getPacketNumber();
         result.script=this.configuration[this.getScript()].name;
         let conf=this.getConfiguration(this.getScript());
         if(conf.configuration){
@@ -165,6 +171,16 @@ export class MoonConfigurationService {
                         result['interfaces'][conf.configuration.interfaces[i].conf]=this.interfaceNodes[i];
                     }else{
                         result['interfaces'][conf.configuration.interfaces[i].conf]=conf.configuration.interfaces[i].standard;
+                    }
+                }
+            }
+            if(conf.configuration.input){
+                result.input={};
+                for(let i:number = 0;i<conf.configuration.input.length;i++){
+                    if(this.input[i]){
+                        result['interfaces'][conf.configuration.input[i].conf]=this.input[i];
+                    }else{
+                        result['interfaces'][conf.configuration.input[i].conf]=conf.configuration.input[i].standard;
                     }
                 }
             }

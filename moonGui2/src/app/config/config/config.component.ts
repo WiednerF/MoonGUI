@@ -8,18 +8,17 @@ import {Observable} from "rxjs";
   styleUrls: ['./config.component.css']
 })
 export class ConfigComponent implements OnInit {
-  private configurationObject:any;
+    private configurationObject:any;
     private interfaceList:any=[];
     private interfaceNode:any=[];
-    private numberOfPackets:number;
-    //TODO Add Interface to Config View
-
+    private input:any=[];
 
   constructor(public configuration:MoonConfigurationService) {
-      this.numberOfPackets=configuration.getPacketNumber();
-      let configurationObject=this.configuration.getConfiguration(this.configuration.getScript());
-      this.initScript(configurationObject);
-      this.configurationObject=configurationObject;
+      this.configuration.getWait().subscribe(value=>{if(value){
+          let configurationObject=this.configuration.getConfiguration(this.configuration.getScript());
+          this.initScript(configurationObject);
+          this.configurationObject=configurationObject;
+      }});
   }
 
   private initScript(configurationObject){
@@ -30,31 +29,40 @@ export class ConfigComponent implements OnInit {
                   this.interfaceNode.push(this.configuration.getInterface(i));
               }
           }
+          if(configurationObject.configuration.input){
+              this.input=[];
+              for(let i:number=0;i<configurationObject.configuration.input.length;i++){
+                  this.input.push(this.configuration.getInput(i));
+              }
+          }
       }
   }
 
   ngOnInit() {
       this.getInterfaceList();
-      this.configuration.getPacketNumberSubscribe().subscribe((value)=>{this.numberOfPackets=value});
       this.configuration.getScriptChange().subscribe(()=>{let configurationObject=this.configuration.getConfiguration(this.configuration.getScript());this.initScript(configurationObject);this.configurationObject=configurationObject});
       this.configuration.getInterfaceChange().subscribe(value=>{this.interfaceNode[value.id]=value.value});
-  }
+      this.configuration.getInputChange().subscribe(value=>{this.input[value.id]=value.value});
 
-    /**
-     * Change the Number of Packets of the Component
-     */
-    public changeNumberOfPackets($event){
-        this.configuration.setPacketNumber($event.target.value);
-    }
+  }
 
     /**
      * Changes the Interface configuration
      * @param $event
      * @param id
      */
-    public changeInterface($event,id){
+    public changeInterface($event,id){//TODO Use ngModelChange
         this.configuration.setInterface(id,$event);
         this.interfaceNode[id]=$event;
+    }
+    /**
+     * Changes the Input configuration
+     * @param $event
+     * @param id
+     */
+    public changeInput($event,id){
+        this.configuration.setInput(id,$event);
+        this.input[id]=$event;
     }
 
     private getInterfaceList(){

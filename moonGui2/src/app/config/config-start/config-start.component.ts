@@ -15,9 +15,13 @@ export class ConfigStartComponent implements OnInit {
   private configurationList:any;
 
   constructor(public configurationService:MoonConfigurationService, public moonGenService:MoonGenService) {
-      this.configurationList=this.configurationService.getConfigurationList();
-      this.script=this.configurationService.getScript();
-      this.title=this.configurationService.getTitle();
+      this.configurationService.getWait().subscribe((value)=>{
+         if(value){
+             this.configurationList=this.configurationService.getConfigurationList();
+             this.script=this.configurationService.getScript();
+             this.title=this.configurationService.getTitle();
+         }
+      });
   }
 
   ngOnInit() {

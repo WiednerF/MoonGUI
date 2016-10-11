@@ -15,6 +15,17 @@ mediaType:
     responses:
       200:
         description: Indicates that the Connection to the Resources is correct set
+  /system/:
+    description: For System Relevant Tasks
+    get:
+      protocols:
+        - HTTP
+      description: Get all System Relevant Information
+      responses:
+        200:
+          body:
+            application/json:
+              default: {arch:string,cores:number,hostname:string,lua:{status:boolean,version:string},os:string,user:string}
 /moongen/:
   description: |
     The Entry Point for the MoonGen Live handling to create or get the execution
@@ -67,3 +78,10 @@ mediaType:
           seek:
             type: number
             description: The position in the file for reading
+    get:
+      description: Returns the current data
+      responses:
+        200:
+          description: All Data correct
+        404:
+          description: No Execution working

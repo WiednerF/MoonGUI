@@ -1,24 +1,46 @@
 <div class="tab-wrapper form-horizontal" *ngIf="configurationObject.configuration">
-  <div class="interfaces" *ngIf="configurationObject.configuration.interfaces.length!=0">
-  <!--INTERFACES TODO HEadline-->
-  <div class="form-group row" *ngFor="let interfaceItem of configurationObject.configuration.interfaces;let i=index">
-    <label class="control-label col-sm-4">{{interfaceItem.name}}</label>
-    <div class="col-sm-8">
-      <select class="form-control" [ngModel]="getProp('interfaceNode',i)" (ngModelChange)="changeInterface($event,i)">
-        <option *ngFor="let interface of interfaceList" [ngValue]="interface.index">{{interface.show}}</option>
-      </select>
+    <div class="interfaces" *ngIf="configurationObject.configuration.interfaces.length!=0">
+        <!--INTERFACES-->
+        <div class="form-group row"
+             *ngFor="let interfaceItem of configurationObject.configuration.interfaces;let i=index">
+            <label class="control-label col-sm-4">{{interfaceItem.name}}</label>
+            <div class="col-sm-8">
+                <select class="form-control" [ngModel]="getProp('interfaceNode',i)"
+                        (ngModelChange)="changeInterface($event,i)">
+                    <option *ngFor="let interface of interfaceList" [ngValue]="interface.index">{{interface.show}}
+                    </option>
+                </select>
+            </div>
+        </div>
     </div>
-  </div>
-  </div>
-  <!--END Interfaces-->
-
-  <div class="form-group row">
-    <label class="control-label col-sm-4" for="numberOfPackets-moongui">Number of Packets (10^):</label>
-    <div class="col-sm-7">
-      <input [(ngModel)]="numberOfPackets" (input)="changeNumberOfPackets($event)" (change)="changeNumberOfPackets($event)" class="form-control" type="range" min="1" max="100" step="1" name="numberOfPackets-moongui" id="numberOfPackets-moongui">
+    <!--END Interfaces-->
+    <div class="input" *ngIf="configurationObject.configuration.input.length!=0">
+        <div class="form-group row" *ngFor="let inputItem of configurationObject.configuration.input;let i=index">
+            <label class="control-label col-sm-4">{{ inputItem.name }}</label>
+            <div class="col-sm-8">
+                <!--TYPE: range-->
+                <div class="input-group" *ngIf="inputItem.type=='range'">
+                    <span class="input-group-addon">{{ inputItem.unit }}</span>
+                    <input [ngModel]="getProp('input',i)" (ngModelChange)="changeInput($event,i)" class="form-control range"
+                           type="range" [min]="inputItem.min" [max]="inputItem.max"
+                           [step]="inputItem.step" title="{{ inputItem.name }}">
+                    <span class="input-group-addon">{{ input[i] }}</span>
+                </div>
+                <!--TYPE: number-->
+                <div class="input-group" *ngIf="inputItem.type=='number'">
+                    <span class="input-group-addon">{{ inputItem.unit }}</span>
+                    <input [ngModel]="getProp('input',i)" (ngModelChange)="changeInput($event,i)" class="form-control"
+                           type="number" [min]="inputItem.min" [max]="inputItem.max"
+                           [step]="inputItem.step" title="{{ inputItem.name }}">
+                </div>
+                <!--TYPE: text-->
+                <div class="input-group" *ngIf="inputItem.type=='text'">
+                    <span class="input-group-addon">{{ inputItem.unit }}</span>
+                    <input [ngModel]="getProp('input',i)" (ngModelChange)="changeInput($event,i)" class="form-control"
+                           type="text" title="{{ inputItem.name }}">
+                </div>
+                <!--TODO More Types-->
+            </div>
+        </div>
     </div>
-    <div class="col-sm-1">
-      {{ numberOfPackets }}
-  </div>
-  </div>
 </div>
