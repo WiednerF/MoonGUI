@@ -100,7 +100,7 @@ function MoonGenStartHandler:post()
 	historyFile:write(executionNumber..";"..configurationObject.title.."\n")
 	historyFile:close()
 	--Executing Standard MoonGen Script
-	cmd = "nohup moongen/moongen.sh "..executionNumber.." > history/"..executionNumber.."/run.log & echo $! > history/"..executionNumber.."/pid.log"
+	cmd = "nohup moongen/moongen.sh "..configurationObject.script.." "..executionNumber.." > history/"..executionNumber.."/run.log & echo $! > history/"..executionNumber.."/pid.log"
 	print(cmd)
 	os.execute(cmd)
 	print("Execution number:"..executionNumber)
@@ -226,6 +226,7 @@ local app = turbo.web.Application:new({
 	--Get System Information
 	{"^/rest/system/$",SystemHandler},
 	{"^/rest/interfaces/$",InterfaceHandler},
+	{"^/config/$",turbo.web.staticFileHandler, "config/configuration.json"},
 	-- Serve contents of directory.
 	{"^/(.*)$", turbo.web.StaticFileHandler, "moonGui2/dist/"}
 })	
