@@ -124,9 +124,9 @@ export class MoonConfigurationService {
                 result.input={};
                 for(let i:number = 0;i<conf.configuration.input.length;i++){
                     if(this.input[i]){
-                        result['interfaces'][conf.configuration.input[i].conf]=this.input[i];
+                        result['input'][conf.configuration.input[i].conf]=this.input[i];
                     }else{
-                        result['interfaces'][conf.configuration.input[i].conf]=conf.configuration.input[i].standard;
+                        result['input'][conf.configuration.input[i].conf]=conf.configuration.input[i].standard;
                     }
                 }
             }
