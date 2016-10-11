@@ -1,4 +1,20 @@
 [{"name":"moongen-server.lua",
+			"graph":[
+				{
+					"type":"histogram",
+					"x":"result",
+					"size":2,
+					"title":"Distribution of Latency",
+					"id":"hist"
+				},
+				{
+					"type":"line",
+					"x":"rxts",
+					"y":"result",
+					"id":"line",
+					"max":"1000",
+				}
+			],
              "configuration":{
                  "interfaces":[
                      {
