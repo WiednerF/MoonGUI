@@ -1,0 +1,20 @@
+Each Script has:
+-name
+-configuration:
+  -interfaces:
+    -standard, name and conf(Conf is the parameter name)
+  -input:
+      -type: text,range or number
+      -conf
+      -unit
+      -name
+      -standard
+      -max,min, step (Only number and range)
+-graph:
+    -type: histogram or line
+    -titel
+    -x (Value name)
+    -y (Value name, only line)
+    -size (Histogram size)
+    -id (Must be unique)
+    -max (Maximal datapoints)

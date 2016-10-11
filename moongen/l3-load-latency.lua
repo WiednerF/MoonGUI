@@ -9,7 +9,12 @@ local timer  = require "timer"
 local arp    = require "proto.arp"
 local log    = require "log"
 
--- set addresses here
+--****ADDED FOR MoonGui
+local json = require "dkjson"
+local pipe = require "pipe"
+local zmq = require"lzmq"
+
+-- set addresses here (TODO Maybe add to configuration)
 local DST_MAC		= nil -- resolved via ARP on GW_IP or DST_IP, can be overriden with a string here
 local SRC_IP_BASE	= "10.0.0.10" -- actual address will be SRC_IP_BASE + random(0, flows)
 local DST_IP		= "10.1.0.10"
@@ -26,22 +31,29 @@ local ARP_IP	= SRC_IP_BASE
 
 function configure(parser)
 	parser:description("Generates UDP traffic and measure latencies. Edit the source to modify constants like IPs.")
-	parser:argument("txDev", "Device to transmit from."):convert(tonumber)
-	parser:argument("rxDev", "Device to receive from."):convert(tonumber)
+    parser:argument("execution","The number of the current execution"):convert(tonumber)
+    --TODO From here
 	parser:option("-r --rate", "Transmit rate in Mbit/s."):default(10000):convert(tonumber)
 	parser:option("-f --flows", "Number of flows (randomized source IP)."):default(4):convert(tonumber)
 	parser:option("-s --size", "Packet size."):default(60):convert(tonumber)
 end
 
 function master(args)
-	txDev = device.config{port = args.txDev, rxQueues = 3, txQueues = 3}
-	rxDev = device.config{port = args.rxDev, rxQueues = 3, txQueues = 3}
+    --****ADDED FOR MoonGui
+    local configFile = assert(io.open("history/"..args.execution.."/config.json"))
+    local configString = configFile:read("*all")
+    local config,pos,error = json.decode(configString,1,nil)
+
+	txDev = device.config{port = config.interfaces.tx, rxQueues = 3, txQueues = 3}
+	rxDev = device.config{port = config.interfaces.rx, rxQueues = 3, txQueues = 3}
 	device.waitForLinks()
 	-- max 1kpps timestamping traffic timestamping
 	-- rate will be somewhat off for high-latency links at low rates
+    --TODO From here
 	if args.rate > 0 then
 		txDev:getTxQueue(0):setRate(args.rate - (args.size + 4) * 8 / 1000)
 	end
+
 	mg.startTask("loadSlave", txDev:getTxQueue(0), rxDev, args.size, args.flows)
 	mg.startTask("timerSlave", txDev:getTxQueue(1), rxDev:getRxQueue(1), args.size, args.flows)
 	arp.startArpTask{
