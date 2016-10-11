@@ -1,8 +1,9 @@
-[{"name":"moongen-server.lua",
+[
+	{"name":"moongen-server.lua",
 			"graph":[
 				{
 					"type":"histogram",
-					"x":"result",
+					"x":"results",
 					"size":2,
 					"title":"Distribution of Latency",
 					"id":"hist"
@@ -10,9 +11,9 @@
 				{
 					"type":"line",
 					"x":"rxts",
-					"y":"result",
+					"y":"results",
 					"id":"line",
-					"max":"1000",
+					"max":"1000"
 				}
 			],
              "configuration":{
@@ -42,7 +43,7 @@
                  ]
              }
             },
-            {"name":"timestamp.lua",
+           {"name":"timestamp.lua",
                 "configuration":{
                     "interfaces":[
                         {
@@ -70,6 +71,7 @@
                             "conf":"ip"
                         }
                     ]
-                }
+                },
+		"graph":[]
             }
         ]
