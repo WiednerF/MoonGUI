@@ -18,6 +18,9 @@ export class ConfigComponent implements OnInit {
           let configurationObject=this.configuration.getConfiguration(this.configuration.getScript());
           this.initScript(configurationObject);
           this.configurationObject=configurationObject;
+          this.configuration.getScriptChange().subscribe(()=>{let configurationObject=this.configuration.getConfiguration(this.configuration.getScript());this.initScript(configurationObject);this.configurationObject=configurationObject});
+          this.configuration.getInterfaceChange().subscribe(value=>{this.interfaceNode[value.id]=value.value});
+          this.configuration.getInputChange().subscribe(value=>{this.input[value.id]=value.value});
       }});
   }
 
@@ -40,9 +43,6 @@ export class ConfigComponent implements OnInit {
 
   ngOnInit() {
       this.getInterfaceList();
-      this.configuration.getScriptChange().subscribe(()=>{let configurationObject=this.configuration.getConfiguration(this.configuration.getScript());this.initScript(configurationObject);this.configurationObject=configurationObject});
-      this.configuration.getInterfaceChange().subscribe(value=>{this.interfaceNode[value.id]=value.value});
-      this.configuration.getInputChange().subscribe(value=>{this.input[value.id]=value.value});
 
   }
 
