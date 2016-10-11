@@ -20,67 +20,13 @@ export class MoonConfigurationService {
     private wait:Subject<boolean>=new Subject<boolean>();
 
   constructor(public connectService:MoonConnectServiceService) {
-        this.configuration=[//TODO Move to Server Version and add to server with scripts
-            {name:"moongen-server.lua",
-             configuration:{
-                 interfaces:[
-                     {
-                         standard: 0,
-                         name: "TX Interface",
-                         conf: "tx"
-                     },
-                     {
-                         standard:1,
-                         name: "RX Interface",
-                         conf: "rx"
-                     }
-                 ],
-                 input:[
-                     {
-                         standard: 10,
-                         type: "range",
-                         name: "PacketNumber in 10^",
-                         unit: "10^",
-                         conf: "pktNr",
-                         max: 100,
-                         min: 1,
-                         step: 1
-                     }
-                 ]
-             }
-            },
-            {name:"timestamp.lua",
-                configuration:{
-                    interfaces:[
-                        {
-                            standard:1,
-                            name: "RX Interface",
-                            conf: "rx"
-                        }
-                    ],
-                    input:[
-                        {
-                            standard: 50,
-                            type: "number",
-                            name: "PacketNumber in [10^]",
-                            unit: "10^",
-                            max: 150,
-                            min: 1,
-                            step: 2,
-                            conf: "packetNr"
-                        },
-                        {
-                            standard: "10.20.10.125",
-                            type:"text",
-                            name: "IP",
-                            unit: "x.x.x.x",
-                            conf:"ip"
-                        }
-                    ]
-                }
-            }
-        ];
-      //TODO Load from server
+      this.getConfiguration();
+  }
+  public getConfiguration(){
+      this.connectService.get("/config/").map((result)=>result.json()).subscribe((result)=>this.writeConfiguration(result),(error)=>this.getConfiguration());
+    }
+  public writeConfiguration(config:any){
+      this.configuration=config;
       this.setTitle(this.configuration[this.script].name);
       this.wait.next(true);
   }
