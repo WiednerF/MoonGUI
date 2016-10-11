@@ -226,7 +226,7 @@ local app = turbo.web.Application:new({
 	--Get System Information
 	{"^/rest/system/$",SystemHandler},
 	{"^/rest/interfaces/$",InterfaceHandler},
-	{"^/config/$",turbo.web.staticFileHandler, "config/configuration.json"},
+	{"^/config/$",turbo.web.StaticFileHandler, "config/configuration.json"},
 	-- Serve contents of directory.
 	{"^/(.*)$", turbo.web.StaticFileHandler, "moonGui2/dist/"}
 })	
