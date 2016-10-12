@@ -135,6 +135,7 @@ function loadSlave(queue, rxDev, size, flows,p)
         queue:send(bufs)
         txCtr:update()
         rxCtr:update()
+	p:send("{timer="..os.time()..",rate="..rxCtr:getThroughput().."}")
     end
     txCtr:finalize()
     rxCtr:finalize()
@@ -165,6 +166,5 @@ function timerSlave(txQueue, rxQueue, size, flows,p)
     -- print the latency stats after all the other stuff
     mg.sleepMillis(300)
     hist:print()
-    hist:save("histogram.csv")
 end
 

@@ -77,7 +77,7 @@ function txTimestamper(queue,config)
 	end)
 	mg.sleepMillis(1000) -- ensure that the load task is running
 	local bufs = mem:bufArray(1)
-	local rateLimit = timer:new(0.0001) -- 1000kpps timestamped packets
+	local rateLimit = timer:new(0.1) -- 1000kpps timestamped packets
 	local i = 0
 	while i < NUM_PKTS and mg.running() do
 		bufs:alloc(PKT_SIZE)
