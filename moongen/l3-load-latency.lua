@@ -113,60 +113,58 @@ function zmqServer(p,args)
 end
 --TODO From here
 
-function loadSlave(queue, rxDev, size, flows, p)
-	doArp()
-	local mempool = memory.createMemPool(function(buf)
-		fillUdpPacket(buf, size)
-	end)
-	local bufs = mempool:bufArray()
-	local counter = 0
-	local txCtr = stats:newDevTxCounter(queue, "plain")
-	local rxCtr = stats:newDevRxCounter(rxDev, "plain")
-	local baseIP = parseIPAddress(SRC_IP_BASE)
-	while mg.running() do
-		bufs:alloc(size)
-		for i, buf in ipairs(bufs) do
-			local pkt = buf:getUdpPacket()
-			pkt.ip4.src:set(baseIP + counter)
-			counter = incAndWrap(counter, flows)
-		end
-		-- UDP checksums are optional, so using just IPv4 checksums would be sufficient here
-		bufs:offloadUdpChecksums()
-		queue:send(bufs)
-		txCtr:update()
-		rxCtr:update()
-        	--p:send("{timer="..os.time()..",rate="..rxCtr:getThroughput().."}");
-	end
-	txCtr:finalize()
-	rxCtr:finalize()
+function loadSlave(queue, rxDev, size, flows,p)
+    doArp()
+    local mempool = memory.createMemPool(function(buf)
+        fillUdpPacket(buf, size)
+    end)
+    local bufs = mempool:bufArray()
+    local counter = 0
+    local txCtr = stats:newDevTxCounter(queue, "plain")
+    local rxCtr = stats:newDevRxCounter(rxDev, "plain")
+    local baseIP = parseIPAddress(SRC_IP_BASE)
+    while mg.running() do
+        bufs:alloc(size)
+        for i, buf in ipairs(bufs) do
+            local pkt = buf:getUdpPacket()
+            pkt.ip4.src:set(baseIP + counter)
+            counter = incAndWrap(counter, flows)
+        end
+        -- UDP checksums are optional, so using just IPv4 checksums would be sufficient here
+        bufs:offloadUdpChecksums()
+        queue:send(bufs)
+        txCtr:update()
+        rxCtr:update()
+    end
+    txCtr:finalize()
+    rxCtr:finalize()
 end
 
 function timerSlave(txQueue, rxQueue, size, flows,p)
-	doArp()
-	if size < 84 then
-		log:warn("Packet size %d is smaller than minimum timestamp size 84. Timestamped packets will be larger than load packets.", size)
-		size = 84
-	end
-	local timestamper = ts:newUdpTimestamper(txQueue, rxQueue)
-	local hist = hist:new()
-	mg.sleepMillis(1000) -- ensure that the load task is running
-	local counter = 0
-	local rateLimit = timer:new(0.001)
-	local baseIP = parseIPAddress(SRC_IP_BASE)
-	while mg.running() do
-           hist:update(timestamper:measureLatency(size, function(buf)
-            		fillUdpPacket(buf, size)
-            		local pkt = buf:getUdpPacket()
-            		pkt.ip4.src:set(baseIP + counter)
-            		counter = incAndWrap(counter, flows)
-        	end))
-        --p:send("{timer="..os.time()..",latency="..load.."}");
-		rateLimit:wait()
-		rateLimit:reset()
-	end
-	-- print the latency stats after all the other stuff
-	mg.sleepMillis(300)
-	hist:print()
-	hist:save("histogram.csv")
+    doArp()
+    if size < 84 then
+        log:warn("Packet size %d is smaller than minimum timestamp size 84. Timestamped packets will be larger than load packets.", size)
+        size = 84
+    end
+    local timestamper = ts:newUdpTimestamper(txQueue, rxQueue)
+    local hist = hist:new()
+    mg.sleepMillis(1000) -- ensure that the load task is running
+    local counter = 0
+    local rateLimit = timer:new(0.001)
+    local baseIP = parseIPAddress(SRC_IP_BASE)
+    while mg.running() do
+        hist:update(timestamper:measureLatency(size, function(buf)
+            fillUdpPacket(buf, size)
+            local pkt = buf:getUdpPacket()
+            pkt.ip4.src:set(baseIP + counter)
+            counter = incAndWrap(counter, flows)
+        end))
+        rateLimit:wait()
+        rateLimit:reset()
+    end
+    -- print the latency stats after all the other stuff
+    mg.sleepMillis(300)
+    hist:print()
+    hist:save("histogram.csv")
 end
 
