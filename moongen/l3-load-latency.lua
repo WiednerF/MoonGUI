@@ -47,12 +47,12 @@ function master(args)
 	-- max 1kpps timestamping traffic timestamping
 	-- rate will be somewhat off for high-latency links at low rates
 	if tonumber(config.input.rate) > 0 then
-		txDev:getTxQueue(0):setRate(config.input.rate - (config.input.size + 4) * 8 / 1000)
+		txDev:getTxQueue(0):setRate(tonumber(config.input.rate) - (tonumber(config.input.size) + 4) * 8 / 1000)
 	end
 
 	mg.startTask("zmqServer",p,args)
-	mg.startTask("loadSlave", txDev:getTxQueue(0), rxDev, config.input.size, config.input.flows,p)
-	mg.startTask("timerSlave", txDev:getTxQueue(1), rxDev:getRxQueue(1), config.input.size, config.input.flows,p)
+	mg.startTask("loadSlave", txDev:getTxQueue(0), rxDev, tonumber(config.input.size), tonumber(config.input.frame),p)
+	mg.startTask("timerSlave", txDev:getTxQueue(1), rxDev:getRxQueue(1), tonumber(config.input.size), tonumber(config.input.frame),p)
 	arp.startArpTask{
 		-- run ARP on both ports
 		{ rxQueue = rxDev:getRxQueue(2), txQueue = rxDev:getTxQueue(2), ips = RX_IP },
