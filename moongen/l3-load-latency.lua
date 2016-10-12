@@ -135,6 +135,7 @@ function loadSlave(queue, rxDev, size, flows, p)
 		queue:send(bufs)
 		txCtr:update()
 		rxCtr:update()
+        p:send("{timer="..os.time()..",rate="..rxCtr:getThroughput().."}");
 	end
 	txCtr:finalize()
 	rxCtr:finalize()
@@ -153,12 +154,15 @@ function timerSlave(txQueue, rxQueue, size, flows,p)
 	local rateLimit = timer:new(0.001)
 	local baseIP = parseIPAddress(SRC_IP_BASE)
 	while mg.running() do
-		hist:update(timestamper:measureLatency(size, function(buf)
-			fillUdpPacket(buf, size)
-			local pkt = buf:getUdpPacket()
-			pkt.ip4.src:set(baseIP + counter)
-			counter = incAndWrap(counter, flows)
-		end))
+        local load = timestamper:measureLatency(size, function(buf)
+            fillUdpPacket(buf, size)
+            local pkt = buf:getUdpPacket()
+            pkt.ip4.src:set(baseIP + counter)
+            counter = incAndWrap(counter, flows)
+        end)
+        p:send("{timer="..os.time()..",latency="..load.."}");
+        print(load);
+		hist:update(load)
 		rateLimit:wait()
 		rateLimit:reset()
 	end

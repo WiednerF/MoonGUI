@@ -36,7 +36,7 @@ mediaType:
         description: Returns the Number of the Running System
         body:
           application/json:
-            type: {execution: number}
+            type: {execution:number}
       404:
         description: The System is not longer running or was not started
   post:
@@ -46,7 +46,7 @@ mediaType:
         description: Returns the Number of the Running System
         body:
           application/json:
-            type: {execution: number}
+            type: {execution:number}
   /{execution}/:
     delete:
       description: Stops the running System
