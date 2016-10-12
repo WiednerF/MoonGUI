@@ -38,7 +38,7 @@ function master(args)
     --****ADDED FOR MoonGui
     local configFile = assert(io.open("history/"..args.execution.."/config.json"))
     local configString = configFile:read("*all")
-    local config,pos,error = json.decode(configString,1,nil)
+    local config = json.decode(configString,1,nil)
     local p = pipe:newSlowPipe()
 
 	txDev = device.config{port = config.interfaces.tx, rxQueues = 3, txQueues = 3}
@@ -103,7 +103,7 @@ function zmqServer(p,args)
 				a=p:tryRecv(0)
 			end
 		end
-		if str~="{" then
+		if str ~= "{" then
 			str=string.sub(str,1,-2)
 		end
 		str=str.."}"
