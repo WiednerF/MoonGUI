@@ -69,10 +69,10 @@ function readData()
 		s:connect("tcp://127.0.0.1:5556")
 	end
 	s:send("GetData")
-        local data, err = s:recv()
+        local data, err = s:recv(zmq.NOBLOCK)
        	if err then
 		print(err)
-		return err
+		return {}
 	end
 	local result = loadstring("return "..data)	
 	return result()
@@ -159,9 +159,11 @@ function MoonGenDefaultHandler:head(execution)
 		self:set_status(404)
 	end
 end
+
+
 function MoonGenDefaultHandler:get(execution)
 	if tonumber(execution)==executionNumber then
-		local data = readData()
+		data = readData()
 		self:write({seek=seek,data=data})
 	else
 		self:set_status(404)
