@@ -66445,16 +66445,20 @@ var MainComponent = (function () {
                     for (var x = 0; x < _this.configurationObject.graph.length; x++) {
                         if (_this.configurationObject.graph[x].type == "histogram") {
                             for (var i = 0; i < result.length; i++) {
-                                _this.pointData[x].push(result[i][_this.configurationObject.graph[x].x]);
+                                if (result[i][_this.configurationObject.graph[x].x]) {
+                                    _this.pointData[x].push(result[i][_this.configurationObject.graph[x].x]);
+                                }
                             }
                         }
                         else if (_this.configurationObject.graph[x].type == "line") {
                             for (var i = 0; i < result.length; i++) {
-                                _this.pointData[x].x.push(result[i][_this.configurationObject.graph[x].x]);
-                                _this.pointData[x].y.push(result[i][_this.configurationObject.graph[x].y]);
-                                if (_this.pointData[x].x.length > _this.configurationObject.graph[x].max) {
-                                    _this.pointData[x].x.splice(0, 1);
-                                    _this.pointData[x].y.splice(0, 1);
+                                if (result[i][_this.configurationObject.graph[x].y]) {
+                                    _this.pointData[x].x.push(result[i][_this.configurationObject.graph[x].x]);
+                                    _this.pointData[x].y.push(result[i][_this.configurationObject.graph[x].y]);
+                                    if (_this.pointData[x].x.length > _this.configurationObject.graph[x].max) {
+                                        _this.pointData[x].x.splice(0, 1);
+                                        _this.pointData[x].y.splice(0, 1);
+                                    }
                                 }
                             }
                         }
