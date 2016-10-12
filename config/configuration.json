@@ -82,11 +82,11 @@
               }
             ,
               {
-                "standard": 4,
+                "standard": 60,
                 "type": "number",
                 "name": "Packet Size",
                 "unit": "B",
-                "conf": "frame",
+                "conf": "size",
                 "max": 100000,
                 "min": 10,
                 "step": 1
