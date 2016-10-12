@@ -46,7 +46,7 @@ function master(args)
 	device.waitForLinks()
 	-- max 1kpps timestamping traffic timestamping
 	-- rate will be somewhat off for high-latency links at low rates
-	if config.input.rate > 0 then
+	if tonumber(config.input.rate) > 0 then
 		txDev:getTxQueue(0):setRate(config.input.rate - (config.input.size + 4) * 8 / 1000)
 	end
 
@@ -135,7 +135,7 @@ function loadSlave(queue, rxDev, size, flows, p)
 		queue:send(bufs)
 		txCtr:update()
 		rxCtr:update()
-        p:send("{timer="..os.time()..",rate="..rxCtr:getThroughput().."}");
+        	--p:send("{timer="..os.time()..",rate="..rxCtr:getThroughput().."}");
 	end
 	txCtr:finalize()
 	rxCtr:finalize()
@@ -154,15 +154,13 @@ function timerSlave(txQueue, rxQueue, size, flows,p)
 	local rateLimit = timer:new(0.001)
 	local baseIP = parseIPAddress(SRC_IP_BASE)
 	while mg.running() do
-        local load = timestamper:measureLatency(size, function(buf)
-            fillUdpPacket(buf, size)
-            local pkt = buf:getUdpPacket()
-            pkt.ip4.src:set(baseIP + counter)
-            counter = incAndWrap(counter, flows)
-        end)
-        p:send("{timer="..os.time()..",latency="..load.."}");
-        print(load);
-		hist:update(load)
+           hist:update(timestamper:measureLatency(size, function(buf)
+            		fillUdpPacket(buf, size)
+            		local pkt = buf:getUdpPacket()
+            		pkt.ip4.src:set(baseIP + counter)
+            		counter = incAndWrap(counter, flows)
+        	end))
+        --p:send("{timer="..os.time()..",latency="..load.."}");
 		rateLimit:wait()
 		rateLimit:reset()
 	end
