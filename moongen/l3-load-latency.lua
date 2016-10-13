@@ -10,9 +10,8 @@ local arp    = require "proto.arp"
 local log    = require "log"
 
 --****ADDED FOR MoonGui
-local json = require "dkjson"
 local pipe = require "pipe"
-local zmq = require"lzmq"
+local moongui = require "moongui"
 
 -- set addresses here (TODO Maybe add to configuration)
 local DST_MAC		= nil -- resolved via ARP on GW_IP or DST_IP, can be overriden with a string here
@@ -36,9 +35,7 @@ end
 
 function master(args)
     --****ADDED FOR MoonGui
-    local configFile = assert(io.open("history/"..args.execution.."/config.json"))
-    local configString = configFile:read("*all")
-    local config = json.decode(configString,1,nil)
+    local config = moongui.getConfig(args.execution)
     local p = pipe:newSlowPipe()
 
 	txDev = device.config{port = config.interfaces.tx, rxQueues = 3, txQueues = 3}
@@ -50,7 +47,7 @@ function master(args)
 		txDev:getTxQueue(0):setRate(tonumber(config.input.rate) - (tonumber(config.input.size) + 4) * 8 / 1000)
 	end
 
-	mg.startTask("zmqServer",p,args)
+	mg.startTask("server",p,args)
 	mg.startTask("loadSlave", txDev:getTxQueue(0), rxDev, tonumber(config.input.size), tonumber(config.input.frame),p)
 	mg.startTask("timerSlave", txDev:getTxQueue(1), rxDev:getRxQueue(1), tonumber(config.input.size), tonumber(config.input.frame),p)
 	arp.startArpTask{
@@ -86,30 +83,7 @@ local function doArp()
 	log:info("Destination mac: %s", DST_MAC)
 end
 function zmqServer(p,args)
-	local ctx = zmq.context()
-	local s = ctx:socket(zmq.REP)
-	s:bind("tcp://127.0.0.1:5556")
-	local file = io.open("history/"..args.execution.."/data,json","a")
-	while mg.running() do
-		local str="{"
-		assert(s:recv())
-		local a = p:tryRecv(0)
-		local i=0
-		while a~=nil and i<100 do
-			file:write(a,"\n")
-			str=str..a..","
-			i=i+1
-			if i<100 then
-				a=p:tryRecv(0)
-			end
-		end
-		if str ~= "{" then
-			str=string.sub(str,1,-2)
-		end
-		str=str.."}"
-		assert(s:send(str))
-	end
-	file:close()
+	moongui.zmqServer(p.args.execution,mg)
 end
 --TODO From here
 
