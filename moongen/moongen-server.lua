@@ -1,15 +1,9 @@
-local io = require "io"
 local mg = require "moongen"
 local timer = require "timer"
-local ts = require "timestamping"
-local hist = require "histogram"
 local memory = require "memory"
-local stats = require "stats"
-local log = require "log"
 local device = require "device"
-local json = require "dkjson"
 local pipe = require "pipe"
-local zmq = require"lzmq"
+local moongui = require "moongui"
 
 
 local PKT_SIZE = 60
@@ -23,10 +17,7 @@ end
 
 
 function master(args)
-	--TODO Add the other scripts to the working one
-	local configFile = assert(io.open("history/"..args.execution.."/config.json"))
-	local configString = configFile:read("*all")
-	local config,pos,error = json.decode(configString,1,nil)
+	local config = moongui.getConfig(args.execution)
 	local txDev = device.config{port = config.interfaces.rx,dropEnable = false}
 	local rxDev = device.config{port = config.interfaces.tx, dropEnable = false}
 	local p = pipe.newSlowPipe()
@@ -34,41 +25,18 @@ function master(args)
 		NUM_PKTS=10^config.input.packetNr;
 	end
 	device.waitForLinks()
-	mg.startTask("txTimestamper", txDev:getTxQueue(0),config)
-	mg.startTask("rxTimestamper", rxDev:getRxQueue(0),config,p)
-	mg.startTask("zmqServer",p,args)
+	mg.startTask("txTimestamper", txDev:getTxQueue(0))
+	mg.startTask("rxTimestamper", rxDev:getRxQueue(0),p)
+	mg.startTask("server",p,args)
 	mg.waitForTasks()
 end
 
-function zmqServer(p,args)
-	local ctx = zmq.context()
-        local s = ctx:socket(zmq.REP)
-        s:bind("tcp://127.0.0.1:5556")
-	local file = io.open("history/"..args.execution.."/data.json","a")
-	while mg.running() do
-		local str = "{"
-		assert(s:recv())
-		local a = p:tryRecv(0)
-		local i=0	
-		while a~=nil and i<100 do
-			file:write(a,"\n")
-			str=str..a..","
-			i=i+1
-			if i<100 then
-				a=p:tryRecv(0)
-			end
-		end
-		if str~="{" then
-			str=string.sub(str,1,-2)	
-		end
-		str=str.."}"
-	 	assert(s:send(str))
-	end
-	file:close()	
+function server(p,args)
+    moongui.zmqServer(p,args.execution,mg)
 end
 
 --TODO Load
-function txTimestamper(queue,config)
+function txTimestamper(queue)
 	local mem = memory.createMemPool(function(buf)
 		-- just to use the default filter here
 		-- you can use whatever packet type you want
@@ -90,7 +58,7 @@ function txTimestamper(queue,config)
 	mg.stop()
 end
 
-function rxTimestamper(queue,config,p)
+function rxTimestamper(queue,p)
 	local tscFreq = mg.getCyclesFrequency()
 	local bufs = memory.bufArray(64)
 	-- use whatever filter appropriate for your packet type
