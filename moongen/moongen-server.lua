@@ -3,6 +3,7 @@ local timer = require "timer"
 local memory = require "memory"
 local device = require "device"
 local pipe = require "pipe"
+local turbo = require "turbo"
 local moongui = require "moongui"
 
 
@@ -35,7 +36,6 @@ function server(p,args)
     moongui.zmqServer(p,args.execution,mg)
 end
 
---TODO Load
 function txTimestamper(queue)
 	local mem = memory.createMemPool(function(buf)
 		-- just to use the default filter here
@@ -72,7 +72,7 @@ function rxTimestamper(queue,p)
 			local txTs = bufs[i]:getSoftwareTxTimestamp()
 			results[#results + 1] = tonumber(rxTs - txTs) / tscFreq -- to nanoseconds
 			rxts[#rxts + 1] = tonumber(rxTs)
-			p:send("{results="..results[#results]..",rxts="..rxts[#rxts].."}")
+			p:send({results=results[#results],rxts=rxts[#rxts]})
 		end
 		bufs:free(numPkts)
 	end

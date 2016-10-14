@@ -1,8 +1,8 @@
+local http = require "socket.http"
 local turbo = require "turbo"
 local io =    require "io"
 local jit = require "jit"
 local json = require "dkjson"
-local zmq = require"lzmq"
 
 if #arg < 1 then
 	print('Usage: port for webserver')
@@ -58,24 +58,12 @@ function readLog(file,seekInput)
 	return output,seek
 end
 
-local ctx = nil
-local s = nil
-
-
 function readData()
-	if ctx==nil then
-		ctx = zmq.context()
-		s = ctx:socket(zmq.REQ)
-		s:connect("tcp://127.0.0.1:5556")
+	local response,status,content= http.request('http://localhost:4999/data/')
+	if status==200 then
+		return json.decode(response,1,nil)
 	end
-	s:send("GetData")
-        local data, err = s:recv(zmq.NOBLOCK)
-       	if err then
-		print(err)
-		return {}
-	end
-	local result = loadstring("return "..data)	
-	return result()
+	return {}
 end
 
 local ConnectHandler = class("ConnectHandler", turbo.web.RequestHandler)
@@ -133,10 +121,6 @@ function MoonGenDefaultHandler:delete(execution)
 		f:read("*all")
 		pid = nil
 		executionNumber=nil
-		s:close()
-		ctx:term()
-		s=nil
-		ctx=nil
 	else
 		self:set_status(404)
 	end
