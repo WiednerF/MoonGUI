@@ -194,10 +194,6 @@ export class MainComponent implements OnInit {
                                     if(result[i][this.configurationObject.graph[x].y]) {
                                         this.pointData[x].x.push(result[i][this.configurationObject.graph[x].x]);
                                         this.pointData[x].y.push(result[i][this.configurationObject.graph[x].y]);
-                                        if (this.pointData[x].x.length > this.configurationObject.graph[x].max) {
-                                            this.pointData[x].x.splice(0, 1);
-                                            this.pointData[x].y.splice(0, 1);
-                                        }
                                     }
                                 }
                             }
