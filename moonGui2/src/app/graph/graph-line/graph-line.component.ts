@@ -14,8 +14,9 @@ export class GraphLineComponent implements OnChanges,AfterViewInit {
   @Input() public points:any;
   @Input() public title:string;
   @Input() public id:string;
+  @Input() public max:number;
   private configuration:any={showLink: false,displaylogo: false};
-  private layout:any= {title: this.title,bargap: 0.05,bargrourgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value"}};
+  private layout:any= {title: this.title,bargap: 0.05,bargrourgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value",autorange:true,type:"date"}};
   private data:any=[];
 
     constructor(public element:ElementRef) {

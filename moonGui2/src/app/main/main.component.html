@@ -17,7 +17,7 @@
                                          [id]="graphItem.id"></app-graph-histogram>
                 </div>
                 <div *ngIf="graphItem.type=='line'">
-                    <app-graph-line [title]="graphItem.title" [points]="pointData[i]"
+                    <app-graph-line [title]="graphItem.title" [max]="graphItem.max" [points]="pointData[i]"
                                     [id]="graphItem.id"></app-graph-line>
                 </div>
             </div>
