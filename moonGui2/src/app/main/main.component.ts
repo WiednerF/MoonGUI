@@ -172,7 +172,7 @@ export class MainComponent implements OnInit {
     }
 
     /**
-     * Get the Data from extern
+     * Get the Data from external
      */
     private getData() {
         let data = this.moonGenService.getData();
