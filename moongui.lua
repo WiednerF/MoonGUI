@@ -31,8 +31,14 @@ function moongui.zmqServer(p,execution, mg)
     turbo.web.Application({
 		{"^/data/$",MoonGenDataHandler}
 	}):listen(4999)
-
-    turbo.ioloop.instance():start()
+	local ioloop = turbo.ioloop.instance()
+	ioloop:set_interval(300, function()
+			if not mg.running() then
+				ioloop:close()
+			end
+		end
+	)
+    ioloop:start()
 end
 
 return moongui

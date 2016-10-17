@@ -16,7 +16,7 @@ export class GraphLineComponent implements OnChanges,AfterViewInit {
   @Input() public id:string;
   @Input() public max:number;
   private configuration:any={showLink: false,displaylogo: false};
-  private layout:any= {title: this.title,bargap: 0.05,bargrourgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value", autorange: true ,type:"date"}};
+  private layout:any= {title: this.title,bargap: 0.05,bargrourgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value", autorange: false,range:[0,1000000]}};
   private data:any=[];
 
     constructor(public element:ElementRef) {
@@ -38,6 +38,15 @@ export class GraphLineComponent implements OnChanges,AfterViewInit {
                     update1.x.push(changes.points.currentValue.x);
                     update1.y.push(changes.points.currentValue.y);
                 Plotly.restyle(graphDiv,update1);
+		if(changes.points.currentValue.x.length>this.max){
+			var update3 = {xaxis:{range:[changes.points.currentValue.x[changes.points.currentValue.x.length-(this.max)],changes.points.currentValue.x[changes.points.currentValue.x.length-1]]}};
+			console.log(update3)
+			Plotly.relayout(graphDiv,update3)
+		}else{
+			var update2 = {xaxis:{range:[changes.points.currentValue.x[0],changes.points.currentValue.x[changes.points.currentValue.x.length-1]]}};
+			console.log(update2);
+			Plotly.relayout(graphDiv,update2);
+		}
             }
 
             if (changes.title) {

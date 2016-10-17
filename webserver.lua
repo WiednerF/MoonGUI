@@ -57,7 +57,7 @@ function readLog(file,seekInput)
 	
 	return output,seek
 end
-
+--Read the data
 function readData()
 	local response,status,content= http.request('http://localhost:4999/data/')
 	if status==200 then
@@ -113,9 +113,11 @@ function MoonGenDefaultHandler:delete(execution)
 			pid = tonumber(f:read("*number"))
 		end
 		
-		local cmd = "kill "..pid --TODO Error Deleting not working (Only delete nohup not MoonGen)
+		local cmd = "kill "..pid 
 		print(cmd)
 		local f = io.popen(cmd)
+		f:read("*all")
+		f = io.popen("pkill MoonGen")
 		f:read("*all")
 		f = io.popen("pkill MoonGen")
 		f:read("*all")

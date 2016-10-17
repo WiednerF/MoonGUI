@@ -4,7 +4,7 @@
 				{
 					"type":"histogram",
 					"x":"results",
-					"size":2,
+					"size": 0.01,
 					"title":"Distribution of Latency",
 					"id":"hist"
 				},
