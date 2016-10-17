@@ -41,6 +41,9 @@ export class GraphLineComponent implements OnChanges,AfterViewInit {
                 if(update1.x.length>this.max){
                     var update2 = {xaxis:{range:[update1.y[update1.y.length-(this.max+1)],update1.y[update1.y.length-1]]}};
                     Plotly.relayout(graphDiv,update2);
+                }else{
+                    var update2 = {xaxis:{range:[update1.y[0],update1.y[update1.y.length-1]]}};
+                    Plotly.relayout(graphDiv,update2);
                 }
             }
 
