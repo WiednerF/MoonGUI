@@ -39,10 +39,10 @@ export class GraphLineComponent implements OnChanges,AfterViewInit {
                     update1.y.push(changes.points.currentValue.y);
                 Plotly.restyle(graphDiv,update1);
                 if(changes.points.currentValue.x>this.max){//TODO Not working
-                    var update2 = {xaxis:{range:[changes.points.currentValue.y[changes.points.currentValue.y-(this.max+1)],changes.points.currentValue.y[changes.points.currentValue.y-1]]}};
+                    var update2 = {xaxis:{range:[changes.points.currentValue.x[changes.points.currentValue.x-(this.max+1)],changes.points.currentValue.x[changes.points.currentValue.x-1]]}};
                     Plotly.relayout(graphDiv,update2);
                 }else{
-                    var update2 = {xaxis:{range:[changes.points.currentValue.y[0],changes.points.currentValue.y[changes.points.currentValue.y.length-1]]}};
+                    var update2 = {xaxis:{range:[changes.points.currentValue.x[0],changes.points.currentValue.x[changes.points.currentValue.x.length-1]]}};
                     Plotly.relayout(graphDiv,update2);
                 }
             }
