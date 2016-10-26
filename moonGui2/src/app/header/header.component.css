@@ -9,9 +9,14 @@
     border-bottom-color: #8c8c8c;
     border-bottom-style: inset;
     text-align: center;
-    background-position: 30%;
-    background-image: url("assets/images/moongenlogo.png");
-    background-repeat: no-repeat;
-    -webkit-background-size:50px;
-    background-size:50px;
+}
+
+@media (min-width: 600px) {
+    :host {
+        background-position: 20px;
+        background-image: url("assets/images/moongenlogo.png");
+        background-repeat: no-repeat;
+        -webkit-background-size: 50px;
+        background-size: 50px;
+    }
 }

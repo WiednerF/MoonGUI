@@ -34,7 +34,7 @@ export class MoonConnectServiceService {
             this.response = false;
             this.http.head("/rest/").subscribe(()=> {
                 if (!connect) {
-                    this.addAlert("info", "Connection Established")
+                    this.addAlert("success", "Connection Established")
                 }
                 this.response = true;
                 this.resultConnect(true,connect)
