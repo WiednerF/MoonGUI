@@ -99,9 +99,12 @@ export class ConfigComponent implements OnInit {
         });
     }
     private getInterfaceListHTTP(){
-        this.configuration.getInterfaceList().map((response)=>response.json()).subscribe((response)=>{
-            this.interfaceList=response;
-        },(error)=>console.log("Error: "+error));
+        var interfaceListHTTP=this.configuration.getInterfaceList();
+        if(interfaceListHTTP!=null) {
+            this.configuration.getInterfaceList().map((response)=>response.json()).subscribe((response)=> {
+                this.interfaceList = response;
+            }, (error)=>console.log("Error: " + error));
+        }
     }
 
     private getProp(name:string,id:number){

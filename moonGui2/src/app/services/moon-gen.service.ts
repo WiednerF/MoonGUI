@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {MoonConnectServiceService} from "./moon-connect-service.service";
 import {Observable, Subject} from "rxjs";
 import {MoonConfigurationService} from "./moon-configuration.service";
+import {start} from "repl";
 /**
  * This is the MoonGen Class for the Complete API Behind the point /rest/moongen
  */
@@ -43,14 +44,23 @@ export class MoonGenService {
           if(this.response) {
               if (this.shouldRun) {
                   this.response=false;
-                  this.moonConnectService.head("/rest/moongen/" + this.executionNumber + "/").subscribe((response)=>{this.response=true;this.resultRunning(true, running)}, (error)=> {
-                      if (running) {
-                          this.moonConnectService.addAlert("danger", "MoonGen stopped")
-                      }
+                  var runTestHTTP=this.moonConnectService.head("/rest/moongen/" + this.executionNumber + "/");
+                  if(runTestHTTP!=null) {
+                      this.moonConnectService.head("/rest/moongen/" + this.executionNumber + "/").subscribe((response)=> {
+                          this.response = true;
+                          this.resultRunning(true, running)
+                      }, (error)=> {
+                          if (running) {
+                              this.moonConnectService.addAlert("danger", "MoonGen stopped")
+                          }
+                          this.response = true;
+                          this.resultRunning(false, running);
+                      });
+                      this.running=true;
+                  }else{
+                      this.running=false;
                       this.response=true;
-                      this.resultRunning(false, running);
-                  });
-                  this.running = true;
+                  }
               } else {
                   this.resultRunning(false, this.running);
               }
@@ -73,8 +83,21 @@ export class MoonGenService {
      */
   public startMoonGen(responseFunction:any,object:any):void{
       if(this.shouldRun) return null;
-      this.moonConnectService.post("/rest/moongen/",this.configurationService.getConfigurationObject()).subscribe((response)=>{this.shouldRun=true;this.executionNumber=response.json().execution;responseFunction(response,false,object);},error=>{this.shouldRun=false;this.moonConnectService.addAlert("danger","MoonGen Start not working:"+error);responseFunction(error,true,object);});
-  }
+        var startHTTP= this.moonConnectService.post("/rest/moongen/", this.configurationService.getConfigurationObject());
+        if(startHTTP!=null) {
+          startHTTP .subscribe((response)=> {
+                this.shouldRun = true;
+                this.executionNumber = response.json().execution;
+                responseFunction(response, false, object);
+            }, error=> {
+                this.shouldRun = false;
+                this.moonConnectService.addAlert("danger", "MoonGen Start not working:" + error);
+                responseFunction(error, true, object);
+            });
+        }else{
+            return null;
+        }
+        }
 
     /**
      * Stopping MoonGen
@@ -83,9 +106,22 @@ export class MoonGenService {
      * @returns {null}
      */
   public stopMoonGen(responseFunction:any,object:any):void{
-      if(!this.shouldRun) return null;
-      this.moonConnectService.del("/rest/moongen/"+this.executionNumber+"/").subscribe(()=>{this.shouldRun=false;this.executionNumber=null;responseFunction(null,false,object);},(error)=>{this.shouldRun=true;this.moonConnectService.addAlert("danger","MoonGen Stop not working:"+error);responseFunction(null,true,object)});
-  }
+      if(!this.shouldRun) return null
+        var stopHTTP=this.moonConnectService.del("/rest/moongen/"+this.executionNumber+"/");
+        if(stopHTTP!=null) {
+            stopHTTP.subscribe(()=> {
+                this.shouldRun = false;
+                this.executionNumber = null;
+                responseFunction(null, false, object);
+            }, (error)=> {
+                this.shouldRun = true;
+                this.moonConnectService.addAlert("danger", "MoonGen Stop not working:" + error);
+                responseFunction(null, true, object)
+            });
+        }else{
+            return null;
+        }
+        }
 
     /**
      * Get if the thing is running

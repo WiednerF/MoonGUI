@@ -1,5 +1,5 @@
 import {Component, OnInit,ViewChild} from '@angular/core';
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {MoonConnectServiceService} from "./services/moon-connect-service.service";
 import {Response} from "@angular/http";
 import {MoonGenService} from "./services/moon-gen.service";
@@ -20,7 +20,7 @@ export class AppComponent implements OnInit{
      * Shows the Status for the StatusBar to be able to  change it from Everywhere
      * @type {{connect: any; status: string; progressBar: {show: boolean; value: number; max: number}}}
      */
-    public status: {connect: Observable<Response>, status: string, progressBar: {show: boolean, value: number, max: number}} = {
+    public status: {connect: Subject<boolean>, status: string, progressBar: {show: boolean, value: number, max: number}} = {
         connect: null,
         status: "",
         progressBar: {show: false, value: 50, max: 100}
@@ -39,17 +39,5 @@ export class AppComponent implements OnInit{
      */
     ngOnInit(){
         this.moonConnectService.setMainAlert(this.mainAlert);
-        this.connectTest();
-    }
-
-    /**
-     * Try the Connection Service
-     */
-    connectTest(){
-        this.status.connect=this.moonConnectService.getConnection();
-        var obs = Observable.interval(10000);
-        obs.subscribe(()=>{
-            this.status.connect=this.moonConnectService.getConnection();
-        });
     }
 }

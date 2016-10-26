@@ -1,5 +1,5 @@
 import { Component, OnInit , Input, OnChanges } from '@angular/core';
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {Response} from "@angular/http";
 import {MoonGenService} from "../services/moon-gen.service";
 import {MoonConnectServiceService} from "../services/moon-connect-service.service";
@@ -17,7 +17,7 @@ export class StatusBarComponent implements OnInit,OnChanges {
      * The Connection Responsible for Checking
      * @type {any}
      */
-    @Input() public connect: Observable<Response> = null;
+    @Input() public connect: Subject<boolean> = null;
     private running: boolean = false;//To show running of the Code
     @Input() public status: string = "";//To Show a status string
     @Input() public progressBar: {show : boolean, max: number, value: number};//To show the progressbar with options
@@ -38,10 +38,7 @@ export class StatusBarComponent implements OnInit,OnChanges {
 
   ngOnChanges(changes){
       if(changes.connect){
-          changes.connect.currentValue.subscribe(
-              () => {if(!this.connectStatus){this.connectService.addAlert("success","Connection Established") }this.connectStatus=true;},
-              (response) =>{ if(this.connectStatus){this.connectService.addAlert("danger",response)} this.connectStatus=false}
-          );
+          changes.connect.currentValue.subscribe((value) => this.connectStatus=value);
       }
   }
 

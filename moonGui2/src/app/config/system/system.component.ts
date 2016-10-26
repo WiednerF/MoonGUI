@@ -15,8 +15,15 @@ export class SystemComponent {
       Observable.timer(2000).take(1).subscribe(()=>this.getInformation(moonConnect));
   }
   getInformation(moonConnect:MoonConnectServiceService){
-      moonConnect.get("/rest/system/").map(result => result.json()).subscribe(result=>this.sys=result,()=>{moonConnect.addAlert("info","Error Fetching System Information");Observable.timer(20000).take(1).subscribe(()=>this.getInformation(moonConnect));});
-
+      var moonConnectGet=  moonConnect.get("/rest/system/");
+      if(moonConnectGet!=null) {
+          moonConnectGet.map(result => result.json()).subscribe(result=>this.sys = result, ()=> {
+              moonConnect.addAlert("info", "Error Fetching System Information");
+              Observable.timer(20000).take(1).subscribe(()=>this.getInformation(moonConnect));
+          });
+      }else{
+          Observable.timer(2000).take(1).subscribe(()=>this.getInformation(moonConnect));
+      }
   }
 
 }

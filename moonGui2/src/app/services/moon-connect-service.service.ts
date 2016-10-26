@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from "@angular/http";
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {MainAlertComponent} from "../main-alert/main-alert.component";
 /**
  * This Service is the basic Connection Service to the Backend
@@ -9,8 +9,51 @@ import {MainAlertComponent} from "../main-alert/main-alert.component";
 export class MoonConnectServiceService {
 
     private mainAlert:MainAlertComponent;//The AlertModule for Access
+    private connect:boolean=true;//The Variable for the connection
+    private connectChange:Subject<boolean>=new Subject<boolean>();
+    private response:boolean=true;
 
-  constructor(private http:Http) { }
+  constructor(private http:Http) {
+      this.testConnect();
+  }
+
+    /**
+     * Test if the System run if it should run
+     */
+    private testConnect(){
+        this.testConnectFunction();
+        var obs=Observable.interval(5000);
+        obs.subscribe(()=>{
+           this.testConnectFunction();
+        });
+    }
+
+    private testConnectFunction(){
+        var connect=this.connect;
+        if(this.response) {
+            this.response = false;
+            this.http.head("/rest/").subscribe(()=> {
+                if (!connect) {
+                    this.addAlert("info", "Connection Established")
+                }
+                this.response = true;
+                this.resultConnect(true,connect)
+            }, ()=> {
+                if (connect) {
+                    this.addAlert("danger", "Connection Lost")
+                }
+                this.response = true;
+                this.resultConnect(false,connect);
+            });
+        }
+    }
+
+    private resultConnect(result:boolean,previous:boolean){
+        this.connect=result;
+        if (result != previous) {
+            this.connectChange.next(this.connect);
+        }
+    }
 
     /**
      * Set the Variable mainAlert to the Wanted value
@@ -18,7 +61,6 @@ export class MoonConnectServiceService {
      */
   public setMainAlert(mainAlertVariable:MainAlertComponent){
       this.mainAlert=mainAlertVariable;
-        console.log(this);
   }
 
     /**
@@ -27,24 +69,35 @@ export class MoonConnectServiceService {
      * @param message The String Message
      */
   public addAlert(type:string,message:string){
-      this.mainAlert.addAlert(type,message);
-  }
+        if(this.mainAlert) {
+            this.mainAlert.addAlert(type, message);
+        }
+    }
+
+
 
     /**
      * Get the Connection HEad Message
      * @returns {Observable<Response>}
      */
-  public getConnection():Observable<Response>{
-    return  this.head('rest/');
+  public getConnection():Subject<boolean>{
+    return  this.connectChange;
   }
 
+  public getConnectionStart():boolean{
+    return this.connect;
+}
     /**
      * The Get request
      * @param url
      * @returns {Observable<Response>}
      */
   public get(url:string):Observable<Response>{
-      return this.http.get(url);
+        if(this.connect){
+            return this.http.get(url);
+        }else{
+            return null;
+        }
   }
 
     /**
@@ -53,7 +106,11 @@ export class MoonConnectServiceService {
      * @returns {Observable<Response>}
      */
     public head(url:string):Observable<Response>{
-        return this.http.head(url);
+        if(this.connect){
+            return this.http.head(url);
+        }else{
+            return null;
+        }
     }
     /**
      * The Post request
@@ -62,7 +119,11 @@ export class MoonConnectServiceService {
      * @returns {Observable<Response>}
      */
     public post(url:string,body:any):Observable<Response>{
-        return this.http.post(url,body);
+        if(this.connect){
+            return this.http.post(url,body);
+        }else{
+            return null;
+        }
     }
 
     /**
@@ -72,7 +133,11 @@ export class MoonConnectServiceService {
      * @returns {Observable<Response>}
      */
     public put(url:string,body:any):Observable<Response>{
-        return this.http.put(url,body);
+        if(this.connect){
+            return this.http.put(url,body);
+        }else{
+            return null;
+        }
     }
 
     /**
@@ -82,7 +147,11 @@ export class MoonConnectServiceService {
      */
 
     public del(url:string):Observable<Response>{
-        return this.http.delete(url);
+        if(this.connect){
+            return this.http.delete(url);
+        }else{
+            return null;
+        }
     }
 
 }
