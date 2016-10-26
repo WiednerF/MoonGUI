@@ -20,8 +20,7 @@ export class AppComponent implements OnInit{
      * Shows the Status for the StatusBar to be able to  change it from Everywhere
      * @type {{connect: any; status: string; progressBar: {show: boolean; value: number; max: number}}}
      */
-    public status: {connect: Subject<boolean>, status: string, progressBar: {show: boolean, value: number, max: number}} = {
-        connect: null,
+    public status: {status: string, progressBar: {show: boolean, value: number, max: number}} = {
         status: "",
         progressBar: {show: false, value: 50, max: 100}
     };
@@ -31,7 +30,6 @@ export class AppComponent implements OnInit{
      * @param moonConnectService
      */
     constructor(public moonConnectService:MoonConnectServiceService) {
-        this.status.connect=this.moonConnectService.getConnection();
     }
 
     /**

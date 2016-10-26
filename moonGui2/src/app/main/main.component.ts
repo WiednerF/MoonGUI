@@ -16,8 +16,6 @@ declare var $:any;
  * The Class for the Inner MainPart of MoonGUI
  */
 export class MainComponent implements OnInit {
-    @Input() public status:{running: boolean, status: string, progressBar : {show: boolean, value: number, max: number}};
-    @Output() public statusChange:EventEmitter<{}> = new EventEmitter();//The Statusbar
     private toggle : {output: {status: boolean}, config:{status: boolean}, log: {status: boolean}, graph:{status: boolean}}={output:{status:true},config:{status:true}, log: {status:true}, graph: {status:true}};
     /**
      * For using to be able to resize the container
@@ -26,14 +24,11 @@ export class MainComponent implements OnInit {
     private stretch: {horizontal:{size:number,position:number,element:any,bar:any},vertical:{size:number,position:number,element:any,bar:any}}={horizontal:{size:-1,position:-1,element:null,bar:null},vertical:{size:-1,position:-1,element:null,bar:null}};
     private responseData: boolean = true;
     private executionNumber:number = null;
-
     /**
      * Graph Configuration
      */
     private configurationObject:any={graph:[]};
     private pointData:any=[];
-    private points: any=[0,1,2,45,7,4,1];
-    private pointsLine: any={x:[0],y:[0]};
 
 
     /**

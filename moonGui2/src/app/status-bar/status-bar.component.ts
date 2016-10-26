@@ -1,6 +1,4 @@
-import { Component, OnInit , Input, OnChanges } from '@angular/core';
-import {Observable, Subject} from "rxjs";
-import {Response} from "@angular/http";
+import { Component, OnInit , Input} from '@angular/core';
 import {MoonGenService} from "../services/moon-gen.service";
 import {MoonConnectServiceService} from "../services/moon-connect-service.service";
 
@@ -12,12 +10,11 @@ import {MoonConnectServiceService} from "../services/moon-connect-service.servic
 /**
  * The Class is for Displaying the Status bar in the footer
  */
-export class StatusBarComponent implements OnInit,OnChanges {
+export class StatusBarComponent implements OnInit {
     /**
      * The Connection Responsible for Checking
      * @type {any}
      */
-    @Input() public connect: Subject<boolean> = null;
     private running: boolean = false;//To show running of the Code
     @Input() public status: string = "";//To Show a status string
     @Input() public progressBar: {show : boolean, max: number, value: number};//To show the progressbar with options
@@ -33,13 +30,10 @@ export class StatusBarComponent implements OnInit,OnChanges {
   }
 
   ngOnInit() {//Check the Sunning Syste,
-        this.moonGenService.getRunningSubscribe().subscribe((value)=>this.running=value);
-  }
 
-  ngOnChanges(changes){
-      if(changes.connect){
-          changes.connect.currentValue.subscribe((value) => this.connectStatus=value);
-      }
+        this.moonGenService.getRunningSubscribe().subscribe((value)=>this.running=value);
+        this.connectService.getConnection().subscribe((value)=>this.connectStatus=value);
+      this.connectStatus=this.connectService.getConnectionStart();
   }
 
 }
