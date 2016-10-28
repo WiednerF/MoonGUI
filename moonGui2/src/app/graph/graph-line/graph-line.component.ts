@@ -26,7 +26,7 @@ export class GraphLineComponent implements OnChanges,AfterViewInit {
     ngAfterViewInit() {
         this.element.nativeElement.children[0].setAttribute("id", this.id);
         for(let i:number=0;i<this.points.length;i++){
-            this.data.push({x: this.points[i].x, y: this.points[i].y, title:this.points[i].title, mode: 'lines',});
+            this.data.push({x: this.points[i].x, y: this.points[i].y, name:this.points[i].title, mode: 'lines',});
         }
         this.layout.title=this.title;
         Plotly.newPlot(this.id, this.data,this.layout,this.configuration);
@@ -34,7 +34,6 @@ export class GraphLineComponent implements OnChanges,AfterViewInit {
 
     }
     ngOnChanges(changes){
-        console.log(changes);
         if(this.data!=[]&& this.data.length!=0) {
             var graphDiv=document.getElementById(this.id);
             if (changes.points) {
