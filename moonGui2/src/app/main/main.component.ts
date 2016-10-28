@@ -56,7 +56,7 @@ export class MainComponent implements OnInit {
             for(let i:number=0;i<configurationObject.graph.length;i++){
                 if(configurationObject.graph[i].type=="histogram"){
                     this.pointData[i]=[];
-                    for(let x:number=configurationObject.graph[i].travers.length;x>0;x--){
+                    for(let x:number=0;x<configurationObject.graph[i].travers.length;x++){
                         this.pointData[i].push([]);
                     }
                 }else if(configurationObject.graph[i].type=="line"){
@@ -216,16 +216,16 @@ export class MainComponent implements OnInit {
 
     initData(){
         if(this.configurationObject.graph){
-            for(let i:number=0;i<this.configurationObject.graph.length;i++){
-                if(this.configurationObject.graph[i].type=="histogram"){
+            for(let i:number=0;i<configurationObject.graph.length;i++){
+                if(configurationObject.graph[i].type=="histogram"){
                     this.pointData[i]=[];
-                    for(let x:number=this.configurationObject.graph[i].travers.length;x>0;x--){
+                    for(let x:number=0;x<configurationObject.graph[i].travers.length;x++){
                         this.pointData[i].push([]);
                     }
-                }else if(this.configurationObject.graph[i].type=="line"){
+                }else if(configurationObject.graph[i].type=="line"){
                     this.pointData[i]=[];
-                    for(let x:number=this.configurationObject.graph[i].travers.length;x>0;x--){
-                        this.pointData[i].push({x:[],y:[],title:this.configurationObject.graph[i].travers[x].title});
+                    for(let x:number=0;x<configurationObject.graph[i].travers.length;x++){
+                        this.pointData[i].push({x:[],y:[],title:configurationObject.graph[i].travers[x].title});
                     }
                 }
             }
