@@ -195,7 +195,7 @@ export class MainComponent implements OnInit {
                             } else if (this.configurationObject.graph[x].type == "line") {
                                 for(let y:number=0;y<this.configurationObject.graph[x].travers.length;y++) {
                                     for (var i = 0; i < result.length; i++) {
-                                        if (result[i][this.configurationObject.graph[x].y]) {
+                                        if (result[i][this.configurationObject.graph[x].travers[y].y]) {
                                             this.pointData[x][y].x.push(result[i][this.configurationObject.graph[x].travers[y].x]);
                                             this.pointData[x][y].y.push(result[i][this.configurationObject.graph[x].travers[y].y]);
                                         }
