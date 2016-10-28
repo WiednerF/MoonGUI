@@ -26,10 +26,11 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
       this.element.nativeElement.children[0].setAttribute("id", this.id);
       for(let i:number=0;i<this.points.length;i++) {
           this.data.push({
-              x: this.points[i],
+              name: this.points[i].title,
+              x: this.points[i].x,
               type: 'histogram',
               autobinx: false,
-              xbins: {start: Math.min.apply(Math, this.points[i]), end: Math.max.apply(Math, this.points[i]), size: this.size}
+              xbins: {start: Math.min.apply(Math, this.points[i].x), end: Math.max.apply(Math, this.points[i].x), size: this.size}
           });
       }
       this.layout.title=this.title;
@@ -43,10 +44,10 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
           if (changes.points) {
               var update1:any = {x:[],xbins:[]};
               for(let i:number=0;i<changes.points.currentValue.length;i++) {
-                  update1.x.push(changes.points.currentValue[i]);
+                  update1.x.push(changes.points.currentValue[i].x);
                   update1.xbins.push({
-                      start: Math.min.apply(Math, changes.points.currentValue[i]),
-                      end: Math.max.apply(Math, changes.points.currentValue[i]),
+                      start: Math.min.apply(Math, changes.points.currentValue[i].x),
+                      end: Math.max.apply(Math, changes.points.currentValue[i].x),
                       size: this.size
                   });
               }
