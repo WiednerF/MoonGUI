@@ -34,6 +34,7 @@ export class GraphLineComponent implements OnChanges,AfterViewInit {
 
     }
     ngOnChanges(changes){
+        console.log(changes);
         if(this.data!=[]&& this.data.length!=0) {
             var graphDiv=document.getElementById(this.id);
             if (changes.points) {
