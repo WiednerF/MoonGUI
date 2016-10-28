@@ -3,17 +3,34 @@
 			"graph":[
 				{
 					"type":"histogram",
-					"x":"results",
+					"travers":[
+						{
+						 "x":"results"
+						},
+						{
+						  "x":"results"	
+						}
+					],
 					"size": 0.01,
 					"title":"Distribution of Latency",
 					"id":"hist"
 				},
 				{
 					"type":"line",
-					"x":"rxts",
-					"y":"results",
+					"travers":[
+						{
+							"x":"rxts",
+							"title":"test1",
+							"y":"results"
+						},
+						{
+						"x":"rxts",
+						"title":"test2",
+						"y":"results"
+						}
+					],
 					"id":"line",
-					"max":"1000",
+					"max":"400",
 					"title":"Live Latency"
 				}
 			],
@@ -96,23 +113,36 @@
           "graph":[
             {
               "type":"histogram",
-              "x":"latency",
+	      "travers":[
+		{
+              	"x":"latency"
+		}
+	      ],
               "size":2,
               "title":"Distribution of Latency",
               "id":"hist"
             },
             {
               "type":"line",
-              "x":"timer",
-              "y":"latency",
+              "travers":[
+			{
+			"x":"timer",
+			"title":"latency",
+              		"y":"latency"
+			}
+			],
               "id":"line",
               "max":"1000",
               "title":"Live Latency"
             },
             {
               "type":"line",
-              "x":"timer",
-              "y":"rate",
+		"travers":[
+			{
+              		"x":"timer",
+              		"y":"rate"
+			}
+		],
               "id":"lineRate",
               "max":"1000",
               "title":"Live Rate"
