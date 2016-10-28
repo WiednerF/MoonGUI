@@ -1,4 +1,5 @@
 import {Component, Input, OnChanges, AfterViewInit, ElementRef} from '@angular/core';
+import {forEach} from "@angular/router/src/utils/collection";
 
 declare var Plotly: any;
 declare var document: any;
@@ -24,7 +25,9 @@ export class GraphLineComponent implements OnChanges,AfterViewInit {
 
     ngAfterViewInit() {
         this.element.nativeElement.children[0].setAttribute("id", this.id);
-        this.data.push({ x: this.points.x,y: this.points.y, mode: 'lines', });
+        for(let i:number=0;i<this.points.length;i++){
+            this.data.push({x: this.points[i].x, y: this.points[i].y, title:this.points[i].title, mode: 'lines',});
+        }
         this.layout.title=this.title;
         Plotly.newPlot(this.id, this.data,this.layout,this.configuration);
 
@@ -35,8 +38,10 @@ export class GraphLineComponent implements OnChanges,AfterViewInit {
             var graphDiv=document.getElementById(this.id);
             if (changes.points) {
                 var update1:any = {x:[],y:[]};
-                    update1.x.push(changes.points.currentValue.x);
-                    update1.y.push(changes.points.currentValue.y);
+                for(let i:number=0;i<changes.points.currentValue.length;i++) {
+                    update1.x.push(changes.points.currentValue[i].x);
+                    update1.y.push(changes.points.currentValue[i].y);
+                }
                 Plotly.restyle(graphDiv,update1);
 		if(changes.points.currentValue.x.length>this.max){
 			var update3 = {xaxis:{range:[changes.points.currentValue.x[changes.points.currentValue.x.length-(this.max)],changes.points.currentValue.x[changes.points.currentValue.x.length-1]]}};

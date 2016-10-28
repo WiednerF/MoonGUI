@@ -55,9 +55,9 @@ export class MainComponent implements OnInit {
             this.pointData=[];
             for(let i:number=0;i<configurationObject.graph.length;i++){
                 if(configurationObject.graph[i].type=="histogram"){
-                    this.pointData[i]=[];
+                    this.pointData[i]=[[]];
                 }else if(configurationObject.graph[i].type=="line"){
-                    this.pointData[i]={x:[],y:[]};
+                    this.pointData[i]=[{x:[],y:[],title:""}];
                 }
             }
         }
@@ -181,14 +181,14 @@ export class MainComponent implements OnInit {
                             if (this.configurationObject.graph[x].type == "histogram") {
                                 for (var i = 0; i < result.length; i++) {
                                     if(result[i][this.configurationObject.graph[x].x]) {
-                                        this.pointData[x].push(result[i][this.configurationObject.graph[x].x]);
+                                        this.pointData[x][0].push(result[i][this.configurationObject.graph[x].x]);
                                     }
                                 }
                             } else if (this.configurationObject.graph[x].type == "line") {
                                 for (var i = 0; i < result.length; i++) {
                                     if(result[i][this.configurationObject.graph[x].y]) {
-                                        this.pointData[x].x.push(result[i][this.configurationObject.graph[x].x]);
-                                        this.pointData[x].y.push(result[i][this.configurationObject.graph[x].y]);
+                                        this.pointData[x][0].x.push(result[i][this.configurationObject.graph[x].x]);
+                                        this.pointData[x][0].y.push(result[i][this.configurationObject.graph[x].y]);
                                     }
                                 }
                             }
@@ -208,9 +208,9 @@ export class MainComponent implements OnInit {
         if(this.configurationObject.graph){
             for(let i:number=0;i<this.configurationObject.graph.length;i++){
                 if(this.configurationObject.graph[i].type=="histogram"){
-                    this.pointData[i]=[];
+                    this.pointData[i]=[[]];
                 }else if(this.configurationObject.graph[i].type=="line"){
-                    this.pointData[i]={x:[],y:[]};
+                    this.pointData[i]=[{x:[],y:[],title:""}];
                 }
             }
         }

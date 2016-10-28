@@ -24,7 +24,14 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
 
   ngAfterViewInit() {
       this.element.nativeElement.children[0].setAttribute("id", this.id);
-      this.data.push({ x: this.points, type: 'histogram', autobinx: false, xbins:{start:Math.min.apply(Math,this.points),end:Math.max.apply(Math,this.points),size:this.size}});
+      for(let i:number=0;i<this.points.length;i++) {
+          this.data.push({
+              x: this.points[i],
+              type: 'histogram',
+              autobinx: false,
+              xbins: {start: Math.min.apply(Math, this.points[i]), end: Math.max.apply(Math, this.points[i]), size: this.size}
+          });
+      }
       this.layout.title=this.title;
       Plotly.newPlot(this.id, this.data,this.layout,this.configuration);
 
@@ -35,8 +42,14 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
           var graphDiv=document.getElementById(this.id);
           if (changes.points) {
               var update1:any = {x:[],xbins:[]};
-              update1.x.push(changes.points.currentValue);
-              update1.xbins.push({start:Math.min.apply(Math,changes.points.currentValue),end:Math.max.apply(Math,changes.points.currentValue),size:this.size});
+              for(let i:number=0;i<changes.points.currentValue.length;i++) {
+                  update1.x.push(changes.points.currentValue[i]);
+                  update1.xbins.push({
+                      start: Math.min.apply(Math, changes.points.currentValue[i]),
+                      end: Math.max.apply(Math, changes.points.currentValue[i]),
+                      size: this.size
+                  });
+              }
               Plotly.restyle(graphDiv,update1);
           }
 
