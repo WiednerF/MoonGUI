@@ -3992,7 +3992,7 @@ var ComponentStillLoadingError = __WEBPACK_IMPORTED_MODULE_0__angular_core__["__
 
 var anObject       = __webpack_require__(8)
   , IE8_DOM_DEFINE = __webpack_require__(368)
-  , toPrimitive    = __webpack_require__(78)
+  , toPrimitive    = __webpack_require__(77)
   , dP             = Object.defineProperty;
 
 exports.f = __webpack_require__(28) ? Object.defineProperty : function defineProperty(O, P, Attributes){
@@ -7934,7 +7934,7 @@ module.exports = function(it){
 /***/ function(module, exports, __webpack_require__) {
 
 var dP         = __webpack_require__(21)
-  , createDesc = __webpack_require__(77);
+  , createDesc = __webpack_require__(76);
 module.exports = __webpack_require__(28) ? function(object, key, value){
   return dP.f(object, key, createDesc(1, value));
 } : function(object, key, value){
@@ -8135,8 +8135,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Observable_1 = __webpack_require__(0);
 var ScalarObservable_1 = __webpack_require__(263);
-var EmptyObservable_1 = __webpack_require__(71);
-var isScheduler_1 = __webpack_require__(72);
+var EmptyObservable_1 = __webpack_require__(70);
+var isScheduler_1 = __webpack_require__(71);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -9033,6 +9033,8 @@ var SetWrapper = (function () {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(336);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs__);
 /* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return MoonConnectServiceService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -9045,20 +9047,61 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
 /**
  * This Service is the basic Connection Service to the Backend
  */
 var MoonConnectServiceService = (function () {
     function MoonConnectServiceService(http) {
         this.http = http;
+        this.connect = true; //The Variable for the connection
+        this.connectChange = new __WEBPACK_IMPORTED_MODULE_2_rxjs__["Subject"]();
+        this.response = true;
+        this.testConnect();
     }
+    /**
+     * Test if the System run if it should run
+     */
+    MoonConnectServiceService.prototype.testConnect = function () {
+        var _this = this;
+        this.testConnectFunction();
+        var obs = __WEBPACK_IMPORTED_MODULE_2_rxjs__["Observable"].interval(5000);
+        obs.subscribe(function () {
+            _this.testConnectFunction();
+        });
+    };
+    MoonConnectServiceService.prototype.testConnectFunction = function () {
+        var _this = this;
+        var connect = this.connect;
+        if (this.response) {
+            this.response = false;
+            this.http.head("/rest/").subscribe(function () {
+                if (!connect) {
+                    _this.addAlert("success", "Connection Established");
+                }
+                _this.response = true;
+                _this.resultConnect(true, connect);
+            }, function () {
+                if (connect) {
+                    _this.addAlert("danger", "Connection Lost");
+                }
+                _this.response = true;
+                _this.resultConnect(false, connect);
+            });
+        }
+    };
+    MoonConnectServiceService.prototype.resultConnect = function (result, previous) {
+        this.connect = result;
+        if (result != previous) {
+            this.connectChange.next(this.connect);
+        }
+    };
     /**
      * Set the Variable mainAlert to the Wanted value
      * @param mainAlertVariable
      */
     MoonConnectServiceService.prototype.setMainAlert = function (mainAlertVariable) {
         this.mainAlert = mainAlertVariable;
-        console.log(this);
     };
     /**
      * Add a temporary Alert
@@ -9066,14 +9109,19 @@ var MoonConnectServiceService = (function () {
      * @param message The String Message
      */
     MoonConnectServiceService.prototype.addAlert = function (type, message) {
-        this.mainAlert.addAlert(type, message);
+        if (this.mainAlert) {
+            this.mainAlert.addAlert(type, message);
+        }
     };
     /**
      * Get the Connection HEad Message
      * @returns {Observable<Response>}
      */
     MoonConnectServiceService.prototype.getConnection = function () {
-        return this.head('rest/');
+        return this.connectChange;
+    };
+    MoonConnectServiceService.prototype.getConnectionStart = function () {
+        return this.connect;
     };
     /**
      * The Get request
@@ -9081,7 +9129,12 @@ var MoonConnectServiceService = (function () {
      * @returns {Observable<Response>}
      */
     MoonConnectServiceService.prototype.get = function (url) {
-        return this.http.get(url);
+        if (this.connect) {
+            return this.http.get(url);
+        }
+        else {
+            return null;
+        }
     };
     /**
      * The head request
@@ -9089,7 +9142,12 @@ var MoonConnectServiceService = (function () {
      * @returns {Observable<Response>}
      */
     MoonConnectServiceService.prototype.head = function (url) {
-        return this.http.head(url);
+        if (this.connect) {
+            return this.http.head(url);
+        }
+        else {
+            return null;
+        }
     };
     /**
      * The Post request
@@ -9098,7 +9156,12 @@ var MoonConnectServiceService = (function () {
      * @returns {Observable<Response>}
      */
     MoonConnectServiceService.prototype.post = function (url, body) {
-        return this.http.post(url, body);
+        if (this.connect) {
+            return this.http.post(url, body);
+        }
+        else {
+            return null;
+        }
     };
     /**
      * The put request
@@ -9107,7 +9170,12 @@ var MoonConnectServiceService = (function () {
      * @returns {Observable<Response>}
      */
     MoonConnectServiceService.prototype.put = function (url, body) {
-        return this.http.put(url, body);
+        if (this.connect) {
+            return this.http.put(url, body);
+        }
+        else {
+            return null;
+        }
     };
     /**
      * The delete request
@@ -9115,7 +9183,12 @@ var MoonConnectServiceService = (function () {
      * @returns {Observable<Response>}
      */
     MoonConnectServiceService.prototype.del = function (url) {
-        return this.http.delete(url);
+        if (this.connect) {
+            return this.http.delete(url);
+        }
+        else {
+            return null;
+        }
     };
     MoonConnectServiceService = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(), 
@@ -9189,9 +9262,9 @@ var meta = module.exports = {
 /***/ function(module, exports, __webpack_require__) {
 
 var pIE            = __webpack_require__(148)
-  , createDesc     = __webpack_require__(77)
+  , createDesc     = __webpack_require__(76)
   , toIObject      = __webpack_require__(43)
-  , toPrimitive    = __webpack_require__(78)
+  , toPrimitive    = __webpack_require__(77)
   , has            = __webpack_require__(36)
   , IE8_DOM_DEFINE = __webpack_require__(368)
   , gOPD           = Object.getOwnPropertyDescriptor;
@@ -9207,6 +9280,396 @@ exports.f = __webpack_require__(28) ? gOPD : function getOwnPropertyDescriptor(O
 
 /***/ },
 /* 70 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+"use strict";
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var Observable_1 = __webpack_require__(0);
+/**
+ * We need this JSDoc comment for affecting ESDoc.
+ * @extends {Ignored}
+ * @hide true
+ */
+var EmptyObservable = (function (_super) {
+    __extends(EmptyObservable, _super);
+    function EmptyObservable(scheduler) {
+        _super.call(this);
+        this.scheduler = scheduler;
+    }
+    /**
+     * Creates an Observable that emits no items to the Observer and immediately
+     * emits a complete notification.
+     *
+     * <span class="informal">Just emits 'complete', and nothing else.
+     * </span>
+     *
+     * <img src="./img/empty.png" width="100%">
+     *
+     * This static operator is useful for creating a simple Observable that only
+     * emits the complete notification. It can be used for composing with other
+     * Observables, such as in a {@link mergeMap}.
+     *
+     * @example <caption>Emit the number 7, then complete.</caption>
+     * var result = Rx.Observable.empty().startWith(7);
+     * result.subscribe(x => console.log(x));
+     *
+     * @example <caption>Map and flatten only odd numbers to the sequence 'a', 'b', 'c'</caption>
+     * var interval = Rx.Observable.interval(1000);
+     * var result = interval.mergeMap(x =>
+     *   x % 2 === 1 ? Rx.Observable.of('a', 'b', 'c') : Rx.Observable.empty()
+     * );
+     * result.subscribe(x => console.log(x));
+     *
+     * @see {@link create}
+     * @see {@link never}
+     * @see {@link of}
+     * @see {@link throw}
+     *
+     * @param {Scheduler} [scheduler] A {@link Scheduler} to use for scheduling
+     * the emission of the complete notification.
+     * @return {Observable} An "empty" Observable: emits only the complete
+     * notification.
+     * @static true
+     * @name empty
+     * @owner Observable
+     */
+    EmptyObservable.create = function (scheduler) {
+        return new EmptyObservable(scheduler);
+    };
+    EmptyObservable.dispatch = function (arg) {
+        var subscriber = arg.subscriber;
+        subscriber.complete();
+    };
+    EmptyObservable.prototype._subscribe = function (subscriber) {
+        var scheduler = this.scheduler;
+        if (scheduler) {
+            return scheduler.schedule(EmptyObservable.dispatch, 0, { subscriber: subscriber });
+        }
+        else {
+            subscriber.complete();
+        }
+    };
+    return EmptyObservable;
+}(Observable_1.Observable));
+exports.EmptyObservable = EmptyObservable;
+//# sourceMappingURL=EmptyObservable.js.map
+
+/***/ },
+/* 71 */
+/***/ function(module, exports) {
+
+"use strict";
+"use strict";
+function isScheduler(value) {
+    return value && typeof value.schedule === 'function';
+}
+exports.isScheduler = isScheduler;
+//# sourceMappingURL=isScheduler.js.map
+
+/***/ },
+/* 72 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__abstract_control_directive__ = __webpack_require__(200);
+/* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return NgControl; });
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+
+function unimplemented() {
+    throw new Error('unimplemented');
+}
+/**
+ * A base class that all control directive extend.
+ * It binds a {@link FormControl} object to a DOM element.
+ *
+ * Used internally by Angular forms.
+ *
+ * @stable
+ */
+var NgControl = (function (_super) {
+    __extends(NgControl, _super);
+    function NgControl() {
+        _super.apply(this, arguments);
+        /** @internal */
+        this._parent = null;
+        this.name = null;
+        this.valueAccessor = null;
+        /** @internal */
+        this._rawValidators = [];
+        /** @internal */
+        this._rawAsyncValidators = [];
+    }
+    Object.defineProperty(NgControl.prototype, "validator", {
+        get: function () { return unimplemented(); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(NgControl.prototype, "asyncValidator", {
+        get: function () { return unimplemented(); },
+        enumerable: true,
+        configurable: true
+    });
+    return NgControl;
+}(__WEBPACK_IMPORTED_MODULE_0__abstract_control_directive__["a" /* AbstractControlDirective */]));
+//# sourceMappingURL=ng_control.js.map
+
+/***/ },
+/* 73 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__moon_connect_service_service__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__moon_configuration_service__ = __webpack_require__(102);
+/* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return MoonGenService; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+/**
+ * This is the MoonGen Class for the Complete API Behind the point /rest/moongen
+ */
+var MoonGenService = (function () {
+    /**
+     * Needs the Connection Service for accessing the Connection
+     * @param moonConnectService
+     * @param configurationService
+     */
+    function MoonGenService(moonConnectService, configurationService) {
+        this.moonConnectService = moonConnectService;
+        this.configurationService = configurationService;
+        /**
+         * If the MoonGen Should run (For Connection Test)
+         * @type {boolean}
+         */
+        this.shouldRun = false;
+        this.response = true;
+        /**
+         * If moonGen is really running
+         * @type {boolean}
+         */
+        this.running = false;
+        this.runningChange = new __WEBPACK_IMPORTED_MODULE_2_rxjs__["Subject"]();
+        this.testRunning();
+    }
+    /**
+     * Test if the System run if it should run
+     */
+    MoonGenService.prototype.testRunning = function () {
+        var _this = this;
+        var obs = __WEBPACK_IMPORTED_MODULE_2_rxjs__["Observable"].interval(10000);
+        obs.subscribe(function () {
+            var running = _this.running;
+            if (_this.response) {
+                if (_this.shouldRun) {
+                    _this.response = false;
+                    var runTestHTTP = _this.moonConnectService.head("/rest/moongen/" + _this.executionNumber + "/");
+                    if (runTestHTTP != null) {
+                        _this.moonConnectService.head("/rest/moongen/" + _this.executionNumber + "/").subscribe(function (response) {
+                            _this.response = true;
+                            _this.resultRunning(true, running);
+                        }, function (error) {
+                            if (running) {
+                                _this.moonConnectService.addAlert("danger", "MoonGen stopped");
+                            }
+                            _this.response = true;
+                            _this.resultRunning(false, running);
+                        });
+                        _this.running = true;
+                    }
+                    else {
+                        _this.running = false;
+                        _this.response = true;
+                    }
+                }
+                else {
+                    _this.resultRunning(false, _this.running);
+                }
+            }
+        });
+    };
+    MoonGenService.prototype.resultRunning = function (running, previous) {
+        this.running = running;
+        if (running != previous) {
+            this.runningChange.next(this.running);
+        }
+    };
+    /**
+     * Starting MoonGen
+     * @param responseFunction Function to use
+     * @param object The Object for the Function
+     * @returns {null}
+     */
+    MoonGenService.prototype.startMoonGen = function (responseFunction, object) {
+        var _this = this;
+        if (this.shouldRun)
+            return null;
+        var startHTTP = this.moonConnectService.post("/rest/moongen/", this.configurationService.getConfigurationObject());
+        if (startHTTP != null) {
+            startHTTP.subscribe(function (response) {
+                _this.shouldRun = true;
+                _this.executionNumber = response.json().execution;
+                responseFunction(response, false, object);
+            }, function (error) {
+                _this.shouldRun = false;
+                _this.moonConnectService.addAlert("danger", "MoonGen Start not working:" + error);
+                responseFunction(error, true, object);
+            });
+        }
+        else {
+            return null;
+        }
+    };
+    /**
+     * Stopping MoonGen
+     * @param responseFunction Function to use
+     * @param object The Object for the Function
+     * @returns {null}
+     */
+    MoonGenService.prototype.stopMoonGen = function (responseFunction, object) {
+        var _this = this;
+        if (!this.shouldRun)
+            return null;
+        var stopHTTP = this.moonConnectService.del("/rest/moongen/" + this.executionNumber + "/");
+        if (stopHTTP != null) {
+            stopHTTP.subscribe(function () {
+                _this.shouldRun = false;
+                _this.executionNumber = null;
+                responseFunction(null, false, object);
+            }, function (error) {
+                _this.shouldRun = true;
+                _this.moonConnectService.addAlert("danger", "MoonGen Stop not working:" + error);
+                responseFunction(null, true, object);
+            });
+        }
+        else {
+            return null;
+        }
+    };
+    /**
+     * Get if the thing is running
+     * @returns {boolean}
+     */
+    MoonGenService.prototype.getShouldRun = function () {
+        return this.shouldRun;
+    };
+    /**
+     * Get if the thing is running
+     * @returns {boolean}
+     */
+    MoonGenService.prototype.getRunningSubscribe = function () {
+        return this.runningChange;
+    };
+    /**
+     * The ExecutionNumber for checking the Execution
+     * @returns {number}
+     */
+    MoonGenService.prototype.getExecutionNumber = function () {
+        return this.executionNumber;
+    };
+    MoonGenService.prototype.getLogFile = function (seek) {
+        if (!this.shouldRun)
+            return null;
+        return this.moonConnectService.get("/rest/moongen/" + this.executionNumber + "/log/?seek=" + seek);
+    };
+    MoonGenService.prototype.getData = function () {
+        if (!this.shouldRun)
+            return null;
+        return this.moonConnectService.get("/rest/moongen/" + this.executionNumber + "/");
+    };
+    MoonGenService.prototype.setTitle = function (title) {
+        this.configurationService.setTitle(title);
+    };
+    MoonGenService.prototype.getTitle = function () {
+        return this.configurationService.getTitleSubscribe();
+    };
+    MoonGenService = __decorate([
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(), 
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__moon_connect_service_service__["a" /* MoonConnectServiceService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__moon_connect_service_service__["a" /* MoonConnectServiceService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__moon_configuration_service__["a" /* MoonConfigurationService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__moon_configuration_service__["a" /* MoonConfigurationService */]) === 'function' && _b) || Object])
+    ], MoonGenService);
+    return MoonGenService;
+    var _a, _b;
+}());
+
+
+/***/ },
+/* 74 */
+/***/ function(module, exports) {
+
+module.exports = function(it){
+  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
+  return it;
+};
+
+/***/ },
+/* 75 */
+/***/ function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = function(it){
+  return toString.call(it).slice(8, -1);
+};
+
+/***/ },
+/* 76 */
+/***/ function(module, exports) {
+
+module.exports = function(bitmap, value){
+  return {
+    enumerable  : !(bitmap & 1),
+    configurable: !(bitmap & 2),
+    writable    : !(bitmap & 4),
+    value       : value
+  };
+};
+
+/***/ },
+/* 77 */
+/***/ function(module, exports, __webpack_require__) {
+
+// 7.1.1 ToPrimitive(input [, PreferredType])
+var isObject = __webpack_require__(12);
+// instead of the ES6 spec version, we didn't implement @@toPrimitive case
+// and the second argument - flag - preferred type is a string
+module.exports = function(it, S){
+  if(!isObject(it))return it;
+  var fn, val;
+  if(S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it)))return val;
+  if(typeof (fn = it.valueOf) == 'function' && !isObject(val = fn.call(it)))return val;
+  if(!S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it)))return val;
+  throw TypeError("Can't convert object to primitive value");
+};
+
+/***/ },
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9438,358 +9901,6 @@ var Symbol = {
 };
 exports.Symbol = Symbol;
 //# sourceMappingURL=Rx.js.map
-
-/***/ },
-/* 71 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-"use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var Observable_1 = __webpack_require__(0);
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @extends {Ignored}
- * @hide true
- */
-var EmptyObservable = (function (_super) {
-    __extends(EmptyObservable, _super);
-    function EmptyObservable(scheduler) {
-        _super.call(this);
-        this.scheduler = scheduler;
-    }
-    /**
-     * Creates an Observable that emits no items to the Observer and immediately
-     * emits a complete notification.
-     *
-     * <span class="informal">Just emits 'complete', and nothing else.
-     * </span>
-     *
-     * <img src="./img/empty.png" width="100%">
-     *
-     * This static operator is useful for creating a simple Observable that only
-     * emits the complete notification. It can be used for composing with other
-     * Observables, such as in a {@link mergeMap}.
-     *
-     * @example <caption>Emit the number 7, then complete.</caption>
-     * var result = Rx.Observable.empty().startWith(7);
-     * result.subscribe(x => console.log(x));
-     *
-     * @example <caption>Map and flatten only odd numbers to the sequence 'a', 'b', 'c'</caption>
-     * var interval = Rx.Observable.interval(1000);
-     * var result = interval.mergeMap(x =>
-     *   x % 2 === 1 ? Rx.Observable.of('a', 'b', 'c') : Rx.Observable.empty()
-     * );
-     * result.subscribe(x => console.log(x));
-     *
-     * @see {@link create}
-     * @see {@link never}
-     * @see {@link of}
-     * @see {@link throw}
-     *
-     * @param {Scheduler} [scheduler] A {@link Scheduler} to use for scheduling
-     * the emission of the complete notification.
-     * @return {Observable} An "empty" Observable: emits only the complete
-     * notification.
-     * @static true
-     * @name empty
-     * @owner Observable
-     */
-    EmptyObservable.create = function (scheduler) {
-        return new EmptyObservable(scheduler);
-    };
-    EmptyObservable.dispatch = function (arg) {
-        var subscriber = arg.subscriber;
-        subscriber.complete();
-    };
-    EmptyObservable.prototype._subscribe = function (subscriber) {
-        var scheduler = this.scheduler;
-        if (scheduler) {
-            return scheduler.schedule(EmptyObservable.dispatch, 0, { subscriber: subscriber });
-        }
-        else {
-            subscriber.complete();
-        }
-    };
-    return EmptyObservable;
-}(Observable_1.Observable));
-exports.EmptyObservable = EmptyObservable;
-//# sourceMappingURL=EmptyObservable.js.map
-
-/***/ },
-/* 72 */
-/***/ function(module, exports) {
-
-"use strict";
-"use strict";
-function isScheduler(value) {
-    return value && typeof value.schedule === 'function';
-}
-exports.isScheduler = isScheduler;
-//# sourceMappingURL=isScheduler.js.map
-
-/***/ },
-/* 73 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__abstract_control_directive__ = __webpack_require__(200);
-/* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return NgControl; });
-/**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-
-function unimplemented() {
-    throw new Error('unimplemented');
-}
-/**
- * A base class that all control directive extend.
- * It binds a {@link FormControl} object to a DOM element.
- *
- * Used internally by Angular forms.
- *
- * @stable
- */
-var NgControl = (function (_super) {
-    __extends(NgControl, _super);
-    function NgControl() {
-        _super.apply(this, arguments);
-        /** @internal */
-        this._parent = null;
-        this.name = null;
-        this.valueAccessor = null;
-        /** @internal */
-        this._rawValidators = [];
-        /** @internal */
-        this._rawAsyncValidators = [];
-    }
-    Object.defineProperty(NgControl.prototype, "validator", {
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(NgControl.prototype, "asyncValidator", {
-        get: function () { return unimplemented(); },
-        enumerable: true,
-        configurable: true
-    });
-    return NgControl;
-}(__WEBPACK_IMPORTED_MODULE_0__abstract_control_directive__["a" /* AbstractControlDirective */]));
-//# sourceMappingURL=ng_control.js.map
-
-/***/ },
-/* 74 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__moon_connect_service_service__ = __webpack_require__(67);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs__ = __webpack_require__(70);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__moon_configuration_service__ = __webpack_require__(102);
-/* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return MoonGenService; });
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-/**
- * This is the MoonGen Class for the Complete API Behind the point /rest/moongen
- */
-var MoonGenService = (function () {
-    /**
-     * Needs the Connection Service for accessing the Connection
-     * @param moonConnectService
-     * @param configurationService
-     */
-    function MoonGenService(moonConnectService, configurationService) {
-        this.moonConnectService = moonConnectService;
-        this.configurationService = configurationService;
-        /**
-         * If the MoonGen Should run (For Connection Test)
-         * @type {boolean}
-         */
-        this.shouldRun = false;
-        this.response = true;
-        /**
-         * If moonGen is really running
-         * @type {boolean}
-         */
-        this.running = false;
-        this.runningChange = new __WEBPACK_IMPORTED_MODULE_2_rxjs__["Subject"]();
-        this.testRunning();
-    }
-    /**
-     * Test if the System run if it should run
-     */
-    MoonGenService.prototype.testRunning = function () {
-        var _this = this;
-        var obs = __WEBPACK_IMPORTED_MODULE_2_rxjs__["Observable"].interval(10000);
-        obs.subscribe(function () {
-            var running = _this.running;
-            if (_this.response) {
-                if (_this.shouldRun) {
-                    _this.response = false;
-                    _this.moonConnectService.head("/rest/moongen/" + _this.executionNumber + "/").subscribe(function (response) { _this.response = true; _this.resultRunning(true, running); }, function (error) {
-                        if (running) {
-                            _this.moonConnectService.addAlert("danger", "MoonGen stopped");
-                        }
-                        _this.response = true;
-                        _this.resultRunning(false, running);
-                    });
-                    _this.running = true;
-                }
-                else {
-                    _this.resultRunning(false, _this.running);
-                }
-            }
-        });
-    };
-    MoonGenService.prototype.resultRunning = function (running, previous) {
-        this.running = running;
-        if (running != previous) {
-            this.runningChange.next(this.running);
-        }
-    };
-    /**
-     * Starting MoonGen
-     * @param responseFunction Function to use
-     * @param object The Object for the Function
-     * @returns {null}
-     */
-    MoonGenService.prototype.startMoonGen = function (responseFunction, object) {
-        var _this = this;
-        if (this.shouldRun)
-            return null;
-        this.moonConnectService.post("/rest/moongen/", this.configurationService.getConfigurationObject()).subscribe(function (response) { _this.shouldRun = true; _this.executionNumber = response.json().execution; responseFunction(response, false, object); }, function (error) { _this.shouldRun = false; _this.moonConnectService.addAlert("danger", "MoonGen Start not working:" + error); responseFunction(error, true, object); });
-    };
-    /**
-     * Stopping MoonGen
-     * @param responseFunction Function to use
-     * @param object The Object for the Function
-     * @returns {null}
-     */
-    MoonGenService.prototype.stopMoonGen = function (responseFunction, object) {
-        var _this = this;
-        if (!this.shouldRun)
-            return null;
-        this.moonConnectService.del("/rest/moongen/" + this.executionNumber + "/").subscribe(function () { _this.shouldRun = false; _this.executionNumber = null; responseFunction(null, false, object); }, function (error) { _this.shouldRun = true; _this.moonConnectService.addAlert("danger", "MoonGen Stop not working:" + error); responseFunction(null, true, object); });
-    };
-    /**
-     * Get if the thing is running
-     * @returns {boolean}
-     */
-    MoonGenService.prototype.getShouldRun = function () {
-        return this.shouldRun;
-    };
-    /**
-     * Get if the thing is running
-     * @returns {boolean}
-     */
-    MoonGenService.prototype.getRunningSubscribe = function () {
-        return this.runningChange;
-    };
-    /**
-     * The ExecutionNumber for checking the Execution
-     * @returns {number}
-     */
-    MoonGenService.prototype.getExecutionNumber = function () {
-        return this.executionNumber;
-    };
-    MoonGenService.prototype.getLogFile = function (seek) {
-        if (!this.shouldRun)
-            return null;
-        return this.moonConnectService.get("/rest/moongen/" + this.executionNumber + "/log/?seek=" + seek);
-    };
-    MoonGenService.prototype.getData = function () {
-        if (!this.shouldRun)
-            return null;
-        return this.moonConnectService.get("/rest/moongen/" + this.executionNumber + "/");
-    };
-    MoonGenService.prototype.setTitle = function (title) {
-        this.configurationService.setTitle(title);
-    };
-    MoonGenService.prototype.getTitle = function () {
-        return this.configurationService.getTitleSubscribe();
-    };
-    MoonGenService = __decorate([
-        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__moon_connect_service_service__["a" /* MoonConnectServiceService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__moon_connect_service_service__["a" /* MoonConnectServiceService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__moon_configuration_service__["a" /* MoonConfigurationService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__moon_configuration_service__["a" /* MoonConfigurationService */]) === 'function' && _b) || Object])
-    ], MoonGenService);
-    return MoonGenService;
-    var _a, _b;
-}());
-
-
-/***/ },
-/* 75 */
-/***/ function(module, exports) {
-
-module.exports = function(it){
-  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
-  return it;
-};
-
-/***/ },
-/* 76 */
-/***/ function(module, exports) {
-
-var toString = {}.toString;
-
-module.exports = function(it){
-  return toString.call(it).slice(8, -1);
-};
-
-/***/ },
-/* 77 */
-/***/ function(module, exports) {
-
-module.exports = function(bitmap, value){
-  return {
-    enumerable  : !(bitmap & 1),
-    configurable: !(bitmap & 2),
-    writable    : !(bitmap & 4),
-    value       : value
-  };
-};
-
-/***/ },
-/* 78 */
-/***/ function(module, exports, __webpack_require__) {
-
-// 7.1.1 ToPrimitive(input [, PreferredType])
-var isObject = __webpack_require__(12);
-// instead of the ES6 spec version, we didn't implement @@toPrimitive case
-// and the second argument - flag - preferred type is a string
-module.exports = function(it, S){
-  if(!isObject(it))return it;
-  var fn, val;
-  if(S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it)))return val;
-  if(typeof (fn = it.valueOf) == 'function' && !isObject(val = fn.call(it)))return val;
-  if(!S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it)))return val;
-  throw TypeError("Can't convert object to primitive value");
-};
 
 /***/ },
 /* 79 */
@@ -11128,7 +11239,7 @@ var EventManagerPlugin = (function () {
 /***/ function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
-var aFunction = __webpack_require__(75);
+var aFunction = __webpack_require__(74);
 module.exports = function(fn, that, length){
   aFunction(fn);
   if(that === undefined)return fn;
@@ -12890,7 +13001,7 @@ var XSRFStrategy = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs__ = __webpack_require__(70);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs__ = __webpack_require__(78);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__moon_connect_service_service__ = __webpack_require__(67);
 /* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return MoonConfigurationService; });
@@ -12922,7 +13033,15 @@ var MoonConfigurationService = (function () {
     }
     MoonConfigurationService.prototype.configurationHttp = function () {
         var _this = this;
-        this.connectService.get("/config/").map(function (result) { return result.json(); }).subscribe(function (result) { return _this.writeConfiguration(result); }, function (error) { _this.configurationHttp(); });
+        var configHTTP = this.connectService.get("/config/");
+        if (configHTTP != null) {
+            configHTTP.map(function (result) { return result.json(); }).subscribe(function (result) { return _this.writeConfiguration(result); }, function (error) {
+                __WEBPACK_IMPORTED_MODULE_1_rxjs__["Observable"].interval(2000).take(1).subscribe(function () { return _this.configurationHttp(); });
+            });
+        }
+        else {
+            __WEBPACK_IMPORTED_MODULE_1_rxjs__["Observable"].interval(2000).take(1).subscribe(function () { return _this.configurationHttp(); });
+        }
     };
     MoonConfigurationService.prototype.writeConfiguration = function (config) {
         this.configuration = config;
@@ -13059,7 +13178,7 @@ module.exports = function(key){
 /***/ function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__(76);
+var cof = __webpack_require__(75);
 module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
   return cof(it) == 'String' ? it.split('') : Object(it);
 };
@@ -17872,7 +17991,7 @@ var NgModelGroup = (function (_super) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__facade_collection__ = __webpack_require__(46);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__control_value_accessor__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ng_control__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ng_control__ = __webpack_require__(72);
 /* unused harmony export RADIO_VALUE_ACCESSOR */
 /* harmony export (binding) */ __webpack_require__.d(exports, "b", function() { return RadioControlRegistry; });
 /* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return RadioControlValueAccessor; });
@@ -27995,7 +28114,7 @@ var AbstractControlDirective = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__facade_lang__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__control_container__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ng_control__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ng_control__ = __webpack_require__(72);
 /* unused harmony export AbstractControlStatus */
 /* unused harmony export ngControlStatusHost */
 /* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return NgControlStatus; });
@@ -28129,7 +28248,7 @@ var NgControlStatusGroup = (function (_super) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__abstract_form_group_directive__ = __webpack_require__(96);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__control_container__ = __webpack_require__(53);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__control_value_accessor__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ng_control__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ng_control__ = __webpack_require__(72);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__ng_form__ = __webpack_require__(97);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__ng_model_group__ = __webpack_require__(134);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__shared__ = __webpack_require__(64);
@@ -28437,7 +28556,7 @@ var NumberValueAccessor = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__facade_collection__ = __webpack_require__(46);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__validators__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__control_value_accessor__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ng_control__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ng_control__ = __webpack_require__(72);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__reactive_errors__ = __webpack_require__(136);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__shared__ = __webpack_require__(64);
 /* unused harmony export formControlBinding */
@@ -28593,7 +28712,7 @@ var FormControlDirective = (function (_super) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__abstract_form_group_directive__ = __webpack_require__(96);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__control_container__ = __webpack_require__(53);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__control_value_accessor__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ng_control__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ng_control__ = __webpack_require__(72);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__reactive_errors__ = __webpack_require__(136);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__shared__ = __webpack_require__(64);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__form_group_directive__ = __webpack_require__(98);
@@ -30093,7 +30212,7 @@ module.exports = function(that, target, C){
 /***/ function(module, exports, __webpack_require__) {
 
 // 7.2.2 IsArray(argument)
-var cof = __webpack_require__(76);
+var cof = __webpack_require__(75);
 module.exports = Array.isArray || function isArray(arg){
   return cof(arg) == 'Array';
 };
@@ -30104,7 +30223,7 @@ module.exports = Array.isArray || function isArray(arg){
 
 // 7.2.8 IsRegExp(argument)
 var isObject = __webpack_require__(12)
-  , cof      = __webpack_require__(76)
+  , cof      = __webpack_require__(75)
   , MATCH    = __webpack_require__(15)('match');
 module.exports = function(it){
   var isRegExp;
@@ -32594,7 +32713,7 @@ exports.CombineLatestSubscriber = CombineLatestSubscriber;
 
 "use strict";
 "use strict";
-var isScheduler_1 = __webpack_require__(72);
+var isScheduler_1 = __webpack_require__(71);
 var ArrayObservable_1 = __webpack_require__(60);
 var mergeAll_1 = __webpack_require__(159);
 /**
@@ -46473,11 +46592,9 @@ var SafeResourceUrlImpl = (function (_super) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs__ = __webpack_require__(70);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_moon_connect_service_service__ = __webpack_require__(67);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_moon_gen_service__ = __webpack_require__(74);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__main_alert_main_alert_component__ = __webpack_require__(358);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_moon_connect_service_service__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_moon_gen_service__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__main_alert_main_alert_component__ = __webpack_require__(358);
 /* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return AppComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -46488,7 +46605,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-
 
 
 
@@ -46505,42 +46621,28 @@ var AppComponent = (function () {
          * @type {{connect: any; status: string; progressBar: {show: boolean; value: number; max: number}}}
          */
         this.status = {
-            connect: null,
             status: "",
             progressBar: { show: false, value: 50, max: 100 }
         };
-        this.status.connect = this.moonConnectService.getConnection();
     }
     /**
      * Start all parts which have to start after initiate
      */
     AppComponent.prototype.ngOnInit = function () {
         this.moonConnectService.setMainAlert(this.mainAlert);
-        this.connectTest();
-    };
-    /**
-     * Try the Connection Service
-     */
-    AppComponent.prototype.connectTest = function () {
-        var _this = this;
-        this.status.connect = this.moonConnectService.getConnection();
-        var obs = __WEBPACK_IMPORTED_MODULE_1_rxjs__["Observable"].interval(10000);
-        obs.subscribe(function () {
-            _this.status.connect = _this.moonConnectService.getConnection();
-        });
     };
     __decorate([
-        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])(__WEBPACK_IMPORTED_MODULE_4__main_alert_main_alert_component__["a" /* MainAlertComponent */]), 
-        __metadata('design:type', (typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_4__main_alert_main_alert_component__["a" /* MainAlertComponent */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_4__main_alert_main_alert_component__["a" /* MainAlertComponent */]) === 'function' && _a) || Object)
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])(__WEBPACK_IMPORTED_MODULE_3__main_alert_main_alert_component__["a" /* MainAlertComponent */]), 
+        __metadata('design:type', (typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__main_alert_main_alert_component__["a" /* MainAlertComponent */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__main_alert_main_alert_component__["a" /* MainAlertComponent */]) === 'function' && _a) || Object)
     ], AppComponent.prototype, "mainAlert", void 0);
     AppComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'moon-gui',
             template: __webpack_require__(762),
             styles: [__webpack_require__(751)],
-            providers: [__WEBPACK_IMPORTED_MODULE_2__services_moon_connect_service_service__["a" /* MoonConnectServiceService */], __WEBPACK_IMPORTED_MODULE_3__services_moon_gen_service__["a" /* MoonGenService */]]
+            providers: [__WEBPACK_IMPORTED_MODULE_1__services_moon_connect_service_service__["a" /* MoonConnectServiceService */], __WEBPACK_IMPORTED_MODULE_2__services_moon_gen_service__["a" /* MoonGenService */]]
         }), 
-        __metadata('design:paramtypes', [(typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_moon_connect_service_service__["a" /* MoonConnectServiceService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_moon_connect_service_service__["a" /* MoonConnectServiceService */]) === 'function' && _b) || Object])
+        __metadata('design:paramtypes', [(typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__services_moon_connect_service_service__["a" /* MoonConnectServiceService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_moon_connect_service_service__["a" /* MoonConnectServiceService */]) === 'function' && _b) || Object])
     ], AppComponent);
     return AppComponent;
     var _a, _b;
@@ -46605,7 +46707,7 @@ var MainAlertComponent = (function () {
 /* 359 */
 /***/ function(module, exports, __webpack_require__) {
 
-var cof = __webpack_require__(76);
+var cof = __webpack_require__(75);
 module.exports = function(it, msg){
   if(typeof it != 'number' && cof(it) != 'Number')throw TypeError(msg);
   return +it;
@@ -46641,7 +46743,7 @@ module.exports = function(IS_INCLUDES){
 /* 361 */
 /***/ function(module, exports, __webpack_require__) {
 
-var aFunction = __webpack_require__(75)
+var aFunction = __webpack_require__(74)
   , toObject  = __webpack_require__(44)
   , IObject   = __webpack_require__(104)
   , toLength  = __webpack_require__(40);
@@ -46676,7 +46778,7 @@ module.exports = function(that, callbackfn, aLen, memo, isRight){
 
 "use strict";
 'use strict';
-var aFunction  = __webpack_require__(75)
+var aFunction  = __webpack_require__(74)
   , isObject   = __webpack_require__(12)
   , invoke     = __webpack_require__(593)
   , arraySlice = [].slice
@@ -46705,7 +46807,7 @@ module.exports = Function.bind || function bind(that /*, args... */){
 /***/ function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(76)
+var cof = __webpack_require__(75)
   , TAG = __webpack_require__(15)('toStringTag')
   // ES3 wrong here
   , ARG = cof(function(){ return arguments; }()) == 'Arguments';
@@ -46883,7 +46985,7 @@ module.exports = {
 "use strict";
 'use strict';
 var $defineProperty = __webpack_require__(21)
-  , createDesc      = __webpack_require__(77);
+  , createDesc      = __webpack_require__(76);
 
 module.exports = function(object, index, value){
   if(index in object)$defineProperty.f(object, index, createDesc(0, value));
@@ -46964,7 +47066,7 @@ module.exports = function(iterator, fn, value, entries){
 "use strict";
 'use strict';
 var create         = __webpack_require__(86)
-  , descriptor     = __webpack_require__(77)
+  , descriptor     = __webpack_require__(76)
   , setToStringTag = __webpack_require__(149)
   , IteratorPrototype = {};
 
@@ -47447,8 +47549,8 @@ var global         = __webpack_require__(17)
   , isArray        = __webpack_require__(222)
   , anObject       = __webpack_require__(8)
   , toIObject      = __webpack_require__(43)
-  , toPrimitive    = __webpack_require__(78)
-  , createDesc     = __webpack_require__(77)
+  , toPrimitive    = __webpack_require__(77)
+  , createDesc     = __webpack_require__(76)
   , _create        = __webpack_require__(86)
   , gOPNExt        = __webpack_require__(378)
   , $GOPD          = __webpack_require__(69)
@@ -51453,7 +51555,7 @@ exports.FindValueSubscriber = FindValueSubscriber;
 "use strict";
 var ArrayObservable_1 = __webpack_require__(60);
 var mergeAll_1 = __webpack_require__(159);
-var isScheduler_1 = __webpack_require__(72);
+var isScheduler_1 = __webpack_require__(71);
 /**
  * Creates an output Observable which concurrently emits all values from every
  * given input Observable.
@@ -61902,7 +62004,7 @@ var NgZoneImpl = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__directives_select_control_value_accessor__ = __webpack_require__(137);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__directives_select_multiple_control_value_accessor__ = __webpack_require__(138);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__directives_validators__ = __webpack_require__(206);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__directives_ng_control__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__directives_ng_control__ = __webpack_require__(72);
 /* unused harmony export SHARED_FORM_DIRECTIVES */
 /* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return TEMPLATE_DRIVEN_DIRECTIVES; });
 /* harmony export (binding) */ __webpack_require__.d(exports, "c", function() { return REACTIVE_DRIVEN_DIRECTIVES; });
@@ -62119,7 +62221,7 @@ var ReactiveFormsModule = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__directives_control_container__ = __webpack_require__(53);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__directives_control_value_accessor__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__directives_default_value_accessor__ = __webpack_require__(133);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__directives_ng_control__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__directives_ng_control__ = __webpack_require__(72);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__directives_ng_control_status__ = __webpack_require__(201);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__directives_ng_form__ = __webpack_require__(97);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__directives_ng_model__ = __webpack_require__(202);
@@ -63760,18 +63862,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.defaults = defaults;
 	    }
 	    PerfectScrollbarComponent.prototype.ngDoCheck = function () {
-	        if (this.elementRef.nativeElement.children) {
-	            var width = this.elementRef.nativeElement.offsetWidth;
-	            var height = this.elementRef.nativeElement.offsetHeight;
-	            var contentWidth = this.elementRef.nativeElement.children[0].offsetWidth;
-	            var contentHeight = this.elementRef.nativeElement.children[0].offsetHeight;
-	            if (width !== this.width || height !== this.height || contentWidth !== this.contentWidth || contentHeight !== this.contentHeight) {
-	                this.width = width;
-	                this.height = height;
-	                this.contentWidth = contentWidth;
-	                this.contentHeight = contentHeight;
-	                Ps.update(this.elementRef.nativeElement);
-	            }
+	        var width = this.elementRef.nativeElement.offsetWidth;
+	        var height = this.elementRef.nativeElement.offsetHeight;
+	        if (width !== this.width || height !== this.height) {
+	            this.width = width;
+	            this.height = height;
+	            Ps.update(this.elementRef.nativeElement);
 	        }
 	    };
 	    PerfectScrollbarComponent.prototype.ngOnDestroy = function () {
@@ -63796,7 +63892,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    PerfectScrollbarComponent = __decorate([
 	        core_1.Component({
 	            selector: 'perfect-scrollbar',
-	            template: '<div class="ps-content"><ng-content></ng-content></div>',
+	            template: '<ng-content></ng-content>',
 	            styles: [__webpack_require__(25)],
 	            encapsulation: core_1.ViewEncapsulation.None
 	        }),
@@ -65572,7 +65668,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__graph_graph_line_graph_line_component__ = __webpack_require__(562);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__config_config_start_config_start_component__ = __webpack_require__(558);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__services_moon_connect_service_service__ = __webpack_require__(67);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__services_moon_gen_service__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__services_moon_gen_service__ = __webpack_require__(73);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__main_alert_main_alert_component__ = __webpack_require__(358);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__log_viewer_log_viewer_component__ = __webpack_require__(565);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__config_system_system_component__ = __webpack_require__(560);
@@ -65686,7 +65782,7 @@ var ConfigPartComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_moon_gen_service__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_moon_gen_service__ = __webpack_require__(73);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_moon_configuration_service__ = __webpack_require__(102);
 /* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return ConfigStartComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -65774,7 +65870,7 @@ var ConfigStartComponent = (function () {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_moon_configuration_service__ = __webpack_require__(102);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs__ = __webpack_require__(70);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs__ = __webpack_require__(78);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs__);
 /* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return ConfigComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -65881,9 +65977,12 @@ var ConfigComponent = (function () {
     };
     ConfigComponent.prototype.getInterfaceListHTTP = function () {
         var _this = this;
-        this.configuration.getInterfaceList().map(function (response) { return response.json(); }).subscribe(function (response) {
-            _this.interfaceList = response;
-        }, function (error) { return console.log("Error: " + error); });
+        var interfaceListHTTP = this.configuration.getInterfaceList();
+        if (interfaceListHTTP != null) {
+            this.configuration.getInterfaceList().map(function (response) { return response.json(); }).subscribe(function (response) {
+                _this.interfaceList = response;
+            }, function (error) { return console.log("Error: " + error); });
+        }
     };
     ConfigComponent.prototype.getProp = function (name, id) {
         return this[name][id];
@@ -65908,7 +66007,7 @@ var ConfigComponent = (function () {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_moon_connect_service_service__ = __webpack_require__(67);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs__ = __webpack_require__(70);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs__ = __webpack_require__(78);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs__);
 /* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return SystemComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -65932,7 +66031,16 @@ var SystemComponent = (function () {
     }
     SystemComponent.prototype.getInformation = function (moonConnect) {
         var _this = this;
-        moonConnect.get("/rest/system/").map(function (result) { return result.json(); }).subscribe(function (result) { return _this.sys = result; }, function () { moonConnect.addAlert("info", "Error Fetching System Information"); __WEBPACK_IMPORTED_MODULE_2_rxjs__["Observable"].timer(20000).take(1).subscribe(function () { return _this.getInformation(moonConnect); }); });
+        var moonConnectGet = moonConnect.get("/rest/system/");
+        if (moonConnectGet != null) {
+            moonConnectGet.map(function (result) { return result.json(); }).subscribe(function (result) { return _this.sys = result; }, function () {
+                moonConnect.addAlert("info", "Error Fetching System Information");
+                __WEBPACK_IMPORTED_MODULE_2_rxjs__["Observable"].timer(20000).take(1).subscribe(function () { return _this.getInformation(moonConnect); });
+            });
+        }
+        else {
+            __WEBPACK_IMPORTED_MODULE_2_rxjs__["Observable"].timer(2000).take(1).subscribe(function () { return _this.getInformation(moonConnect); });
+        }
     };
     SystemComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -65973,7 +66081,14 @@ var GraphHistogramComponent = (function () {
     }
     GraphHistogramComponent.prototype.ngAfterViewInit = function () {
         this.element.nativeElement.children[0].setAttribute("id", this.id);
-        this.data.push({ x: this.points, type: 'histogram', autobinx: false, xbins: { start: Math.min.apply(Math, this.points), end: Math.max.apply(Math, this.points), size: this.size } });
+        for (var i = 0; i < this.points.length; i++) {
+            this.data.push({
+                x: this.points[i],
+                type: 'histogram',
+                autobinx: false,
+                xbins: { start: Math.min.apply(Math, this.points[i]), end: Math.max.apply(Math, this.points[i]), size: this.size }
+            });
+        }
         this.layout.title = this.title;
         Plotly.newPlot(this.id, this.data, this.layout, this.configuration);
     };
@@ -65982,8 +66097,14 @@ var GraphHistogramComponent = (function () {
             var graphDiv = document.getElementById(this.id);
             if (changes.points) {
                 var update1 = { x: [], xbins: [] };
-                update1.x.push(changes.points.currentValue);
-                update1.xbins.push({ start: Math.min.apply(Math, changes.points.currentValue), end: Math.max.apply(Math, changes.points.currentValue), size: this.size });
+                for (var i = 0; i < changes.points.currentValue.length; i++) {
+                    update1.x.push(changes.points.currentValue[i]);
+                    update1.xbins.push({
+                        start: Math.min.apply(Math, changes.points.currentValue[i]),
+                        end: Math.max.apply(Math, changes.points.currentValue[i]),
+                        size: this.size
+                    });
+                }
                 Plotly.restyle(graphDiv, update1);
             }
             if (changes.title) {
@@ -66043,12 +66164,14 @@ var GraphLineComponent = (function () {
     function GraphLineComponent(element) {
         this.element = element;
         this.configuration = { showLink: false, displaylogo: false };
-        this.layout = { title: this.title, bargap: 0.05, bargrourgap: 0.2, yaxis: { title: "Count" }, xaxis: { title: "Value" } };
+        this.layout = { title: this.title, bargap: 0.05, bargrourgap: 0.2, yaxis: { title: "Count" }, xaxis: { title: "Value", autorange: false, range: [0, 1000000] } };
         this.data = [];
     }
     GraphLineComponent.prototype.ngAfterViewInit = function () {
         this.element.nativeElement.children[0].setAttribute("id", this.id);
-        this.data.push({ x: this.points.x, y: this.points.y, mode: 'lines', });
+        for (var i = 0; i < this.points.length; i++) {
+            this.data.push({ x: this.points[i].x, y: this.points[i].y, title: this.points[i].title, mode: 'lines', });
+        }
         this.layout.title = this.title;
         Plotly.newPlot(this.id, this.data, this.layout, this.configuration);
     };
@@ -66057,9 +66180,19 @@ var GraphLineComponent = (function () {
             var graphDiv = document.getElementById(this.id);
             if (changes.points) {
                 var update1 = { x: [], y: [] };
-                update1.x.push(changes.points.currentValue.x);
-                update1.y.push(changes.points.currentValue.y);
+                for (var i = 0; i < changes.points.currentValue.length; i++) {
+                    update1.x.push(changes.points.currentValue[i].x);
+                    update1.y.push(changes.points.currentValue[i].y);
+                }
                 Plotly.restyle(graphDiv, update1);
+                if (changes.points.currentValue.x.length > this.max) {
+                    var update3 = { xaxis: { range: [changes.points.currentValue[0].x[changes.points.currentValue[0].x.length - (this.max)], changes.points.currentValue[0].x[changes.points.currentValue[0].x.length - 1]] } };
+                    Plotly.relayout(graphDiv, update3);
+                }
+                else {
+                    var update2 = { xaxis: { range: [changes.points.currentValue[0].x[0], changes.points.currentValue[0].x[changes.points.currentValue[0].x.length - 1]] } };
+                    Plotly.relayout(graphDiv, update2);
+                }
             }
             if (changes.title) {
                 var update = {
@@ -66081,6 +66214,10 @@ var GraphLineComponent = (function () {
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(), 
         __metadata('design:type', String)
     ], GraphLineComponent.prototype, "id", void 0);
+    __decorate([
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(), 
+        __metadata('design:type', Number)
+    ], GraphLineComponent.prototype, "max", void 0);
     GraphLineComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-graph-line',
@@ -66099,7 +66236,7 @@ var GraphLineComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_moon_gen_service__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_moon_gen_service__ = __webpack_require__(73);
 /* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return HeaderComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -66153,8 +66290,8 @@ var HeaderComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_moon_gen_service__ = __webpack_require__(74);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs__ = __webpack_require__(70);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_moon_gen_service__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs__ = __webpack_require__(78);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_moon_connect_service_service__ = __webpack_require__(67);
 /* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return LogViewerComponent; });
@@ -66255,8 +66392,8 @@ var LogViewerComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_moon_gen_service__ = __webpack_require__(74);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs__ = __webpack_require__(70);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_moon_gen_service__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs__ = __webpack_require__(78);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_moon_connect_service_service__ = __webpack_require__(67);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__services_moon_configuration_service__ = __webpack_require__(102);
@@ -66289,7 +66426,6 @@ var MainComponent = (function () {
         this.moonGenService = moonGenService;
         this.connectService = connectService;
         this.configuration = configuration;
-        this.statusChange = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"](); //The Statusbar
         this.toggle = { output: { status: true }, config: { status: true }, log: { status: true }, graph: { status: true } };
         /**
          * For using to be able to resize the container
@@ -66303,8 +66439,6 @@ var MainComponent = (function () {
          */
         this.configurationObject = { graph: [] };
         this.pointData = [];
-        this.points = [0, 1, 2, 45, 7, 4, 1];
-        this.pointsLine = { x: [0], y: [0] };
         this.configuration.getWait().subscribe(function (value) {
             if (value) {
                 var configurationObject = _this.configuration.getConfiguration(_this.configuration.getScript());
@@ -66322,10 +66456,10 @@ var MainComponent = (function () {
             this.pointData = [];
             for (var i = 0; i < configurationObject.graph.length; i++) {
                 if (configurationObject.graph[i].type == "histogram") {
-                    this.pointData[i] = [];
+                    this.pointData[i] = [[]];
                 }
                 else if (configurationObject.graph[i].type == "line") {
-                    this.pointData[i] = { x: [], y: [] };
+                    this.pointData[i] = [{ x: [], y: [], title: "" }];
                 }
             }
         }
@@ -66431,7 +66565,7 @@ var MainComponent = (function () {
         });
     };
     /**
-     * Get the Data from extern
+     * Get the Data from external
      */
     MainComponent.prototype.getData = function () {
         var _this = this;
@@ -66446,19 +66580,15 @@ var MainComponent = (function () {
                         if (_this.configurationObject.graph[x].type == "histogram") {
                             for (var i = 0; i < result.length; i++) {
                                 if (result[i][_this.configurationObject.graph[x].x]) {
-                                    _this.pointData[x].push(result[i][_this.configurationObject.graph[x].x]);
+                                    _this.pointData[x][0].push(result[i][_this.configurationObject.graph[x].x]);
                                 }
                             }
                         }
                         else if (_this.configurationObject.graph[x].type == "line") {
                             for (var i = 0; i < result.length; i++) {
                                 if (result[i][_this.configurationObject.graph[x].y]) {
-                                    _this.pointData[x].x.push(result[i][_this.configurationObject.graph[x].x]);
-                                    _this.pointData[x].y.push(result[i][_this.configurationObject.graph[x].y]);
-                                    if (_this.pointData[x].x.length > _this.configurationObject.graph[x].max) {
-                                        _this.pointData[x].x.splice(0, 1);
-                                        _this.pointData[x].y.splice(0, 1);
-                                    }
+                                    _this.pointData[x][0].x.push(result[i][_this.configurationObject.graph[x].x]);
+                                    _this.pointData[x][0].y.push(result[i][_this.configurationObject.graph[x].y]);
                                 }
                             }
                         }
@@ -66477,22 +66607,14 @@ var MainComponent = (function () {
         if (this.configurationObject.graph) {
             for (var i = 0; i < this.configurationObject.graph.length; i++) {
                 if (this.configurationObject.graph[i].type == "histogram") {
-                    this.pointData[i] = [];
+                    this.pointData[i] = [[]];
                 }
                 else if (this.configurationObject.graph[i].type == "line") {
-                    this.pointData[i] = { x: [], y: [] };
+                    this.pointData[i] = [{ x: [], y: [], title: "" }];
                 }
             }
         }
     };
-    __decorate([
-        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(), 
-        __metadata('design:type', Object)
-    ], MainComponent.prototype, "status", void 0);
-    __decorate([
-        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])(), 
-        __metadata('design:type', (typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]) === 'function' && _a) || Object)
-    ], MainComponent.prototype, "statusChange", void 0);
     __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["HostListener"])('mouseup', ['$event']), 
         __metadata('design:type', Function), 
@@ -66511,10 +66633,10 @@ var MainComponent = (function () {
             template: __webpack_require__(772),
             styles: [__webpack_require__(759)]
         }), 
-        __metadata('design:paramtypes', [(typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["ElementRef"] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_0__angular_core__["ElementRef"]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1__services_moon_gen_service__["a" /* MoonGenService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_moon_gen_service__["a" /* MoonGenService */]) === 'function' && _c) || Object, (typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_3__services_moon_connect_service_service__["a" /* MoonConnectServiceService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__services_moon_connect_service_service__["a" /* MoonConnectServiceService */]) === 'function' && _d) || Object, (typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_4__services_moon_configuration_service__["a" /* MoonConfigurationService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_4__services_moon_configuration_service__["a" /* MoonConfigurationService */]) === 'function' && _e) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["ElementRef"] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_0__angular_core__["ElementRef"]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__services_moon_gen_service__["a" /* MoonGenService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_moon_gen_service__["a" /* MoonGenService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__services_moon_connect_service_service__["a" /* MoonConnectServiceService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__services_moon_connect_service_service__["a" /* MoonConnectServiceService */]) === 'function' && _c) || Object, (typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__services_moon_configuration_service__["a" /* MoonConfigurationService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_4__services_moon_configuration_service__["a" /* MoonConfigurationService */]) === 'function' && _d) || Object])
     ], MainComponent);
     return MainComponent;
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d;
 }());
 
 
@@ -66524,10 +66646,8 @@ var MainComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs__ = __webpack_require__(70);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_moon_gen_service__ = __webpack_require__(74);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_moon_connect_service_service__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_moon_gen_service__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_moon_connect_service_service__ = __webpack_require__(67);
 /* harmony export (binding) */ __webpack_require__.d(exports, "a", function() { return StatusBarComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -66538,7 +66658,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-
 
 
 
@@ -66555,7 +66674,6 @@ var StatusBarComponent = (function () {
          * The Connection Responsible for Checking
          * @type {any}
          */
-        this.connect = null;
         this.running = false; //To show running of the Code
         this.status = ""; //To Show a status string
         this.connectStatus = false; //The connectStatus for template variables
@@ -66563,21 +66681,9 @@ var StatusBarComponent = (function () {
     StatusBarComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.moonGenService.getRunningSubscribe().subscribe(function (value) { return _this.running = value; });
+        this.connectService.getConnection().subscribe(function (value) { return _this.connectStatus = value; });
+        this.connectStatus = this.connectService.getConnectionStart();
     };
-    StatusBarComponent.prototype.ngOnChanges = function (changes) {
-        var _this = this;
-        if (changes.connect) {
-            changes.connect.currentValue.subscribe(function () { if (!_this.connectStatus) {
-                _this.connectService.addAlert("success", "Connection Established");
-            } _this.connectStatus = true; }, function (response) { if (_this.connectStatus) {
-                _this.connectService.addAlert("danger", response);
-            } _this.connectStatus = false; });
-        }
-    };
-    __decorate([
-        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(), 
-        __metadata('design:type', (typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_rxjs__["Observable"] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1_rxjs__["Observable"]) === 'function' && _a) || Object)
-    ], StatusBarComponent.prototype, "connect", void 0);
     __decorate([
         //To show running of the Code
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(), 
@@ -66594,10 +66700,10 @@ var StatusBarComponent = (function () {
             template: __webpack_require__(773),
             styles: [__webpack_require__(760)]
         }), 
-        __metadata('design:paramtypes', [(typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_moon_gen_service__["a" /* MoonGenService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_moon_gen_service__["a" /* MoonGenService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__services_moon_connect_service_service__["a" /* MoonConnectServiceService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3__services_moon_connect_service_service__["a" /* MoonConnectServiceService */]) === 'function' && _c) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_moon_gen_service__["a" /* MoonGenService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_moon_gen_service__["a" /* MoonGenService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_moon_connect_service_service__["a" /* MoonConnectServiceService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_moon_connect_service_service__["a" /* MoonConnectServiceService */]) === 'function' && _b) || Object])
     ], StatusBarComponent);
     return StatusBarComponent;
-    var _a, _b, _c;
+    var _a, _b;
 }());
 
 
@@ -67102,7 +67208,7 @@ module.exports = {
 "use strict";
 'use strict';
 var anObject    = __webpack_require__(8)
-  , toPrimitive = __webpack_require__(78)
+  , toPrimitive = __webpack_require__(77)
   , NUMBER      = 'number';
 
 module.exports = function(hint){
@@ -67516,7 +67622,7 @@ $export($export.P + $export.F * !__webpack_require__(42)([].reduce, true), 'Arra
 'use strict';
 var $export    = __webpack_require__(2)
   , html       = __webpack_require__(367)
-  , cof        = __webpack_require__(76)
+  , cof        = __webpack_require__(75)
   , toIndex    = __webpack_require__(107)
   , toLength   = __webpack_require__(40)
   , arraySlice = [].slice;
@@ -67565,7 +67671,7 @@ $export($export.P + $export.F * !__webpack_require__(42)([].some, true), 'Array'
 "use strict";
 'use strict';
 var $export   = __webpack_require__(2)
-  , aFunction = __webpack_require__(75)
+  , aFunction = __webpack_require__(74)
   , toObject  = __webpack_require__(44)
   , fails     = __webpack_require__(9)
   , $sort     = [].sort
@@ -67644,7 +67750,7 @@ $export($export.P + $export.F * (fails(function(){
 'use strict';
 var $export     = __webpack_require__(2)
   , toObject    = __webpack_require__(44)
-  , toPrimitive = __webpack_require__(78);
+  , toPrimitive = __webpack_require__(77);
 
 $export($export.P + $export.F * __webpack_require__(9)(function(){
   return new Date(NaN).toJSON() !== null || Date.prototype.toJSON.call({toISOString: function(){ return 1; }}) !== 1;
@@ -67714,7 +67820,7 @@ if(!(HAS_INSTANCE in FunctionProto))__webpack_require__(21).f(FunctionProto, HAS
 /***/ function(module, exports, __webpack_require__) {
 
 var dP         = __webpack_require__(21).f
-  , createDesc = __webpack_require__(77)
+  , createDesc = __webpack_require__(76)
   , has        = __webpack_require__(36)
   , FProto     = Function.prototype
   , nameRE     = /^\s*function ([^ (]*)/
@@ -68028,9 +68134,9 @@ $export($export.S, 'Math', {
 'use strict';
 var global            = __webpack_require__(17)
   , has               = __webpack_require__(36)
-  , cof               = __webpack_require__(76)
+  , cof               = __webpack_require__(75)
   , inheritIfRequired = __webpack_require__(221)
-  , toPrimitive       = __webpack_require__(78)
+  , toPrimitive       = __webpack_require__(77)
   , fails             = __webpack_require__(9)
   , gOPN              = __webpack_require__(106).f
   , gOPD              = __webpack_require__(69).f
@@ -68539,7 +68645,7 @@ $export($export.G + $export.F * (parseInt != $parseInt), {parseInt: $parseInt});
 
 // 26.1.1 Reflect.apply(target, thisArgument, argumentsList)
 var $export   = __webpack_require__(2)
-  , aFunction = __webpack_require__(75)
+  , aFunction = __webpack_require__(74)
   , anObject  = __webpack_require__(8)
   , rApply    = (__webpack_require__(17).Reflect || {}).apply
   , fApply    = Function.apply;
@@ -68561,7 +68667,7 @@ $export($export.S + $export.F * !__webpack_require__(9)(function(){
 // 26.1.2 Reflect.construct(target, argumentsList [, newTarget])
 var $export    = __webpack_require__(2)
   , create     = __webpack_require__(86)
-  , aFunction  = __webpack_require__(75)
+  , aFunction  = __webpack_require__(74)
   , anObject   = __webpack_require__(8)
   , isObject   = __webpack_require__(12)
   , fails      = __webpack_require__(9)
@@ -68614,7 +68720,7 @@ $export($export.S + $export.F * (NEW_TARGET_BUG || ARGS_BUG), 'Reflect', {
 var dP          = __webpack_require__(21)
   , $export     = __webpack_require__(2)
   , anObject    = __webpack_require__(8)
-  , toPrimitive = __webpack_require__(78);
+  , toPrimitive = __webpack_require__(77);
 
 // MS Edge has broken Reflect.defineProperty - throwing instead of returning false
 $export($export.S + $export.F * __webpack_require__(9)(function(){
@@ -68826,7 +68932,7 @@ var dP             = __webpack_require__(21)
   , getPrototypeOf = __webpack_require__(58)
   , has            = __webpack_require__(36)
   , $export        = __webpack_require__(2)
-  , createDesc     = __webpack_require__(77)
+  , createDesc     = __webpack_require__(76)
   , anObject       = __webpack_require__(8)
   , isObject       = __webpack_require__(12);
 
@@ -69467,7 +69573,7 @@ metadata.exp({hasOwnMetadata: function hasOwnMetadata(metadataKey, target /*, ta
 
 var metadata                  = __webpack_require__(57)
   , anObject                  = __webpack_require__(8)
-  , aFunction                 = __webpack_require__(75)
+  , aFunction                 = __webpack_require__(74)
   , toMetaKey                 = metadata.key
   , ordinaryDefineOwnMetadata = metadata.set;
 
@@ -75476,7 +75582,7 @@ process.umask = function() { return 0; };
 /* 751 */
 /***/ function(module, exports) {
 
-module.exports = ".wrap {\n    position: absolute;\n    top: 0;\n    left:0;\n    bottom:20px;\n    right:0;\n}\n\n.flex{\n    display: flex;\n    height:100%;\n    width:100%;\n}\n.flex-row{\n    flex-direction: row;\n}\n.flex-column{\n    flex-direction: column;\n}\n"
+module.exports = ".wrap {\r\n    position: absolute;\r\n    top: 0;\r\n    left:0;\r\n    bottom:20px;\r\n    right:0;\r\n}\r\n\r\n.flex{\r\n    display: flex;\r\n    height:100%;\r\n    width:100%;\r\n}\r\n.flex-row{\r\n    flex-direction: row;\r\n}\r\n.flex-column{\r\n    flex-direction: column;\r\n}\r\n"
 
 /***/ },
 /* 752 */
@@ -75488,56 +75594,56 @@ module.exports = ""
 /* 753 */
 /***/ function(module, exports) {
 
-module.exports = ".tab-wrapper{\n    height:90%;\n    width: 90%;\n    margin: 4px auto;\n}"
+module.exports = ".tab-wrapper{\r\n    height:90%;\r\n    width: 90%;\r\n    margin: 4px auto;\r\n}"
 
 /***/ },
 /* 754 */
 /***/ function(module, exports) {
 
-module.exports = ".tab-wrapper{\n    height:90%;\n    width: 90%;\n    margin: 4px auto;\n}\n.range{\n    height:38px;\n}"
+module.exports = ".tab-wrapper{\r\n    height:90%;\r\n    width: 90%;\r\n    margin: 4px auto;\r\n}\r\n.range{\r\n    height:38px;\r\n}"
 
 /***/ },
 /* 755 */
 /***/ function(module, exports) {
 
-module.exports = ".tab-wrapper{\n    height:90%;\n    width: 90%;\n    margin: 4px auto;\n}\n.headline{\n    display: block;\n    font-size: 1.17em;\n    margin-top: 1em;\n    margin-bottom: 1em;\n    margin-left: 0;\n    margin-right: 0;\n    webkit-box-shadow: 2px 2px 16px 4px rgba(0,0,0,0.22);\n    -moz-box-shadow: 2px 2px 16px 4px rgba(0,0,0,0.22);\n    box-shadow: 2px 2px 16px 4px rgba(0,0,0,0.22);\n}\n"
+module.exports = ".tab-wrapper{\r\n    height:90%;\r\n    width: 90%;\r\n    margin: 4px auto;\r\n}\r\n.headline{\r\n    display: block;\r\n    font-size: 1.17em;\r\n    margin-top: 1em;\r\n    margin-bottom: 1em;\r\n    margin-left: 0;\r\n    margin-right: 0;\r\n    webkit-box-shadow: 2px 2px 16px 4px rgba(0,0,0,0.22);\r\n    -moz-box-shadow: 2px 2px 16px 4px rgba(0,0,0,0.22);\r\n    box-shadow: 2px 2px 16px 4px rgba(0,0,0,0.22);\r\n}\r\n"
 
 /***/ },
 /* 756 */
 /***/ function(module, exports) {
 
-module.exports = ":host{\n    min-height: 80px;\n    max-height: 200px;\n    height: 10%;\n    width:100%;\n    -webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.6);\n    -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.6);\n    box-shadow:  1px 1px 10px 0px rgba(0,0,0,0.6);\n    border-bottom-color: #8c8c8c;\n    border-bottom-style: inset;\n    text-align: center;\n    background-position: 30%;\n    background-image: url(\"assets/images/moongenlogo.png\");\n    background-repeat: no-repeat;\n    -webkit-background-size:50px;\n    background-size:50px;\n}"
+module.exports = ":host{\r\n    min-height: 80px;\r\n    max-height: 200px;\r\n    height: 10%;\r\n    width:100%;\r\n    -webkit-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.6);\r\n    -moz-box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.6);\r\n    box-shadow:  1px 1px 10px 0px rgba(0,0,0,0.6);\r\n    border-bottom-color: #8c8c8c;\r\n    border-bottom-style: inset;\r\n    text-align: center;\r\n}\r\n\r\n@media (min-width: 600px) {\r\n    :host {\r\n        background-position: 20px;\r\n        background-image: url(\"assets/images/moongenlogo.png\");\r\n        background-repeat: no-repeat;\r\n        -webkit-background-size: 50px;\r\n        background-size: 50px;\r\n    }\r\n}"
 
 /***/ },
 /* 757 */
 /***/ function(module, exports) {
 
-module.exports = "div {\n    background-color: #0f0f0f;\n}"
+module.exports = "div {\r\n    background-color: #000;\r\n    color: white;\r\n}"
 
 /***/ },
 /* 758 */
 /***/ function(module, exports) {
 
-module.exports = ":host{\n    position: fixed;\n    width: 500px;\n    top: 0;\n    left: 50%;\n    margin-left: -250px; /* Negative half of width. */\n    z-index: 99999;\n}"
+module.exports = ":host{\r\n    position: fixed;\r\n    width: 500px;\r\n    top: 0;\r\n    left: 50%;\r\n    margin-left: -250px; /* Negative half of width. */\r\n    z-index: 99999;\r\n}"
 
 /***/ },
 /* 759 */
 /***/ function(module, exports) {
 
-module.exports = ":host{\n    display: flex;\n    flex-direction: row;\n    position: relative;\n    height:90%;\n    width:100%;\n}\n\n.flex-config{\n    width:60%;\n}\n.flex-output{\n    flex: 1 1 60%;\n    display:flex;\n    flex-direction: column;\n    height: 100%;\n}\n.flex-config,.flex-output{\n    height:100%;\n}\n.flex-log,.flex-graph{\n    width:100%;\n    overflow:auto;\n}\n.flex-graph{\n    flex-grow:1;\n}\n.flex-grow{\n    flex-grow:1;\n}\n.flex-log{\n    height:100px;\n}\n\n/**UI COMPONENT**/\n\n/**\n  UI.Layout CSS\n*************************************/\n.ui-splitbar{\n    display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */\n    display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */\n    display: -ms-flexbox;      /* TWEENER - IE 10 */\n    display: -webkit-flex;     /* NEW - Chrome */\n    display: flex;             /* NEW, Spec - Opera 12.1, Firefox 20+ */\n    -webkit-justify-content: center;\n    justify-content: center;\n\n    background-color: #ffffff;\n    right: auto;\n    z-index: 1;\n}\n\n.ui-layout-row > .ui-splitbar{\n    height: 10px; width: 100%;\n    cursor: row-resize;\n    text-align: center;\n    justify-content: center;\n    align-items: center;\n    background: linear-gradient(to bottom, #fff 0%, #eee 100%);\n    overflow-y: hidden;\n}\n:host > .ui-splitbar{\n    width: 8px; height: 100%;\n    cursor: col-resize;\n    -webkit-flex-direction: column;\n    flex-direction: column;\n    background: linear-gradient(to right, #fff 0%, #eee 100%);\n    overflow-x: hidden;\n}\n\n:host > .ui-splitbar > a,\n.ui-layout-row > .ui-splitbar > a {\n    cursor: pointer;\n    text-align: center;\n    font-size: 16px;\n    color: #aaa;\n}\n\n.ui-layout-column > .ui-splitbar > a:nth-child(2){\n    margin-top: 0.35rem;\n}\n\n.ui-layout-row > .ui-splitbar > a:nth-child(2){\n    margin-left: 0.35rem;\n}\n\n\n/**\n* Icons\n**/\n\n.ui-splitbar-icon {\n    width: 0;\n    height: 0;\n    display: inline-block;\n}\n\n.ui-splitbar-icon-up {\n    border-left: 0.45em solid transparent;\n    border-right: 0.45em solid transparent;\n    border-bottom: 0.45em solid;\n}\n\n.ui-splitbar-icon-down {\n    border-left: 0.45em solid transparent;\n    border-right: 0.45em solid transparent;\n    border-top: 0.45em solid;\n    margin-right: 0.45em;\n}\n\n.ui-splitbar-icon-right {\n    border-top: 0.45em solid transparent;\n    border-bottom: 0.45em solid transparent;\n    border-left: 0.45em solid;\n\n}\n\n.ui-splitbar-icon-left {\n    border-top: 0.45em solid transparent;\n    border-bottom: 0.45em solid transparent;\n    border-right: 0.45em solid;\n    margin-top: 0.45em;\n}\n\n/* Allow disabling of icons */\n.no-toggle .ui-splitbar-icon {\n    display: none;\n}\n\n@media only screen and (max-device-width: 480px) {\n    .no-mobile-toggle .ui-splitbar-icon {\n        display: none;\n    }\n}\n\n@media print {\n    .ui-splitbar {\n        display: none;\n    }\n\n    .stretch {\n        position: relative;\n    }\n    /* The last item can take up any amount of space. */\n    .stretch.ui-layout-container:last-child {\n        position: static;\n        overflow: visible;\n    }\n}\n\n/* Make sure hidden elements are in fact not rendered. */\n.ui-layout-hidden {\n    display: none;\n}\n\n\n.animate-row {\n    -webkit-transition: height .8s cubic-bezier(0, 1.05, 0, 1);\n    -moz-transition: height .8s cubic-bezier(0, 1.05, 0, 1);\n    -ms-transition: height .8s cubic-bezier(0, 1.05, 0, 1);\n    -o-transition: height .8s cubic-bezier(0, 1.05, 0, 1);\n    transition: height .8s cubic-bezier(0, 1.05, 0, 1);\n\n    -webkit-transition: top .8s cubic-bezier(0, 1.05, 0, 1);\n    -moz-transition: top .8s cubic-bezier(0, 1.05, 0, 1);\n    -ms-transition: top .8s cubic-bezier(0, 1.05, 0, 1);\n    -o-transition: top .8s cubic-bezier(0, 1.05, 0, 1);\n    transition: top .8s cubic-bezier(0, 1.05, 0, 1);\n}\n\n.animate-column {\n    -webkit-transition: width .8s cubic-bezier(0, 1.05, 0, 1);\n    -moz-transition: width .8s cubic-bezier(0, 1.05, 0, 1);\n    -ms-transition: width .8s cubic-bezier(0, 1.05, 0, 1);\n    -o-transition: width .8s cubic-bezier(0, 1.05, 0, 1);\n    transition: width .8s cubic-bezier(0, 1.05, 0, 1);\n\n    -webkit-transition: left .8s cubic-bezier(0, 1.05, 0, 1);\n    -moz-transition: left .8s cubic-bezier(0, 1.05, 0, 1);\n    -ms-transition: left .8s cubic-bezier(0, 1.05, 0, 1);\n    -o-transition: left .8s cubic-bezier(0, 1.05, 0, 1);\n    transition: left .8s cubic-bezier(0, 1.05, 0, 1);\n}\n\n"
+module.exports = ":host{\r\n    display: flex;\r\n    flex-direction: row;\r\n    position: relative;\r\n    height:90%;\r\n    width:100%;\r\n}\r\n\r\n.flex-config{\r\n    width:60%;\r\n}\r\n.flex-output{\r\n    flex: 1 1 60%;\r\n    display:flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n}\r\n.flex-config,.flex-output{\r\n    height:100%;\r\n}\r\n.flex-log,.flex-graph{\r\n    width:100%;\r\n    overflow:auto;\r\n}\r\n.flex-graph{\r\n    flex-grow:1;\r\n}\r\n.flex-grow{\r\n    flex-grow:1;\r\n}\r\n.flex-log{\r\n    height:100px;\r\n}\r\n\r\n/**UI COMPONENT**/\r\n\r\n/**\r\n  UI.Layout CSS\r\n*************************************/\r\n.ui-splitbar{\r\n    display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */\r\n    display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */\r\n    display: -ms-flexbox;      /* TWEENER - IE 10 */\r\n    display: -webkit-flex;     /* NEW - Chrome */\r\n    display: flex;             /* NEW, Spec - Opera 12.1, Firefox 20+ */\r\n    -webkit-justify-content: center;\r\n    justify-content: center;\r\n\r\n    background-color: #ffffff;\r\n    right: auto;\r\n    z-index: 1;\r\n}\r\n\r\n.ui-layout-row > .ui-splitbar{\r\n    height: 10px; width: 100%;\r\n    cursor: row-resize;\r\n    text-align: center;\r\n    justify-content: center;\r\n    align-items: center;\r\n    background: linear-gradient(to bottom, #fff 0%, #eee 100%);\r\n    overflow-y: hidden;\r\n}\r\n:host > .ui-splitbar{\r\n    width: 8px; height: 100%;\r\n    cursor: col-resize;\r\n    -webkit-flex-direction: column;\r\n    flex-direction: column;\r\n    background: linear-gradient(to right, #fff 0%, #eee 100%);\r\n    overflow-x: hidden;\r\n}\r\n\r\n:host > .ui-splitbar > a,\r\n.ui-layout-row > .ui-splitbar > a {\r\n    cursor: pointer;\r\n    text-align: center;\r\n    font-size: 16px;\r\n    color: #aaa;\r\n}\r\n\r\n.ui-layout-column > .ui-splitbar > a:nth-child(2){\r\n    margin-top: 0.35rem;\r\n}\r\n\r\n.ui-layout-row > .ui-splitbar > a:nth-child(2){\r\n    margin-left: 0.35rem;\r\n}\r\n\r\n\r\n/**\r\n* Icons\r\n**/\r\n\r\n.ui-splitbar-icon {\r\n    width: 0;\r\n    height: 0;\r\n    display: inline-block;\r\n}\r\n\r\n.ui-splitbar-icon-up {\r\n    border-left: 0.45em solid transparent;\r\n    border-right: 0.45em solid transparent;\r\n    border-bottom: 0.45em solid;\r\n}\r\n\r\n.ui-splitbar-icon-down {\r\n    border-left: 0.45em solid transparent;\r\n    border-right: 0.45em solid transparent;\r\n    border-top: 0.45em solid;\r\n    margin-right: 0.45em;\r\n}\r\n\r\n.ui-splitbar-icon-right {\r\n    border-top: 0.45em solid transparent;\r\n    border-bottom: 0.45em solid transparent;\r\n    border-left: 0.45em solid;\r\n\r\n}\r\n\r\n.ui-splitbar-icon-left {\r\n    border-top: 0.45em solid transparent;\r\n    border-bottom: 0.45em solid transparent;\r\n    border-right: 0.45em solid;\r\n    margin-top: 0.45em;\r\n}\r\n\r\n/* Allow disabling of icons */\r\n.no-toggle .ui-splitbar-icon {\r\n    display: none;\r\n}\r\n\r\n@media only screen and (max-device-width: 480px) {\r\n    .no-mobile-toggle .ui-splitbar-icon {\r\n        display: none;\r\n    }\r\n}\r\n\r\n@media print {\r\n    .ui-splitbar {\r\n        display: none;\r\n    }\r\n\r\n    .stretch {\r\n        position: relative;\r\n    }\r\n    /* The last item can take up any amount of space. */\r\n    .stretch.ui-layout-container:last-child {\r\n        position: static;\r\n        overflow: visible;\r\n    }\r\n}\r\n\r\n/* Make sure hidden elements are in fact not rendered. */\r\n.ui-layout-hidden {\r\n    display: none;\r\n}\r\n\r\n\r\n.animate-row {\r\n    -webkit-transition: height .8s cubic-bezier(0, 1.05, 0, 1);\r\n    -moz-transition: height .8s cubic-bezier(0, 1.05, 0, 1);\r\n    -ms-transition: height .8s cubic-bezier(0, 1.05, 0, 1);\r\n    -o-transition: height .8s cubic-bezier(0, 1.05, 0, 1);\r\n    transition: height .8s cubic-bezier(0, 1.05, 0, 1);\r\n\r\n    -webkit-transition: top .8s cubic-bezier(0, 1.05, 0, 1);\r\n    -moz-transition: top .8s cubic-bezier(0, 1.05, 0, 1);\r\n    -ms-transition: top .8s cubic-bezier(0, 1.05, 0, 1);\r\n    -o-transition: top .8s cubic-bezier(0, 1.05, 0, 1);\r\n    transition: top .8s cubic-bezier(0, 1.05, 0, 1);\r\n}\r\n\r\n.animate-column {\r\n    -webkit-transition: width .8s cubic-bezier(0, 1.05, 0, 1);\r\n    -moz-transition: width .8s cubic-bezier(0, 1.05, 0, 1);\r\n    -ms-transition: width .8s cubic-bezier(0, 1.05, 0, 1);\r\n    -o-transition: width .8s cubic-bezier(0, 1.05, 0, 1);\r\n    transition: width .8s cubic-bezier(0, 1.05, 0, 1);\r\n\r\n    -webkit-transition: left .8s cubic-bezier(0, 1.05, 0, 1);\r\n    -moz-transition: left .8s cubic-bezier(0, 1.05, 0, 1);\r\n    -ms-transition: left .8s cubic-bezier(0, 1.05, 0, 1);\r\n    -o-transition: left .8s cubic-bezier(0, 1.05, 0, 1);\r\n    transition: left .8s cubic-bezier(0, 1.05, 0, 1);\r\n}\r\n\r\n"
 
 /***/ },
 /* 760 */
 /***/ function(module, exports) {
 
-module.exports = ":host{\n    position: fixed;\n    bottom: 0;\n    left: 0;\n    right:0;\n    height:20px;\n    background: #f5f6f6; /* Old browsers */\n    background: -moz-linear-gradient(top,  #f5f6f6 0%, #dbdce2 21%, #b8bac6 49%, #dddfe3 80%, #f5f6f6 100%); /* FF3.6-15 */\n    background: -webkit-linear-gradient(top,  #f5f6f6 0%,#dbdce2 21%,#b8bac6 49%,#dddfe3 80%,#f5f6f6 100%); /* Chrome10-25,Safari5.1-6 */\n    background: linear-gradient(to bottom,  #f5f6f6 0%,#dbdce2 21%,#b8bac6 49%,#dddfe3 80%,#f5f6f6 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */\n    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f6f6', endColorstr='#f5f6f6',GradientType=0 ); /* IE6-9 */\n    display: -webkit-flex;\n    -webkit-flex-direction: row;\n\n    display: flex;\n    flex-direction: row;\n}\n\n:host > div.statusContent {\n    width:24.75%;\n    height: 100%;\n    text-align: center;\n}\n:host > div.statusDivider {\n    width:0.2%;\n    height: 100%;\n    background: #cfe7fa; /* Old browsers */\n    background: -moz-radial-gradient(center, ellipse cover,  #cfe7fa 0%, #6393c1 100%); /* FF3.6-15 */\n    background: -webkit-radial-gradient(center, ellipse cover,  #cfe7fa 0%,#6393c1 100%); /* Chrome10-25,Safari5.1-6 */\n    background: radial-gradient(ellipse at center,  #cfe7fa 0%,#6393c1 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */\n    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cfe7fa', endColorstr='#6393c1',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */\n}\n.statusConnected ,.statusRunning{\n    height: 20px;\n    color:white;\n    background: #b4ddb4; /* Old browsers */\n    background: -moz-linear-gradient(top,  #b4ddb4 0%, #83c783 17%, #52b152 33%, #008a00 67%, #005700 83%, #002400 100%); /* FF3.6-15 */\n    background: -webkit-linear-gradient(top,  #b4ddb4 0%,#83c783 17%,#52b152 33%,#008a00 67%,#005700 83%,#002400 100%); /* Chrome10-25,Safari5.1-6 */\n    background: linear-gradient(to bottom,  #b4ddb4 0%,#83c783 17%,#52b152 33%,#008a00 67%,#005700 83%,#002400 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */\n    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b4ddb4', endColorstr='#002400',GradientType=0 ); /* IE6-9 */\n}\n.icon-connect,.icon-not-connect, .icon-not-running,.icon-running{\n    height: 100%;\n    width:20px;\n    margin: 0 auto;\n    background-size: 20px 20px;\n}\n\n.icon-connect{\n    background-image: url(\"assets/images/connect.png\");\n}\n.icon-not-connect{\n    background-image: url(\"assets/images/no_connection.png\");\n}\n.icon-running{\n    background-image: url(\"assets/images/running.png\");\n}\n.icon-not-running{\n    background-image: url(\"assets/images/not_running.png\");\n}\n\n.statusNotConnected, .statusNotRunning {\n    height: 20px;\n    color: white;\n    background: #ff6e00; /* Old browsers */\n    background: -moz-linear-gradient(top,  #ff6e00 0%, #fc1d00 1%, #9b0803 100%); /* FF3.6-15 */\n    background: -webkit-linear-gradient(top,  #ff6e00 0%,#fc1d00 1%,#9b0803 100%); /* Chrome10-25,Safari5.1-6 */\n    background: linear-gradient(to bottom,  #ff6e00 0%,#fc1d00 1%,#9b0803 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */\n    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff6e00', endColorstr='#9b0803',GradientType=0 ); /* IE6-9 */\n}\n\n:host > div.statusContent >progress {\n    width:100%;\n    height: 100%;\n}\nprogress {\n    width: 100%;\n    height: 20px;\n}"
+module.exports = ":host{\r\n    position: fixed;\r\n    bottom: 0;\r\n    left: 0;\r\n    right:0;\r\n    height:20px;\r\n    background: #f5f6f6; /* Old browsers */\r\n    background: -moz-linear-gradient(top,  #f5f6f6 0%, #dbdce2 21%, #b8bac6 49%, #dddfe3 80%, #f5f6f6 100%); /* FF3.6-15 */\r\n    background: -webkit-linear-gradient(top,  #f5f6f6 0%,#dbdce2 21%,#b8bac6 49%,#dddfe3 80%,#f5f6f6 100%); /* Chrome10-25,Safari5.1-6 */\r\n    background: linear-gradient(to bottom,  #f5f6f6 0%,#dbdce2 21%,#b8bac6 49%,#dddfe3 80%,#f5f6f6 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */\r\n    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f6f6', endColorstr='#f5f6f6',GradientType=0 ); /* IE6-9 */\r\n    display: -webkit-flex;\r\n    -webkit-flex-direction: row;\r\n\r\n    display: flex;\r\n    flex-direction: row;\r\n}\r\n\r\n:host > div.statusContent {\r\n    width:24.75%;\r\n    height: 100%;\r\n    text-align: center;\r\n}\r\n:host > div.statusDivider {\r\n    width:0.2%;\r\n    height: 100%;\r\n    background: #cfe7fa; /* Old browsers */\r\n    background: -moz-radial-gradient(center, ellipse cover,  #cfe7fa 0%, #6393c1 100%); /* FF3.6-15 */\r\n    background: -webkit-radial-gradient(center, ellipse cover,  #cfe7fa 0%,#6393c1 100%); /* Chrome10-25,Safari5.1-6 */\r\n    background: radial-gradient(ellipse at center,  #cfe7fa 0%,#6393c1 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */\r\n    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cfe7fa', endColorstr='#6393c1',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */\r\n}\r\n.statusConnected ,.statusRunning{\r\n    height: 20px;\r\n    color:white;\r\n    background: #b4ddb4; /* Old browsers */\r\n    background: -moz-linear-gradient(top,  #b4ddb4 0%, #83c783 17%, #52b152 33%, #008a00 67%, #005700 83%, #002400 100%); /* FF3.6-15 */\r\n    background: -webkit-linear-gradient(top,  #b4ddb4 0%,#83c783 17%,#52b152 33%,#008a00 67%,#005700 83%,#002400 100%); /* Chrome10-25,Safari5.1-6 */\r\n    background: linear-gradient(to bottom,  #b4ddb4 0%,#83c783 17%,#52b152 33%,#008a00 67%,#005700 83%,#002400 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */\r\n    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b4ddb4', endColorstr='#002400',GradientType=0 ); /* IE6-9 */\r\n}\r\n.icon-connect,.icon-not-connect, .icon-not-running,.icon-running{\r\n    height: 100%;\r\n    width:20px;\r\n    margin: 0 auto;\r\n    background-size: 20px 20px;\r\n}\r\n\r\n.icon-connect{\r\n    background-image: url(\"assets/images/connect.png\");\r\n}\r\n.icon-not-connect{\r\n    background-image: url(\"assets/images/no_connection.png\");\r\n}\r\n.icon-running{\r\n    background-image: url(\"assets/images/running.png\");\r\n}\r\n.icon-not-running{\r\n    background-image: url(\"assets/images/not_running.png\");\r\n}\r\n\r\n.statusNotConnected, .statusNotRunning {\r\n    height: 20px;\r\n    color: white;\r\n    background: #ff6e00; /* Old browsers */\r\n    background: -moz-linear-gradient(top,  #ff6e00 0%, #fc1d00 1%, #9b0803 100%); /* FF3.6-15 */\r\n    background: -webkit-linear-gradient(top,  #ff6e00 0%,#fc1d00 1%,#9b0803 100%); /* Chrome10-25,Safari5.1-6 */\r\n    background: linear-gradient(to bottom,  #ff6e00 0%,#fc1d00 1%,#9b0803 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */\r\n    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff6e00', endColorstr='#9b0803',GradientType=0 ); /* IE6-9 */\r\n}\r\n\r\n:host > div.statusContent >progress {\r\n    width:100%;\r\n    height: 100%;\r\n}\r\nprogress {\r\n    width: 100%;\r\n    height: 20px;\r\n}"
 
 /***/ },
 /* 761 */,
 /* 762 */
 /***/ function(module, exports) {
 
-module.exports = "<div class=\"wrap\">\n  <div class=\"flex flex-column\">\n    <app-header></app-header><!--HEADER-->\n   <app-main [(status)]=\"status\">\n   </app-main><!--CONTENT-->\n  </div>\n</div>\n<!--Footer-->\n<app-status-bar [connect]=\"status.connect\" [status]=\"status.status\" [progressBar]=\"status.progressBar\"></app-status-bar>\n<app-main-alert></app-main-alert>"
+module.exports = "<div class=\"wrap\">\n  <div class=\"flex flex-column\">\n    <app-header></app-header><!--HEADER-->\n   <app-main>\n   </app-main><!--CONTENT-->\n  </div>\n</div>\n<!--Footer-->\n<app-status-bar [status]=\"status.status\" [progressBar]=\"status.progressBar\"></app-status-bar>\n<app-main-alert></app-main-alert>"
 
 /***/ },
 /* 763 */
@@ -75597,7 +75703,7 @@ module.exports = "<alert *ngFor=\"let alert of alerts;let i = index\" [dismissib
 /* 772 */
 /***/ function(module, exports) {
 
-module.exports = "<app-config-part [ngClass]=\"{'flex-grow':!toggle.output.status}\" [hidden]=\"!toggle.config.status\" class=\"flex-config\">\n    Loading...\n</app-config-part><!--Config Part-->\n<div class=\"animate-column stretch ui-splitbar\" (mousedown)=\"dragStart($event,'horizontal')\"><!--Splitbar-->\n    <a (click)=\"toggleEvent(toggle.config,toggle.output)\" [hidden]=\"!toggle.output.status\"><span\n            class=\"ui-splitbar-icon ui-splitbar-icon-right\"></span></a>\n    <a (click)=\"toggleEvent(toggle.output,toggle.config)\" [hidden]=\"!toggle.config.status\"><span\n            class=\"ui-splitbar-icon ui-splitbar-icon-left\"></span></a>\n</div>\n<div [hidden]=\"!toggle.output.status\" class=\"flex-output  ui-layout-row\"><!--Graph and Logfile-->\n    <div [hidden]=\"!toggle.graph.status\" class=\"flex-graph\"><!--Graph-->\n        <div *ngIf=\"configurationObject.graph.length!=0\">\n            <div *ngFor=\"let graphItem of configurationObject.graph;let i=index\">\n                <div *ngIf=\"graphItem.type=='histogram'\">\n                    <app-graph-histogram [title]=\"graphItem.title\"\n                                         [points]=\"pointData[i]\" [size]=\"graphItem.size\"\n                                         [id]=\"graphItem.id\"></app-graph-histogram>\n                </div>\n                <div *ngIf=\"graphItem.type=='line'\">\n                    <app-graph-line [title]=\"graphItem.title\" [points]=\"pointData[i]\"\n                                    [id]=\"graphItem.id\"></app-graph-line>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div class=\"stretch ui-splitbar animate-row\" (mousedown)=\"dragStart($event,'vertical')\"><!--Splitbar-->\n        <a (click)=\"toggleEvent(toggle.log,toggle.graph)\" [hidden]=\"!toggle.graph.status\"><span\n                class=\"ui-splitbar-icon ui-splitbar-icon-up\"></span></a>\n        <a (click)=\"toggleEvent(toggle.graph,toggle.log)\" [hidden]=\"!toggle.log.status\"><span\n                class=\"ui-splitbar-icon ui-splitbar-icon-down\"></span></a>\n    </div>\n    <div [ngClass]=\"{'flex-grow':!toggle.graph.status}\" [hidden]=\"!toggle.log.status\" class=\"flex-log\"><!--Logfile-->\n        <app-log-viewer></app-log-viewer>\n    </div>\n</div>\n\n"
+module.exports = "<app-config-part [ngClass]=\"{'flex-grow':!toggle.output.status}\" [hidden]=\"!toggle.config.status\" class=\"flex-config\">\n    Loading...\n</app-config-part><!--Config Part-->\n<div class=\"animate-column stretch ui-splitbar\" (mousedown)=\"dragStart($event,'horizontal')\"><!--Splitbar-->\n    <a (click)=\"toggleEvent(toggle.config,toggle.output)\" [hidden]=\"!toggle.output.status\"><span\n            class=\"ui-splitbar-icon ui-splitbar-icon-right\"></span></a>\n    <a (click)=\"toggleEvent(toggle.output,toggle.config)\" [hidden]=\"!toggle.config.status\"><span\n            class=\"ui-splitbar-icon ui-splitbar-icon-left\"></span></a>\n</div>\n<div [hidden]=\"!toggle.output.status\" class=\"flex-output  ui-layout-row\"><!--Graph and Logfile-->\n    <div [hidden]=\"!toggle.graph.status\" class=\"flex-graph\"><!--Graph-->\n        <div *ngIf=\"configurationObject.graph.length!=0\">\n            <div *ngFor=\"let graphItem of configurationObject.graph;let i=index\">\n                <div *ngIf=\"graphItem.type=='histogram'\">\n                    <app-graph-histogram [title]=\"graphItem.title\"\n                                         [points]=\"pointData[i]\" [size]=\"graphItem.size\"\n                                         [id]=\"graphItem.id\"></app-graph-histogram>\n                </div>\n                <div *ngIf=\"graphItem.type=='line'\">\n                    <app-graph-line [title]=\"graphItem.title\" [max]=\"graphItem.max\" [points]=\"pointData[i]\"\n                                    [id]=\"graphItem.id\"></app-graph-line>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div class=\"stretch ui-splitbar animate-row\" (mousedown)=\"dragStart($event,'vertical')\"><!--Splitbar-->\n        <a (click)=\"toggleEvent(toggle.log,toggle.graph)\" [hidden]=\"!toggle.graph.status\"><span\n                class=\"ui-splitbar-icon ui-splitbar-icon-up\"></span></a>\n        <a (click)=\"toggleEvent(toggle.graph,toggle.log)\" [hidden]=\"!toggle.log.status\"><span\n                class=\"ui-splitbar-icon ui-splitbar-icon-down\"></span></a>\n    </div>\n    <div [ngClass]=\"{'flex-grow':!toggle.graph.status}\" [hidden]=\"!toggle.log.status\" class=\"flex-log\"><!--Logfile-->\n        <app-log-viewer></app-log-viewer>\n    </div>\n</div>\n\n"
 
 /***/ },
 /* 773 */
@@ -77134,7 +77240,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Observable_1 = __webpack_require__(0);
 var ScalarObservable_1 = __webpack_require__(263);
-var EmptyObservable_1 = __webpack_require__(71);
+var EmptyObservable_1 = __webpack_require__(70);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -77748,7 +77854,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
-var EmptyObservable_1 = __webpack_require__(71);
+var EmptyObservable_1 = __webpack_require__(70);
 var isArray_1 = __webpack_require__(49);
 var subscribeToResult_1 = __webpack_require__(7);
 var OuterSubscriber_1 = __webpack_require__(6);
@@ -78118,7 +78224,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
-var isScheduler_1 = __webpack_require__(72);
+var isScheduler_1 = __webpack_require__(71);
 var selfSelector = function (value) { return value; };
 /**
  * We need this JSDoc comment for affecting ESDoc.
@@ -78900,7 +79006,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var isNumeric_1 = __webpack_require__(272);
 var Observable_1 = __webpack_require__(0);
 var async_1 = __webpack_require__(34);
-var isScheduler_1 = __webpack_require__(72);
+var isScheduler_1 = __webpack_require__(71);
 var isDate_1 = __webpack_require__(164);
 /**
  * We need this JSDoc comment for affecting ESDoc.
@@ -79092,7 +79198,7 @@ exports.bindNodeCallback = BoundNodeCallbackObservable_1.BoundNodeCallbackObserv
 
 "use strict";
 "use strict";
-var isScheduler_1 = __webpack_require__(72);
+var isScheduler_1 = __webpack_require__(71);
 var isArray_1 = __webpack_require__(49);
 var ArrayObservable_1 = __webpack_require__(60);
 var combineLatest_1 = __webpack_require__(264);
@@ -79420,7 +79526,7 @@ exports.webSocket = WebSocketSubject_1.WebSocketSubject.create;
 
 "use strict";
 "use strict";
-var EmptyObservable_1 = __webpack_require__(71);
+var EmptyObservable_1 = __webpack_require__(70);
 exports.empty = EmptyObservable_1.EmptyObservable.create;
 //# sourceMappingURL=empty.js.map
 
@@ -80015,7 +80121,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var async_1 = __webpack_require__(34);
 var Subscriber_1 = __webpack_require__(3);
-var isScheduler_1 = __webpack_require__(72);
+var isScheduler_1 = __webpack_require__(71);
 /**
  * Buffers the source Observable values for a specific time period.
  *
@@ -83845,7 +83951,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Subscriber_1 = __webpack_require__(3);
-var EmptyObservable_1 = __webpack_require__(71);
+var EmptyObservable_1 = __webpack_require__(70);
 /**
  * Returns an Observable that repeats the stream of items emitted by the source Observable at most count times,
  * on a particular Scheduler.
@@ -85031,9 +85137,9 @@ var SkipWhileSubscriber = (function (_super) {
 "use strict";
 var ArrayObservable_1 = __webpack_require__(60);
 var ScalarObservable_1 = __webpack_require__(263);
-var EmptyObservable_1 = __webpack_require__(71);
+var EmptyObservable_1 = __webpack_require__(70);
 var concat_1 = __webpack_require__(265);
-var isScheduler_1 = __webpack_require__(72);
+var isScheduler_1 = __webpack_require__(71);
 /**
  * Returns an Observable that emits the items in a specified Iterable before it begins to emit items emitted by the
  * source Observable.
@@ -85501,7 +85607,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Subscriber_1 = __webpack_require__(3);
 var ArgumentOutOfRangeError_1 = __webpack_require__(162);
-var EmptyObservable_1 = __webpack_require__(71);
+var EmptyObservable_1 = __webpack_require__(70);
 /**
  * Emits only the first `count` values emitted by the source Observable.
  *
@@ -85595,7 +85701,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Subscriber_1 = __webpack_require__(3);
 var ArgumentOutOfRangeError_1 = __webpack_require__(162);
-var EmptyObservable_1 = __webpack_require__(71);
+var EmptyObservable_1 = __webpack_require__(70);
 /**
  * Emits only the last `count` values emitted by the source Observable.
  *
@@ -88418,19 +88524,8 @@ module.exports = function(module) {
 /* 1046 */
 /***/ function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global, process) {/**
-* @license
-* Copyright Google Inc. All Rights Reserved.
-*
-* Use of this source code is governed by an MIT-style license that can be
-* found in the LICENSE file at https://angular.io/license
-*/
-(function (global, factory) {
-     true ? factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (factory());
-}(this, (function () { 'use strict';
-
+/* WEBPACK VAR INJECTION */(function(global, process) {;
+;
 var Zone$1 = (function (global) {
     if (global.Zone) {
         throw new Error('Zone already loaded.');
@@ -88457,25 +88552,25 @@ var Zone$1 = (function (global) {
             enumerable: true,
             configurable: true
         });
-        
+        ;
         Object.defineProperty(Zone, "currentTask", {
             get: function () { return _currentTask; },
             enumerable: true,
             configurable: true
         });
-        
+        ;
         Object.defineProperty(Zone.prototype, "parent", {
             get: function () { return this._parent; },
             enumerable: true,
             configurable: true
         });
-        
+        ;
         Object.defineProperty(Zone.prototype, "name", {
             get: function () { return this._name; },
             enumerable: true,
             configurable: true
         });
-        
+        ;
         Zone.prototype.get = function (key) {
             var zone = this.getZoneWith(key);
             if (zone)
@@ -88584,7 +88679,7 @@ var Zone$1 = (function (global) {
         Zone.__symbol__ = __symbol__;
         return Zone;
     }());
-    
+    ;
     var ZoneDelegate = (function () {
         function ZoneDelegate(zone, parentDelegate, zoneSpec) {
             this._taskCounts = { microTask: 0, macroTask: 0, eventTask: 0 };
@@ -88742,7 +88837,7 @@ var Zone$1 = (function (global) {
         return ZoneTask;
     }());
     function __symbol__(name) { return '__zone_symbol__' + name; }
-    
+    ;
     var symbolSetTimeout = __symbol__('setTimeout');
     var symbolPromise = __symbol__('Promise');
     var symbolThen = __symbol__('then');
@@ -88849,12 +88944,12 @@ var Zone$1 = (function (global) {
                         throw new Error("Uncaught (in promise): " + value);
                     }
                     catch (e) {
-                        var error_1 = e;
-                        error_1.rejection = value;
-                        error_1.promise = promise;
-                        error_1.zone = Zone.current;
-                        error_1.task = Zone.currentTask;
-                        _uncaughtPromiseErrors.push(error_1);
+                        var error = e;
+                        error.rejection = value;
+                        error.promise = promise;
+                        error.zone = Zone.current;
+                        error.task = Zone.currentTask;
+                        _uncaughtPromiseErrors.push(error);
                         scheduleQueueDrain();
                     }
                 }
@@ -89020,7 +89115,7 @@ function bindArguments(args, source) {
     }
     return args;
 }
-
+;
 function patchPrototype(prototype, fnNames) {
     var source = prototype.constructor['name'];
     var _loop_1 = function(i) {
@@ -89038,7 +89133,7 @@ function patchPrototype(prototype, fnNames) {
         _loop_1(i);
     }
 }
-
+;
 var isWebWorker = (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope);
 var isNode = (typeof process !== 'undefined' && {}.toString.call(process) === '[object process]');
 var isBrowser = !isNode && !isWebWorker && !!(typeof window !== 'undefined' && window['HTMLElement']);
@@ -89081,7 +89176,7 @@ function patchProperty(obj, prop) {
     };
     Object.defineProperty(obj, prop, desc);
 }
-
+;
 function patchOnProperties(obj, properties) {
     var onProperties = [];
     for (var prop in obj) {
@@ -89098,7 +89193,7 @@ function patchOnProperties(obj, properties) {
         }
     }
 }
-
+;
 var EVENT_TASKS = zoneSymbol('eventTasks');
 // For EventTarget
 var ADD_EVENT_LISTENER = 'addEventListener';
@@ -89214,7 +89309,6 @@ function makeZoneAwareRemoveListener(fnName, useCapturingParam) {
         }
     };
 }
-
 var zoneAwareAddEventListener = makeZoneAwareAddListener(ADD_EVENT_LISTENER, REMOVE_EVENT_LISTENER);
 var zoneAwareRemoveEventListener = makeZoneAwareRemoveListener(REMOVE_EVENT_LISTENER);
 function patchEventTargetMethods(obj) {
@@ -89289,7 +89383,7 @@ function patchClass(className) {
         }
     }
 }
-
+;
 function createNamedFn(name, delegate) {
     try {
         return (Function('f', "return function " + name + "(){return f(this, arguments)}"))(delegate);
@@ -89384,13 +89478,13 @@ function propertyPatch() {
         return desc;
     };
 }
-
+;
 function _redefineProperty(obj, prop, desc) {
     var originalConfigurableFlag = desc.configurable;
     desc = rewriteDescriptor(obj, prop, desc);
     return _tryDefineProperty(obj, prop, desc, originalConfigurableFlag);
 }
-
+;
 function isUnconfigurable(obj, prop) {
     return obj && obj[unconfigurablesKey] && obj[unconfigurablesKey][prop];
 }
@@ -89556,7 +89650,7 @@ function canPatchViaPropertyDescriptor() {
     Object.defineProperty(XMLHttpRequest.prototype, 'onreadystatechange', {});
     return result;
 }
-
+;
 var unboundKey = zoneSymbol('unbound');
 // Whenever any eventListener fires, we check the eventListener target and all parents
 // for `onwhatever` properties and replace them with zone-bound functions
@@ -89586,8 +89680,9 @@ function patchViaCapturingAllTheEvents() {
     for (var i = 0; i < eventNames.length; i++) {
         _loop_1(i);
     }
-    
+    ;
 }
+;
 
 function patchTimer(window, setName, cancelName, nameSuffix) {
     var setNative = null;
@@ -89743,9 +89838,6 @@ if (_global['navigator'] && _global['navigator'].geolocation) {
         'watchPosition'
     ]);
 }
-
-})));
-
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(61), __webpack_require__(748)))
 
 /***/ },
