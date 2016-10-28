@@ -61,7 +61,7 @@ export class MainComponent implements OnInit {
                     }
                 }else if(configurationObject.graph[i].type=="line"){
                     this.pointData[i]=[];
-                    for(let x:number=configurationObject.graph[i].travers.length;x>0;x--){
+                    for(let x:number=0;x<configurationObject.graph[i].travers.length;x++){
                         this.pointData[i].push({x:[],y:[],title:configurationObject.graph[i].travers[x].title});
                     }
                 }
