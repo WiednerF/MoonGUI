@@ -13,8 +13,10 @@ Each Script has:
 -graph:
     -type: histogram or line
     -titel
-    -x (Value name)
-    -y (Value name, only line)
+    -travers: List of travers objects
+    	-x (Value name)
+	-title (title of the travers)
+    	-y (Value name, only line)
     -size (Histogram size)
     -id (Must be unique)
     -max (Maximal datapoints)
