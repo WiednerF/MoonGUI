@@ -55,9 +55,15 @@ export class MainComponent implements OnInit {
             this.pointData=[];
             for(let i:number=0;i<configurationObject.graph.length;i++){
                 if(configurationObject.graph[i].type=="histogram"){
-                    this.pointData[i]=[[]];
+                    this.pointData[i]=[];
+                    for(let x:number=configurationObject.graph[i].travers.length;x>0;x--){
+                        this.pointData[i].push([]);
+                    }
                 }else if(configurationObject.graph[i].type=="line"){
-                    this.pointData[i]=[{x:[],y:[],title:""}];
+                    this.pointData[i]=[];
+                    for(let x:number=configurationObject.graph[i].travers.length;x>0;x--){
+                        this.pointData[i].push({x:[],y:[],title:configurationObject.graph[i].travers[x].title});
+                    }
                 }
             }
         }
@@ -179,16 +185,20 @@ export class MainComponent implements OnInit {
                 if(this.configurationObject&&this.configurationObject.graph&&this.configurationObject.graph.length!=0) {
                     for(let x:number=0;x<this.configurationObject.graph.length;x++) {
                             if (this.configurationObject.graph[x].type == "histogram") {
-                                for (var i = 0; i < result.length; i++) {
-                                    if(result[i][this.configurationObject.graph[x].x]) {
-                                        this.pointData[x][0].push(result[i][this.configurationObject.graph[x].x]);
+                                for(let y:number=0;y<this.configurationObject.graph[x].travers;y++) {
+                                    for (var i = 0; i < result.length; i++) {
+                                        if (result[i][this.configurationObject.graph[x].travers[y].x]) {
+                                            this.pointData[x][y].push(result[i][this.configurationObject.graph[x].travers[y].x]);
+                                        }
                                     }
                                 }
                             } else if (this.configurationObject.graph[x].type == "line") {
-                                for (var i = 0; i < result.length; i++) {
-                                    if(result[i][this.configurationObject.graph[x].y]) {
-                                        this.pointData[x][0].x.push(result[i][this.configurationObject.graph[x].x]);
-                                        this.pointData[x][0].y.push(result[i][this.configurationObject.graph[x].y]);
+                                for(let y:number=0;y<this.configurationObject.graph[x].travers;y++) {
+                                    for (var i = 0; i < result.length; i++) {
+                                        if (result[i][this.configurationObject.graph[x].y]) {
+                                            this.pointData[x][y].x.push(result[i][this.configurationObject.graph[x].travers[y].x]);
+                                            this.pointData[x][y].y.push(result[i][this.configurationObject.graph[x].travers[y].y]);
+                                        }
                                     }
                                 }
                             }
@@ -208,9 +218,15 @@ export class MainComponent implements OnInit {
         if(this.configurationObject.graph){
             for(let i:number=0;i<this.configurationObject.graph.length;i++){
                 if(this.configurationObject.graph[i].type=="histogram"){
-                    this.pointData[i]=[[]];
+                    this.pointData[i]=[];
+                    for(let x:number=this.configurationObject.graph[i].travers.length;x>0;x--){
+                        this.pointData[i].push([]);
+                    }
                 }else if(this.configurationObject.graph[i].type=="line"){
-                    this.pointData[i]=[{x:[],y:[],title:""}];
+                    this.pointData[i]=[];
+                    for(let x:number=this.configurationObject.graph[i].travers.length;x>0;x--){
+                        this.pointData[i].push({x:[],y:[],title:this.configurationObject.graph[i].travers[x].title});
+                    }
                 }
             }
         }
