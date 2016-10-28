@@ -185,7 +185,7 @@ export class MainComponent implements OnInit {
                 if(this.configurationObject&&this.configurationObject.graph&&this.configurationObject.graph.length!=0) {
                     for(let x:number=0;x<this.configurationObject.graph.length;x++) {
                             if (this.configurationObject.graph[x].type == "histogram") {
-                                for(let y:number=0;y<this.configurationObject.graph[x].travers;y++) {
+                                for(let y:number=0;y<this.configurationObject.graph[x].travers.length;y++) {
                                     for (var i = 0; i < result.length; i++) {
                                         if (result[i][this.configurationObject.graph[x].travers[y].x]) {
                                             this.pointData[x][y].push(result[i][this.configurationObject.graph[x].travers[y].x]);
@@ -193,7 +193,7 @@ export class MainComponent implements OnInit {
                                     }
                                 }
                             } else if (this.configurationObject.graph[x].type == "line") {
-                                for(let y:number=0;y<this.configurationObject.graph[x].travers;y++) {
+                                for(let y:number=0;y<this.configurationObject.graph[x].travers.length;y++) {
                                     for (var i = 0; i < result.length; i++) {
                                         if (result[i][this.configurationObject.graph[x].y]) {
                                             this.pointData[x][y].x.push(result[i][this.configurationObject.graph[x].travers[y].x]);
