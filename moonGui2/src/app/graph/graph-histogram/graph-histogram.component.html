@@ -1,6 +1,23 @@
-<div [contextMenu]="basicMenu" [contextMenuSubject]="{name: 'test'}" ></div>
-<context-menu>
-    <template contextMenuItem let-item [visible]="true" [enabled]="false" (execute)="showMessage('Hi, ' + $event.item.name)">
-        test
-    </template>
-</context-menu>
+<div>
+<div></div>
+<button (click)="editModal.show()" type="button" class="btn btn-primary" style="position:relative;top:-400px;-moz-transform: rotate(-90deg); /* Firefox 3.6 Firefox 4 */-webkit-transform: rotate(-90deg); /* Safari */-o-transform: rotate(-90deg); /* Opera */-ms-transform: rotate(-90deg); /* IE9 */transform: rotate(-90deg); /* W3C */">
+        Edit
+</button>
+</div>
+
+<!--TODO Problems with Modal-->
+<div bsModal #editModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-label="Close" (click)="editModal.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Small modal</h4>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,5 @@
-import {Component, Input, OnChanges, AfterViewInit, ElementRef} from '@angular/core';
+import {Component, Input, OnChanges, AfterViewInit, ElementRef, ViewChild} from '@angular/core';
+import {ModalDirective} from "ng2-bootstrap";
 
 declare var Plotly: any;
 declare var document: any;
@@ -16,15 +17,16 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
     @Input() public size:number;
     @Input() public id:string;
 
+    @ViewChild('editModal') public editModal:ModalDirective;
   private configuration:any={showLink: false, displaylogo: false};
-  private layout:any= {title: this.title,bargap: 0.05,bargrourgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value"}};
+  private layout:any= {title: this.title,bargap: 0.05,bargrourgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value"},autosize: true};
   private data:any=[];
 
   constructor(public element:ElementRef) {
   }
 
   ngAfterViewInit() {
-      this.element.nativeElement.children[0].setAttribute("id", this.id);
+      this.element.nativeElement.children[0].children[0].setAttribute("id", this.id);
       for(let i:number=0;i<this.points.length;i++) {
           this.data.push({
               name: this.points[i].title,
@@ -63,5 +65,16 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
           }
       }
   }
+  private resetYAxisTile($event){
+      var graphDiv=document.getElementById(this.id);
+      Plotly.relayout(graphDiv, {yaxis:{title:$event}});
+  }
+
+    private resetXAxisTile($event){
+        var graphDiv=document.getElementById(this.id);
+        Plotly.relayout(graphDiv, {xaxis:{title:$event}});
+    }
+
+
 
 }
