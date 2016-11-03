@@ -15,6 +15,7 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
   @Input() public title:string;
     @Input() public size:number;
     @Input() public id:string;
+
   private configuration:any={showLink: false, displaylogo: false};
   private layout:any= {title: this.title,bargap: 0.05,bargrourgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value"}};
   private data:any=[];

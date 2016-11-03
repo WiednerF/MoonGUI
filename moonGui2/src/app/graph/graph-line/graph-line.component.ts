@@ -1,5 +1,4 @@
 import {Component, Input, OnChanges, AfterViewInit, ElementRef} from '@angular/core';
-import {forEach} from "@angular/router/src/utils/collection";
 
 declare var Plotly: any;
 declare var document: any;
