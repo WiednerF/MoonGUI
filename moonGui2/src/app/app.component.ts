@@ -1,4 +1,4 @@
-import {Component, OnInit,ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {Observable, Subject} from "rxjs";
 import {MoonConnectServiceService} from "./services/moon-connect-service.service";
 import {Response} from "@angular/http";
@@ -16,6 +16,7 @@ import {MainAlertComponent} from "./main-alert/main-alert.component";
  */
 export class AppComponent implements OnInit{
     @ViewChild(MainAlertComponent) mainAlert:MainAlertComponent;//The Main Alert Component for Using the Alert Fields from Every Part
+    private viewContainerRef: ViewContainerRef;
     /**
      * Shows the Status for the StatusBar to be able to  change it from Everywhere
      * @type {{connect: any; status: string; progressBar: {show: boolean; value: number; max: number}}}
@@ -29,7 +30,8 @@ export class AppComponent implements OnInit{
      * Instantiate the MoonConnect
      * @param moonConnectService
      */
-    constructor(public moonConnectService:MoonConnectServiceService) {
+    constructor(public moonConnectService:MoonConnectServiceService, viewContainerRef:ViewContainerRef) {
+        this.viewContainerRef = viewContainerRef;
     }
 
     /**

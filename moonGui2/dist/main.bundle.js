@@ -46839,7 +46839,7 @@ var AppComponent = (function () {
      * Instantiate the MoonConnect
      * @param moonConnectService
      */
-    function AppComponent(moonConnectService) {
+    function AppComponent(moonConnectService, viewContainerRef) {
         this.moonConnectService = moonConnectService;
         /**
          * Shows the Status for the StatusBar to be able to  change it from Everywhere
@@ -46849,6 +46849,7 @@ var AppComponent = (function () {
             status: "",
             progressBar: { show: false, value: 50, max: 100 }
         };
+        this.viewContainerRef = viewContainerRef;
     }
     /**
      * Start all parts which have to start after initiate
@@ -46867,10 +46868,10 @@ var AppComponent = (function () {
             styles: [__webpack_require__(757)],
             providers: [__WEBPACK_IMPORTED_MODULE_1__services_moon_connect_service_service__["a" /* MoonConnectServiceService */], __WEBPACK_IMPORTED_MODULE_2__services_moon_gen_service__["a" /* MoonGenService */]]
         }), 
-        __metadata('design:paramtypes', [(typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__services_moon_connect_service_service__["a" /* MoonConnectServiceService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_moon_connect_service_service__["a" /* MoonConnectServiceService */]) === 'function' && _b) || Object])
+        __metadata('design:paramtypes', [(typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__services_moon_connect_service_service__["a" /* MoonConnectServiceService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_moon_connect_service_service__["a" /* MoonConnectServiceService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewContainerRef"] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewContainerRef"]) === 'function' && _c) || Object])
     ], AppComponent);
     return AppComponent;
-    var _a, _b;
+    var _a, _b, _c;
 }());
 
 
@@ -76039,7 +76040,7 @@ module.exports = "<div class=\"tab-wrapper form-horizontal\">\n    <div class=\"
 /* 773 */
 /***/ function(module, exports) {
 
-module.exports = "<div>\r\n<div></div>\r\n<button (click)=\"editModal.show()\" type=\"button\" class=\"btn btn-primary\" style=\"position:relative;top:-400px;-moz-transform: rotate(-90deg); /* Firefox 3.6 Firefox 4 */-webkit-transform: rotate(-90deg); /* Safari */-o-transform: rotate(-90deg); /* Opera */-ms-transform: rotate(-90deg); /* IE9 */transform: rotate(-90deg); /* W3C */\">\r\n        Edit\r\n</button>\r\n</div>\r\n<div bsModal #editModal=\"bs-modal\" class=\"modal fade\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"mySmallModalLabel\" aria-hidden=\"true\">\r\n    <div class=\"modal-dialog modal-sm\">\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-header\">\r\n                <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"editModal.hide()\">\r\n                    <span aria-hidden=\"true\">&times;</span>\r\n                </button>\r\n                <h4 class=\"modal-title\">Small modal</h4>\r\n            </div>\r\n            <div class=\"modal-body\">\r\n                ...\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>"
+module.exports = "<div>\r\n<div></div>\r\n<button (click)=\"editModal.show()\" type=\"button\" class=\"btn btn-primary\" style=\"position:relative;top:-400px;-moz-transform: rotate(-90deg); /* Firefox 3.6 Firefox 4 */-webkit-transform: rotate(-90deg); /* Safari */-o-transform: rotate(-90deg); /* Opera */-ms-transform: rotate(-90deg); /* IE9 */transform: rotate(-90deg); /* W3C */\">\r\n        Edit\r\n</button>\r\n</div>\r\n\r\n<div bsModal #editModal=\"bs-modal\" class=\"modal fade\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"mySmallModalLabel\" aria-hidden=\"true\">\r\n    <div class=\"modal-dialog modal-lg\">\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-header\">\r\n                <button type=\"button\" class=\"close\" aria-label=\"Close\" (click)=\"editModal.hide()\">\r\n                    <span aria-hidden=\"true\">&times;</span>\r\n                </button>\r\n                <h4 class=\"modal-title\">Edit of Historgam: {{ title }}</h4>\r\n            </div>\r\n            <div class=\"modal-body\">\r\n                <!--TODO Edit Modal for Editing of Graph with use of Tabs-->\r\n                ...\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>"
 
 /***/ },
 /* 774 */
