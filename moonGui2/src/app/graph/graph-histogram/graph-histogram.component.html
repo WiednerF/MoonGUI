@@ -15,8 +15,44 @@
                 <h4 class="modal-title">Edit of Histogram: {{ title }}</h4>
             </div>
             <div class="modal-body">
+                <tabset>
+                    <tab heading="General">
+                        <div class="tab-wrapper form-horizontal">
+                            <div class="form-group row">
+                                <!--TODO-->
+                            </div>
+                        </div>
+                    </tab>
+                    <tab heading="X-Axis">
+                        <div class="tab-wrapper form-horizontal">
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-4">Name</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <input [(ngModel)]="layout.xaxis.title" (ngModelChange)="changeXAxisTitle($event)" class="form-control"
+                                                   type="text" title="Name of X-Axis">
+                                        </div>
+                                    </div>
+                                </div>
+                            <!--TODO-->
+                            </div>
+                    </tab>
+                    <tab heading="Y-Axis">
+                        <div class="tab-wrapper form-horizontal">
+                            <div class="form-group row">
+                                <label class="control-label col-sm-4">Name</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input [(ngModel)]="layout.yaxis.title" (ngModelChange)="changeYAxisTitle($event)" class="form-control"
+                                               type="text" title="Name of Y-Axis">
+                                    </div>
+                                </div>
+                            </div>
+                            <!--TODO-->
+                        </div>
+                    </tab>
+                </tabset>
                 <!--TODO Edit Modal for Editing of Graph with use of Tabs-->
-                ...
             </div>
         </div>
     </div>

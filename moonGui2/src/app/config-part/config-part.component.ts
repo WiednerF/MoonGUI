@@ -8,7 +8,7 @@ import {Component, OnInit} from '@angular/core';
 export class ConfigPartComponent implements OnInit {
 
     private tabs: [{}] = [{disabled: false}, {
-        disabled: false}, { disabled: false}, {disabled: true}];
+        disabled: false}, { disabled: false}];
 
     constructor() {
     }

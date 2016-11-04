@@ -19,7 +19,7 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
 
     @ViewChild('editModal') public editModal:ModalDirective;
   private configuration:any={showLink: false, displaylogo: false};
-  private layout:any= {title: this.title,bargap: 0.05,bargrourgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value"},autosize: true};
+  private layout:any= {title: this.title,bargap: 0.05,bargroupgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value"},autosize: true};
   private data:any=[];
 
   constructor(public element:ElementRef) {
@@ -65,14 +65,19 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
           }
       }
   }
-  private resetYAxisTile($event){
+  private changeYAxisTitle($event){
       var graphDiv=document.getElementById(this.id);
       Plotly.relayout(graphDiv, {yaxis:{title:$event}});
   }
 
-    private resetXAxisTile($event){
+    private changeXAxisTitle($event){
         var graphDiv=document.getElementById(this.id);
         Plotly.relayout(graphDiv, {xaxis:{title:$event}});
+    }
+
+    private changeTitle($event){
+        var graphDiv=document.getElementById(this.id);
+        Plotly.relayout(graphDiv, {title:$event});
     }
 
 

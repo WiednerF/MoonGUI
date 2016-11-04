@@ -6,3 +6,6 @@
 .range{
     height:38px;
 }
+.inputAddon input{
+    max-width: 60px;
+}
