@@ -19,7 +19,6 @@ import { LogViewerComponent } from './log-viewer/log-viewer.component';
 import { SystemComponent } from './config/system/system.component';
 import {MoonConfigurationService} from "./services/moon-configuration.service";
 import { ConfigComponent } from './config/config/config.component';
-import {ContextMenuModule} from "angular2-contextmenu";
 
 @NgModule({
   declarations: [
@@ -41,10 +40,7 @@ import {ContextMenuModule} from "angular2-contextmenu";
     BrowserModule,
     FormsModule,
     HttpModule,
-    PerfectScrollbarModule,
-    ContextMenuModule.forRoot({
-      useBootstrap4: true,
-    })
+    PerfectScrollbarModule
   ],
   providers: [MoonConnectServiceService,MoonGenService, MoonConfigurationService],
   bootstrap: [AppComponent]

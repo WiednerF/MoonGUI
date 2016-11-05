@@ -4,12 +4,13 @@ Each Script has:
   -interfaces:
     -standard, name and conf(Conf is the parameter name)
   -input:
-      -type: text,range or number
+      -type: text,textArea, range or number
       -conf
       -unit
       -name
       -standard
       -max,min, step (Only number and range)
+      -cols, rows (Only type textArea)
 -graph:
     -type: histogram or line
     -titel

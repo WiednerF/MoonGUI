@@ -39,6 +39,12 @@
                     <input [ngModel]="getProp('input',i)" (ngModelChange)="changeInput($event,i)" class="form-control"
                            type="text" title="{{ inputItem.name }}">
                 </div>
+                <!--TYPE: textArea-->
+                <div class="input-group" *ngIf="inputItem.type=='textArea'">
+                    <span class="input-group-addon">{{ inputItem.unit }}</span>
+                    <textarea [ngModel]="getProp('input',i)" (ngModelChange)="changeInput($event,i)" class="form-control"
+                           [rows]="inputItem.rows" [cols]="inputItem.cols"  title="{{ inputItem.name }}"></textarea>
+                </div>
                 <!--TODO More Types-->
             </div>
         </div>
