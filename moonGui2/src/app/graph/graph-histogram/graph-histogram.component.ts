@@ -45,9 +45,9 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
       if(this.data!=[]&& this.data.length!=0) {
           var graphDiv=document.getElementById(this.id);
           if (changes.points) {
-              var update1:any = {x:[],xbins:[]};
+              var update1:any = {x:[],xbins:[], name: []};
               for(let i:number=0;i<changes.points.currentValue.length;i++) {
-                  update1.name = changes.points.currentValue[i].title;
+                  update1.name.push(changes.points.currentValue[i].title);
                   update1.x.push(changes.points.currentValue[i].x);
                   update1.xbins.push({
                       start: Math.min.apply(Math, changes.points.currentValue[i].x),
