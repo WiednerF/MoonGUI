@@ -48,9 +48,9 @@
                             <div [hidden]="layout.xaxis.autorange" class="form-group row">
                                 <div class="col-sm-6"></div><!--TODO add min, max and other stuff-->
                                 <div class="col-sm-3" *ngFor="let item of layout.xaxis.range;let i=index">
-                                    <input *ngIf="i=0" [min]="0" [max]="getPropRange(i+1)" [step]="0.0000000001" [ngModel]="getPropRange(i)" (ngModelChange)="changeXAxisRangeNumber($event,i)" class="form-control"
+                                    <input *ngIf="i==0" [min]="0" [max]="getPropRange(i+1)" [step]="0.0000000001" [ngModel]="getPropRange(i)" (ngModelChange)="changeXAxisRangeNumber($event,i)" class="form-control"
                                                                                                                   type="number">
-                                    <input *ngIf="i=1" [min]="getPropRange(i-1)" [max]="10" [step]="0.0000000001" [ngModel]="getPropRange(i)" (ngModelChange)="changeXAxisRangeNumber($event,i)" class="form-control"
+                                    <input *ngIf="i==1" [min]="getPropRange(i-1)" [max]="10" [step]="0.0000000001" [ngModel]="getPropRange(i)" (ngModelChange)="changeXAxisRangeNumber($event,i)" class="form-control"
                                            type="number">
                                 </div>
                             </div>
