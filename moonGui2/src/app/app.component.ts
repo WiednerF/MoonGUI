@@ -1,8 +1,5 @@
 import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
-import {Observable, Subject} from "rxjs";
 import {MoonConnectServiceService} from "./services/moon-connect-service.service";
-import {Response} from "@angular/http";
-import {MoonGenService} from "./services/moon-gen.service";
 import {MainAlertComponent} from "./main-alert/main-alert.component";
 
 @Component({

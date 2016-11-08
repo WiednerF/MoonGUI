@@ -23,9 +23,7 @@ export class MoonConnectServiceService {
     private testConnect(){
         var obs=Observable.interval(5000);
         obs.subscribe(()=>{
-            if(this.response) {
-                this.testConnectFunction();
-            }
+            this.testConnectFunction();
         });
         this.testConnectFunction();
     }
