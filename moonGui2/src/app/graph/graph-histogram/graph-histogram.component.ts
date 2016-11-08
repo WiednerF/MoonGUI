@@ -19,7 +19,7 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
 
     @ViewChild('editModal') public editModal:ModalDirective;
   private configuration:any={showLink: false, displaylogo: false};
-  private layout:any= {title: this.title,bargap: 0.05,bargroupgap:0.2,yaxis:{title: "Count"},xaxis:{rangeslider:{visible:true},title:"Value",autorange:true, range: [10,50] ,autosize: true}};
+  private layout:any= {title: this.title,bargap: 0.05,bargroupgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value",autorange:true, range: [10,50] ,autosize: true}};
   private data:any=[];
 
   constructor(public element:ElementRef) {
