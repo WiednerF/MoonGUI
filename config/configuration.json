@@ -5,7 +5,7 @@
 					"type":"histogram",
 					"travers":[
 						{
-						 "x":"results"
+						 "x":"test"
 						},
 						{
 						  "x":"results"	
@@ -26,7 +26,7 @@
 						{
 						"x":"rxts",
 						"title":"test2",
-						"y":"results"
+						"y":"test"
 						}
 					],
 					"id":"line",
