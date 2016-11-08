@@ -18,6 +18,10 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
     @Input() public id:string;
 
     @ViewChild('editModal') public editModal:ModalDirective;
+    private xAxisRange:string = "Automatic";
+
+
+
   private configuration:any={showLink: false, displaylogo: false};
   private layout:any= {title: this.title,bargap: 0.05,bargroupgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value",autorange:true, range: [10,50] ,autosize: true}};
   private data:any=[];
@@ -78,17 +82,22 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
     }
     private changeXAxisAutoRange($event){
         var graphDiv=document.getElementById(this.id);
+        this.xAxisRange = $event ? "Automatic" : "Manual";
         this.layout.xaxis.autorange = $event;
         Plotly.relayout(graphDiv, {xaxis:this.layout.xaxis});
     }
     private changeXAxisRange($event){
         var graphDiv=document.getElementById(this.id);
         this.layout.xaxis.range = $event;
+        let newRange = [this.layout.xaxis.range[0],this.layout.xaxis.range[1]];
+        this.layout.xaxis.range = newRange;
         Plotly.relayout(graphDiv, {xaxis:this.layout.xaxis});
     }
     private changeXAxisRangeNumber($event,id:number){
         var graphDiv=document.getElementById(this.id);
         this.layout.xaxis.range[id] = $event;
+        let newRange = [this.layout.xaxis.range[0],this.layout.xaxis.range[1]];
+        this.layout.xaxis.range = newRange;
         Plotly.relayout(graphDiv, {xaxis:this.layout.xaxis});
     }
 
