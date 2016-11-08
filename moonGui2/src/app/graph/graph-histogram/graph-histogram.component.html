@@ -37,7 +37,7 @@
                                         <label class="btn btn-primary" [(ngModel)]="layout.xaxis.autorange" (ngModelChange)="changeXAxisAutoRange($event)"
                                                btnCheckbox>Auto Range</label>
                                     </div></div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-6">
                                     <div class="input-group" [hidden]="layout.xaxis.autorange" >
                                         <nouislider [connect]="true" [min]="0" [max]="10" [step]="0.0000000001"
                                                     [(ngModel)]="layout.xaxis.range"
@@ -47,6 +47,11 @@
                                 <div class="col-sm-2"><!-- TODO Editable and With more freedom-->
                                     {{ layout.xaxis.range | json }}
                                 </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-6"></div>
+                                <div class="col-sm-3" *ngFor="let item of layout.xaxis.range;let i=index"> <input [ngModel]="getPropRange(i)" (ngModelChange)="changeXAxisRangeNumber($event,i)" class="form-control"
+                                                                                                                  type="number"></div>
                             </div>
                             <!--TODO-->
                         </div>

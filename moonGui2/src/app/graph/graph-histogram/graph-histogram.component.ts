@@ -86,12 +86,19 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
         this.layout.xaxis.range = $event;
         Plotly.relayout(graphDiv, {xaxis:this.layout.xaxis});
     }
+    private changeXAxisRangeNumber($event,id:number){
+        var graphDiv=document.getElementById(this.id);
+        this.layout.xaxis.range[i] = $event;
+        Plotly.relayout(graphDiv, {xaxis:this.layout.xaxis});
+    }
 
     private changeTitle($event){
         var graphDiv=document.getElementById(this.id);
         Plotly.relayout(graphDiv, {title:$event});
     }
-
+    private getPropRange(id:number){
+        return this.layout.xaxis.range[id];
+    }
 
 
 }
