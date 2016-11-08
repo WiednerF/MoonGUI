@@ -1,4 +1,5 @@
-import {Component, Input, OnChanges, AfterViewInit, ElementRef} from '@angular/core';
+import {Component, Input, OnChanges, AfterViewInit, ElementRef, ViewChild} from '@angular/core';
+import {ModalDirective} from "ng2-bootstrap";
 
 declare var Plotly: any;
 declare var document: any;
@@ -15,6 +16,8 @@ export class GraphLineComponent implements OnChanges,AfterViewInit {
   @Input() public title:string;
   @Input() public id:string;
   @Input() public max:number;
+    @ViewChild('editModal') public editModal:ModalDirective;
+
   private configuration:any={showLink: false,displaylogo: false};
   private layout:any= {title: this.title,bargap: 0.05,bargrourgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value", autorange: false,range:[0,1000000]}};
   private data:any=[];
@@ -60,6 +63,21 @@ export class GraphLineComponent implements OnChanges,AfterViewInit {
                 Plotly.relayout(graphDiv,update);
             }
         }
+    }
+
+    private changeYAxisTitle($event){
+        var graphDiv=document.getElementById(this.id);
+        Plotly.relayout(graphDiv, {yaxis:{title:$event}});
+    }
+
+    private changeXAxisTitle($event){
+        var graphDiv=document.getElementById(this.id);
+        this.layout.xaxis.title = $event;
+        Plotly.relayout(graphDiv, {xaxis:this.layout.xaxis});
+    }
+    private changeTitle($event){
+        var graphDiv=document.getElementById(this.id);
+        Plotly.relayout(graphDiv, {title:$event});
     }
 
 }

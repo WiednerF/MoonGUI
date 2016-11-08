@@ -1,1 +1,54 @@
 <div id="graph-line"></div>
+<button (click)="editModal.show()" type="button" class="btn btn-primary"
+        style="position:relative;top:-400px;-moz-transform: rotate(-90deg); /* Firefox 3.6 Firefox 4 */-webkit-transform: rotate(-90deg); /* Safari */-o-transform: rotate(-90deg); /* Opera */-ms-transform: rotate(-90deg); /* IE9 */transform: rotate(-90deg); /* W3C */">
+    Edit
+</button>
+
+<div bsModal #editModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-label="Close" (click)="editModal.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Edit of Histogram: {{ title }}</h4>
+            </div>
+            <div class="modal-body">
+                <tabset>
+                    <tab heading="X-Axis">
+                        <div class="tab-wrapper form-horizontal">
+                            <div class="form-group row">
+                                <label class="control-label col-sm-4">Name</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input [(ngModel)]="layout.xaxis.title"
+                                               (ngModelChange)="changeXAxisTitle($event)" class="form-control"
+                                               type="text" title="Name of X-Axis">
+                                    </div>
+                                </div>
+                            </div>
+                            <!--TODO-->
+                        </div>
+                    </tab>
+                    <tab heading="Y-Axis">
+                        <div class="tab-wrapper form-horizontal">
+                            <div class="form-group row">
+                                <label class="control-label col-sm-4">Name</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input [(ngModel)]="layout.yaxis.title"
+                                               (ngModelChange)="changeYAxisTitle($event)" class="form-control"
+                                               type="text" title="Name of Y-Axis">
+                                    </div>
+                                </div>
+                            </div>
+                            <!--TODO-->
+                        </div>
+                    </tab>
+                </tabset>
+                <!--TODO Edit Modal for Editing of Graph with use of Tabs-->
+            </div>
+        </div>
+    </div>
+</div>
