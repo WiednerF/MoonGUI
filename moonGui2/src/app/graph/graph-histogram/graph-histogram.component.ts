@@ -88,7 +88,7 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
     }
     private changeXAxisRangeNumber($event,id:number){
         var graphDiv=document.getElementById(this.id);
-        this.layout.xaxis.range[i] = $event;
+        this.layout.xaxis.range[id] = $event;
         Plotly.relayout(graphDiv, {xaxis:this.layout.xaxis});
     }
 
