@@ -19,6 +19,7 @@ import { LogViewerComponent } from './log-viewer/log-viewer.component';
 import { SystemComponent } from './config/system/system.component';
 import {MoonConfigurationService} from "./services/moon-configuration.service";
 import { ConfigComponent } from './config/config/config.component';
+import {NouisliderModule} from "ng2-nouislider";
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { ConfigComponent } from './config/config/config.component';
     BrowserModule,
     FormsModule,
     HttpModule,
-    PerfectScrollbarModule
+    PerfectScrollbarModule,
+      NouisliderModule
   ],
   providers: [MoonConnectServiceService,MoonGenService, MoonConfigurationService],
   bootstrap: [AppComponent]

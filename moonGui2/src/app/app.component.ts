@@ -8,8 +8,7 @@ import {MainAlertComponent} from "./main-alert/main-alert.component";
 @Component({
     selector: 'moon-gui',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css'],
-    providers:[MoonConnectServiceService,MoonGenService]
+    styleUrls: ['./app.component.css']
 })
 /**
  * The Main Class Component for the Complete MoonGUI Application Frontend

@@ -13,26 +13,28 @@ export class MoonConnectServiceService {
     private connectChange:Subject<boolean>=new Subject<boolean>();
     private response:boolean=true;
 
-  constructor(private http:Http) {
-      this.testConnect();
-  }
+    constructor(private http:Http) {
+        this.testConnect();
+    }
 
     /**
      * Test if the System run if it should run
      */
     private testConnect(){
-        this.testConnectFunction();
         var obs=Observable.interval(5000);
         obs.subscribe(()=>{
-           this.testConnectFunction();
+            if(this.response) {
+                this.testConnectFunction();
+            }
         });
+        this.testConnectFunction();
     }
 
     private testConnectFunction(){
         var connect=this.connect;
         if(this.response) {
             this.response = false;
-            this.http.head("/rest/").subscribe(()=> {
+            this.http.head("/rest/").map(response => response.json() ).subscribe(()=> {
                 if (!connect) {
                     this.addAlert("success", "Connection Established")
                 }
