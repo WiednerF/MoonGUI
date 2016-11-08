@@ -19,7 +19,7 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
 
     @ViewChild('editModal') public editModal:ModalDirective;
   private configuration:any={showLink: false, displaylogo: false};
-  private layout:any= {title: this.title,bargap: 0.05,bargroupgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value",autorange:true, range: [10,50] ,autosize: true}};
+  private layout:any= {title: this.title,bargap: 0.05,bargroupgap:0.2,yaxis:{title: "Count"},xaxis:{rangeslider:{visible:true},title:"Value",autorange:true, range: [10,50] ,autosize: true}};
   private data:any=[];
 
   constructor(public element:ElementRef) {
@@ -47,6 +47,7 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
           if (changes.points) {
               var update1:any = {x:[],xbins:[]};
               for(let i:number=0;i<changes.points.currentValue.length;i++) {
+                  update1.name = changes.points.currentValue[i].title;
                   update1.x.push(changes.points.currentValue[i].x);
                   update1.xbins.push({
                       start: Math.min.apply(Math, changes.points.currentValue[i].x),
