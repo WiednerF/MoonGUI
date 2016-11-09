@@ -3,12 +3,14 @@
 			"graph":[
 				{
 					"type":"histogram",
+					"range":{
+						"max":100,
+						"min":-100,
+						"step":0.0000000001
+					},
 					"travers":[
 						{
-						 "x":"test"
-						},
-						{
-						  "x":"results"	
+						 "x":"results"
 						}
 					],
 					"size": 0.01,
@@ -20,13 +22,8 @@
 					"travers":[
 						{
 							"x":"rxts",
-							"title":"test1",
+							"title":"latency",
 							"y":"results"
-						},
-						{
-						"x":"rxts",
-						"title":"test2",
-						"y":"test"
 						}
 					],
 					"id":"line",
