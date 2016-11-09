@@ -11,10 +11,10 @@
     <div [hidden]="!toggle.graph.status" class="flex-graph"><!--Graph-->
         <div *ngIf="configurationObject.graph.length!=0">
             <div *ngFor="let graphItem of configurationObject.graph;let i=index">
-                <div *ngIf="graphItem.type=='histogram'">
+                <div *ngIf="graphItem.type=='histogram' && graphItem.range">
                     <app-graph-histogram [title]="graphItem.title"
                                          [points]="pointData[i]" [size]="graphItem.size"
-                                         [id]="graphItem.id"></app-graph-histogram>
+                                         [id]="graphItem.id" [rangeMin]="graphItem.range.min" [rangeMax]="graphItem.range.max" [rangeStep]="graphItem.range.step" ></app-graph-histogram>
                 </div>
                 <div *ngIf="graphItem.type=='line'">
                     <app-graph-line [title]="graphItem.title" [max]="graphItem.max" [points]="pointData[i]"

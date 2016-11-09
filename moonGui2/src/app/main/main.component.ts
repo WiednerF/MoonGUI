@@ -55,6 +55,9 @@ export class MainComponent implements OnInit {
             this.pointData=[];
             for(let i:number=0;i<configurationObject.graph.length;i++){
                 if(configurationObject.graph[i].type=="histogram"){
+                    if(!configurationObject.graph[i].range){
+                        configurationObject.graph[i].range = {max: 1000000,min: 0, step: 0.00001};
+                    }
                     this.pointData[i]=[];
                     for(let x:number=0;x<configurationObject.graph[i].travers.length;x++){
                         this.pointData[i].push({x:[],title:configurationObject.graph[i].travers[x].title});
@@ -218,6 +221,9 @@ export class MainComponent implements OnInit {
         if(this.configurationObject.graph){
             for(let i:number=0;i<this.configurationObject.graph.length;i++){
                 if(this.configurationObject.graph[i].type=="histogram"){
+                    if(!this.configurationObject.graph[i].range){
+                        this.configurationObject.graph[i].range = {max: 1000000,min: 0, step: 0.00001};
+                    }
                     this.pointData[i]=[];
                     for(let x:number=0;x<this.configurationObject.graph[i].travers.length;x++){
                         this.pointData[i].push({x:[],title:this.configurationObject.graph[i].travers[x].title});

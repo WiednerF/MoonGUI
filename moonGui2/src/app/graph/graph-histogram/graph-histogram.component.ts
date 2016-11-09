@@ -16,6 +16,9 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
   @Input() public title:string;
     @Input() public size:number;
     @Input() public id:string;
+    @Input() public rangeMin:number=0;
+    @Input() public rangeMax:number=1000000000000;
+    @Input() public rangeStep:number=0.0000001;
 
     @ViewChild('editModal') public editModal:ModalDirective;
     private xAxisRange:string = "Automatic";

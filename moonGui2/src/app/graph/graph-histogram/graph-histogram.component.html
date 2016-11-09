@@ -38,8 +38,8 @@
                                                btnCheckbox>{{ xAxisRange }}</label>
                                     </div></div>
                                 <div class="col-sm-6">
-                                    <div class="input-group" [hidden]="layout.xaxis.autorange" ><!--TODO Automatic change of values-->
-                                        <nouislider [connect]="true" [min]="0" [max]="10" [step]="0.0000000001"
+                                    <div class="input-group" [hidden]="layout.xaxis.autorange" >
+                                        <nouislider [connect]="true" [min]="rangeMin" [max]="rangeMax" [step]="rangeStep"
                                                     [(ngModel)]="layout.xaxis.range"
                                                     (ngModelChange)="changeXAxisRange($event)"></nouislider>
                                     </div>
@@ -48,13 +48,12 @@
                             <div [hidden]="layout.xaxis.autorange" class="form-group row">
                                 <div class="col-sm-6"></div><!--TODO add min, max and other stuff-->
                                 <div class="col-sm-3" *ngFor="let item of layout.xaxis.range;let i=index">
-                                    <input *ngIf="i==0" [min]="0" [max]="getPropRange(i+1)" [step]="0.0000000001" [ngModel]="getPropRange(i)" (ngModelChange)="changeXAxisRangeNumber($event,i)" class="form-control"
+                                    <input *ngIf="i==0" [min]="rangeMin" [max]="getPropRange(i+1)" [step]="rangeStep" [ngModel]="getPropRange(i)" (ngModelChange)="changeXAxisRangeNumber($event,i)" class="form-control"
                                                                                                                   type="number">
-                                    <input *ngIf="i==1" [min]="getPropRange(i-1)" [max]="10" [step]="0.0000000001" [ngModel]="getPropRange(i)" (ngModelChange)="changeXAxisRangeNumber($event,i)" class="form-control"
+                                    <input *ngIf="i==1" [min]="getPropRange(i-1)" [max]="rangeMax" [step]="rangeStep" [ngModel]="getPropRange(i)" (ngModelChange)="changeXAxisRangeNumber($event,i)" class="form-control"
                                            type="number">
                                 </div>
                             </div>
-                            <!--TODO-->
                         </div>
                     </tab>
                     <tab heading="Y-Axis">
