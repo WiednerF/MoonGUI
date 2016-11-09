@@ -1,5 +1,6 @@
 [
 	{"name":"moongen-server.lua",
+	  "description":"The Standard test script for users",
 			"graph":[
 				{
 					"type":"histogram",
@@ -60,6 +61,7 @@
             },
         {
           "name":"l3-load-latency.lua",
+	  "description":"A Level 3 sceanrio to test the network on load with latency tests",
           "configuration": {
             "interfaces": [
               {
