@@ -10,7 +10,7 @@ function moongui.getConfig(execution)
     return config
 end
 
-function moongui.zmqServer(p,execution, mg)
+function moongui.server(p,execution,mg)
     local file = io.open("history/"..execution.."/data.json","a")
     local MoonGenDataHandler = class("MoonGenDataHandler",turbo.web.RequestHandler)
 

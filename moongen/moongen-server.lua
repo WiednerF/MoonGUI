@@ -33,7 +33,7 @@ function master(args)
 end
 
 function server(p,args)
-    moongui.zmqServer(p,args.execution,mg)
+    moongui.server(p,args.execution,mg)
 end
 
 function txTimestamper(queue)
