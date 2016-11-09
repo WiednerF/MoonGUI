@@ -1,5 +1,6 @@
 Each Script has:
 -name
+-description
 -configuration:
   -interfaces:
     -standard, name and conf(Conf is the parameter name)
