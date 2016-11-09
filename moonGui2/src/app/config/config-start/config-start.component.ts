@@ -11,6 +11,7 @@ import {MoonConfigurationService} from "../../services/moon-configuration.servic
 export class ConfigStartComponent implements OnInit {
   status = 0;
   private title:string;
+  private author:string;
   private script:number;
   private configurationList:any;
 
@@ -20,12 +21,14 @@ export class ConfigStartComponent implements OnInit {
              this.configurationList=this.configurationService.getConfigurationList();
              this.script=this.configurationService.getScript();
              this.title=this.configurationService.getTitle();
+             this.author=this.configurationService.getAuthor();
          }
       });
   }
 
   ngOnInit() {
       this.configurationService.getTitleSubscribe().subscribe((value)=>{this.title=value});
+      this.configurationService.getAuthorSubscribe().subscribe((value)=>{this.author=value});
       this.moonGenService.getRunningSubscribe().subscribe(value=>{if(value){this.status=1;}else{this.status=0;}});
       this.configurationService.getScriptChange().subscribe(value=>{this.script=value});
   }
@@ -55,6 +58,12 @@ export class ConfigStartComponent implements OnInit {
      */
     public changeTitle($event){
         this.configurationService.setTitle($event.target.value);
+    }
+    /**
+     * Change the Author of the Component
+     */
+    public changeAuthor($event){
+        this.configurationService.setAuthor($event.target.value);
     }
     /**
      * Change the Script of the Component

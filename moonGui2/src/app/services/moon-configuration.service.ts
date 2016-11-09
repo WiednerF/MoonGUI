@@ -17,6 +17,8 @@ export class MoonConfigurationService {
     private inputChange:Subject<any>=new Subject<any>();
     private title:string="";
     private titleChange:Subject<string>=new Subject<string>();
+    private author:string="";
+    private authorChange:Subject<string>=new Subject<string>();
     private wait:Subject<boolean>=new Subject<boolean>();
 
   constructor(public connectService:MoonConnectServiceService) {
@@ -72,6 +74,16 @@ export class MoonConfigurationService {
         this.title=title;
         this.titleChange.next(title);
     }
+    public getAuthor():string{
+        return this.author;
+    }
+    public getAuthorSubscribe():Subject<string>{
+        return this.authorChange;
+    }
+    public setAuthor(author:string):void{
+        this.author=author;
+        this.authorChange.next(author);
+    }
     //***********Standard Values
     public getInterface(id:number):number{
         if(this.configuration[this.script].configuration.interfaces.length>id){
@@ -115,6 +127,7 @@ export class MoonConfigurationService {
         let result=<any>{};
         result.title=this.getTitle();
         result.script=this.configuration[this.getScript()].name;
+        result.author=this.getAuthor();
         let conf=this.getConfiguration(this.getScript());
         if(conf.configuration){
             if(conf.configuration.interfaces){
