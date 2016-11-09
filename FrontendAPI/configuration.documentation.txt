@@ -21,3 +21,5 @@ Each Script has:
     -size (Histogram size)
     -id (Must be unique)
     -max (Maximal datapoints)
+    -range (Type histogram, optional)
+      -max,min,step of range slider
