@@ -31,4 +31,13 @@
             </select>
         </div>
     </div>
+    <hr>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="title-moongui">Description:</label>
+        <template *ngFor="let scriptList of configurationList; let i=index">
+            <div class="col-sm-10" *ngIf="i==script">
+                {{ scriptList.description }}
+            </div>
+        </template>
+    </div>
 </div>
