@@ -72,4 +72,8 @@ export class ConfigStartComponent implements OnInit {
         this.configurationService.setScript($event);
     }
 
+    private getProbDescription(){
+        return this.configurationList[this.script].description;
+    }
+
 }
