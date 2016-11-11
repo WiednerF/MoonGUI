@@ -20,6 +20,7 @@ import { SystemComponent } from './config/system/system.component';
 import {MoonConfigurationService} from "./services/moon-configuration.service";
 import { ConfigComponent } from './config/config/config.component';
 import {NouisliderModule} from "ng2-nouislider";
+import {routing} from "./app.routes";
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import {NouisliderModule} from "ng2-nouislider";
     FormsModule,
     HttpModule,
     PerfectScrollbarModule,
+    routing,
       NouisliderModule
   ],
   providers: [MoonConnectServiceService,MoonGenService, MoonConfigurationService],
