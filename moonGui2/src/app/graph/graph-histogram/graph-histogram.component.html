@@ -1,7 +1,7 @@
 <div>
     <div></div>
     <button (click)="editModal.show()" type="button" class="btn btn-primary"
-            style="position:relative;top:-400px;-moz-transform: rotate(-90deg); /* Firefox 3.6 Firefox 4 */-webkit-transform: rotate(-90deg); /* Safari */-o-transform: rotate(-90deg); /* Opera */-ms-transform: rotate(-90deg); /* IE9 */transform: rotate(-90deg); /* W3C */">
+            style="position:relative;top:-500px;">
         Edit
     </button>
 </div>
@@ -37,20 +37,46 @@
                                         <label class="btn btn-primary" [(ngModel)]="layout.xaxis.autorange" (ngModelChange)="changeXAxisAutoRange($event)"
                                                btnCheckbox>{{ xAxisRange }}</label>
                                     </div></div>
-                                <div class="col-sm-6">
-                                    <div class="input-group" [hidden]="layout.xaxis.autorange" >
+                                <div class="col-sm-2">
+                                    <div class="btn-group">
+                                        <label class="btn btn-primary" [(ngModel)]="xAxisPercentile" (ngModelChange)="changeXAxisPercentile($event)"
+                                               btnCheckbox>{{ xAxisPercentileTitle }}</label>
+                                    </div></div>
+                                <div class="col-sm-4"></div>
+                            </div>
+                            <div [hidden]="layout.xaxis.autorange || xAxisPercentile" class="form-group row">
+                                <div class="col-sm-6"></div>
+                                <div class="col-sm-3">
+                                    <div class="input-group">
                                         <nouislider [connect]="true" [min]="rangeMin" [max]="rangeMax" [step]="rangeStep"
                                                     [(ngModel)]="layout.xaxis.range"
                                                     (ngModelChange)="changeXAxisRange($event)"></nouislider>
                                     </div>
                                 </div>
                             </div>
-                            <div [hidden]="layout.xaxis.autorange" class="form-group row">
-                                <div class="col-sm-6"></div><!--TODO add min, max and other stuff-->
+                            <div [hidden]="layout.xaxis.autorange || xAxisPercentile" class="form-group row">
+                                <div class="col-sm-6"></div>
                                 <div class="col-sm-3" *ngFor="let item of layout.xaxis.range;let i=index">
                                     <input *ngIf="i==0" [min]="rangeMin" [max]="getPropRange(i+1)" [step]="rangeStep" [ngModel]="getPropRange(i)" (ngModelChange)="changeXAxisRangeNumber($event,i)" class="form-control"
                                                                                                                   type="number">
                                     <input *ngIf="i==1" [min]="getPropRange(i-1)" [max]="rangeMax" [step]="rangeStep" [ngModel]="getPropRange(i)" (ngModelChange)="changeXAxisRangeNumber($event,i)" class="form-control"
+                                           type="number">
+                                </div>
+                            </div>
+                            <div [hidden]="layout.xaxis.autorange || !xAxisPercentile" class="form-group row"><!--TODO Testen-->
+                                <div class="col-sm-6"></div>
+                                <div class="col-sm-3">
+                                    <div class="input-group">
+                                        <nouislider [min]="0" [max]="100" [step]="1"
+                                                    [(ngModel)]="xAxisPercentileValue"
+                                                    (ngModelChange)="changeXAxisPercentileRange($event)"></nouislider>
+                                    </div>
+                                </div>
+                            </div>
+                            <div [hidden]="layout.xaxis.autorange || !xAxisPercentile" class="form-group row">
+                                <div class="col-sm-6"></div>
+                                <div class="col-sm-3">
+                                    <input [min]="0" [max]="100" [step]="1" [ngModel]="xAxisPercentileValue" (ngModelChange)="changeXAxisPercentileRange($event)" class="form-control"
                                            type="number">
                                 </div>
                             </div>
