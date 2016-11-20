@@ -1,7 +1,7 @@
 <div>
     <div></div>
     <button (click)="editModal.show()" type="button" class="btn btn-primary"
-            style="position:relative;top:-500px;">
+            style="position:relative;top:-400px;">
         Edit
     </button>
 </div>
@@ -38,7 +38,7 @@
                                                btnCheckbox>{{ xAxisRange }}</label>
                                     </div></div>
                                 <div class="col-sm-2">
-                                    <div class="btn-group">
+                                    <div class="btn-group" [hidden]="layout.xaxis.autorange">
                                         <label class="btn btn-primary" [(ngModel)]="xAxisPercentile" (ngModelChange)="changeXAxisPercentile($event)"
                                                btnCheckbox>{{ xAxisPercentileTitle }}</label>
                                     </div></div>

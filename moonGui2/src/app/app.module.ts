@@ -22,6 +22,8 @@ import { ConfigComponent } from './config/config/config.component';
 import {NouisliderModule} from "ng2-nouislider";
 import {routing} from "./app.routes";
 import { HistoryListComponent } from './history/history-list/history-list.component';
+import {Angular2DataTableModule} from "angular2-data-table";
+import {MoonHistoryService} from "./services/moon-history.service";
 
 @NgModule({
   declarations: [
@@ -46,9 +48,10 @@ import { HistoryListComponent } from './history/history-list/history-list.compon
     HttpModule,
     PerfectScrollbarModule,
     routing,
-      NouisliderModule
+      NouisliderModule,
+      Angular2DataTableModule
   ],
-  providers: [MoonConnectServiceService,MoonGenService, MoonConfigurationService],
+  providers: [MoonConnectServiceService,MoonGenService, MoonConfigurationService, MoonHistoryService],
   bootstrap: [AppComponent]
 })
 /**

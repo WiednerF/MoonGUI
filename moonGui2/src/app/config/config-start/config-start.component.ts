@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {MoonGenService} from "../../services/moon-gen.service";
 import {Response} from "@angular/http";
 import {MoonConfigurationService} from "../../services/moon-configuration.service";
+import {MoonHistoryService} from "../../services/moon-history.service";
 
 @Component({
   selector: 'app-config-start',
@@ -14,8 +15,9 @@ export class ConfigStartComponent implements OnInit {
   private author:string;
   private script:number;
   private configurationList:any;
+  private clearAllValues:boolean=true;
 
-  constructor(public configurationService:MoonConfigurationService, public moonGenService:MoonGenService) {
+  constructor(public configurationService:MoonConfigurationService, public moonGenService:MoonGenService, public moonHistory:MoonHistoryService) {
       this.configurationService.getWait().subscribe((value)=>{
          if(value){
              this.configurationList=this.configurationService.getConfigurationList();
@@ -70,6 +72,10 @@ export class ConfigStartComponent implements OnInit {
      */
     public changeScript($event){
         this.configurationService.setScript($event);
+    }
+    public clearAll(){
+        this.moonHistory.clearAll();
+        this.clearAllValues = true;
     }
 
     private getProbDescription(script:number){

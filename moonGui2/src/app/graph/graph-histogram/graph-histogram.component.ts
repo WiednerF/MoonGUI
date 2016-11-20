@@ -64,7 +64,7 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
                   });
               }
               Plotly.restyle(graphDiv,update1);
-              if(this.xAxisPercentile){
+              if(this.xAxisPercentile&&!this.layout.xaxis.autorange){
                   this.changeRangePercentile();
               }
           }
@@ -94,7 +94,7 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
         Plotly.relayout(graphDiv, {xaxis:this.layout.xaxis});
     }
     private changeXAxisPercentile($event){
-        this.xAxisPercentileTitle = $event ? "Number" : "Percentile";
+        this.xAxisPercentileTitle = $event ? "Percentile" : "Number";
         this.xAxisPercentile = $event;
         this.changeRangePercentile();
     }

@@ -2,6 +2,7 @@
     height:90%;
     width: 90%;
     margin: 4px auto;
+    position: relative;
 }
 hr{
     border: 0;
