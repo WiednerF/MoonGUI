@@ -200,7 +200,17 @@ function InterfaceHandler:get()
 	    i=i+1
 	end
 	self:write(output)
-end 
+end
+local HistoryHandler = class("HistoryHandler",turbo.web.RequestHandler)
+function HistoryHandler:delete()
+	local cmd = "rm -rf history/*"
+	local command = io.popen(cmd)
+	local rest = command:read()
+	if not rest==="" then
+		self:status(503)
+	end
+end
+ 
 
 local app = turbo.web.Application:new({
 	-- Serve single index.html file on root requests.
@@ -215,6 +225,8 @@ local app = turbo.web.Application:new({
 	{"^/rest/system/$",SystemHandler},
 	{"^/rest/interfaces/$",InterfaceHandler},
 	{"^/config/$",turbo.web.StaticFileHandler, "config/configuration.json"},
+	-- History API
+	{"^/rest/history/$",HistoryHandler},
 	-- Serve contents of directory.
 	{"^/(.*)$", turbo.web.StaticFileHandler, "moonGui2/dist/"}
 })	
