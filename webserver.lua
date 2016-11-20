@@ -85,7 +85,7 @@ function MoonGenStartHandler:post()
 	configurationFile:write(json.encode(configurationObject,{indent= true}))
 	configurationFile:close()
 	local historyFile = io.open("history/history-number","a")
-	historyFile:write(executionNumber..";"..configurationObject.title..";"..configurationObject.script..";"..configurationObject.author..";"..os.date("%x %X").."\n")
+	historyFile:write(executionNumber..";"..configurationObject.title..";"..configurationObject.script..";"..configurationObject.author..";"..os.date("%x %X")..";\n")
 	historyFile:close()
 	--Executing Standard MoonGen Script
 	cmd = "nohup moongen/moongen.sh "..configurationObject.script.." "..executionNumber.." > history/"..executionNumber.."/run.log & echo $! > history/"..executionNumber.."/pid.log"
