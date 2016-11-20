@@ -22,6 +22,9 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
 
     @ViewChild('editModal') public editModal:ModalDirective;
     private xAxisRange:string = "Automatic";
+    private xAxisPercentile: boolean = false;
+    private xAxisPercentileTitle: string = "Number";
+    private xAxisPercentileValue: number = 99;
 
 
 
@@ -45,8 +48,6 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
       }
       this.layout.title=this.title;
       Plotly.newPlot(this.id, this.data,this.layout,this.configuration);
-
-
   }
   ngOnChanges(changes){
       if(this.data!=[]&& this.data.length!=0) {
@@ -63,6 +64,9 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
                   });
               }
               Plotly.restyle(graphDiv,update1);
+              if(this.xAxisPercentile){
+                  this.changeRangePercentile();
+              }
           }
 
           if (changes.title) {
@@ -89,6 +93,16 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
         this.layout.xaxis.autorange = $event;
         Plotly.relayout(graphDiv, {xaxis:this.layout.xaxis});
     }
+    private changeXAxisPercentile($event){
+        this.xAxisPercentileTitle = $event ? "Number" : "Percentile";
+        this.xAxisPercentile = $event;
+        this.changeRangePercentile();
+    }
+    private changeXAxisPercentileRange($event){
+        this.xAxisPercentileValue = $event;
+        this.changeRangePercentile();
+    }
+
     private changeXAxisRange($event){
         var graphDiv=document.getElementById(this.id);
         this.layout.xaxis.range = $event;
@@ -110,6 +124,16 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
     }
     private getPropRange(id:number){
         return this.layout.xaxis.range[id];
+    }
+
+    private changeRangePercentile(){
+        if(this.data[0]){
+            var graphDiv=document.getElementById(this.id);
+            let result:[number]=this.data[0].x;
+            result.sort(function(a,b){return a-b });
+            this.layout.xaxis.range = [result[0],result[Math.round(result.length*(this.xAxisPercentileValue/100.0))]];
+            Plotly.relayout(graphDiv, {xaxis:this.layout.xaxis});
+        }
     }
 
 
