@@ -123,6 +123,36 @@ export class MoonConfigurationService {
         return this.connectService.get("/rest/interfaces/");
     }
 
+    public getJSONConfiguration():string{
+        return JSON.stringify({title: this.title, author: this.author, script: this.script, interfaceNodes: this.interfaceNodes, input: this.input });
+    }
+
+    /**
+     * Generates the Config from saved file
+     * @param res Must be a correct object
+     */
+    public setJSONConfiguration(res:any):void{
+        if(res.script){
+            this.setScript(res.script);
+        }
+        if(res.title){
+            this.setTitle(res.title);
+        }
+        if(res.author){
+            this.setAuthor(res.author);
+        }
+        if(res.interfaceNodes){
+            for(let i:number = 0;i<res.interfaceNodes.length;i++){
+                this.setInterface(i,res.interfaceNodes[i]);
+            }
+        }
+        if(res.input){
+            for(let i:number = 0;i<res.input.length;i++){
+                this.setInput(i,res.input[i]);
+            }
+        }
+    }
+
     public getConfigurationObject():any{
         let result=<any>{};
         result.title=this.getTitle();

@@ -16,6 +16,8 @@ export class ConfigStartComponent implements OnInit {
   private script:number;
   private configurationList:any;
   private clearAllValues:boolean=true;
+    private save:boolean=true;
+    private load:boolean=true;
 
   constructor(public configurationService:MoonConfigurationService, public moonGenService:MoonGenService, public moonHistory:MoonHistoryService) {
       this.configurationService.getWait().subscribe((value)=>{
@@ -77,9 +79,38 @@ export class ConfigStartComponent implements OnInit {
         this.moonHistory.clearAll();
         this.clearAllValues = true;
     }
+    public saveFile(){
+        let content:string = this.configurationService.getJSONConfiguration();
+        ConfigStartComponent.download("moonGUI.json",content);
+        this.save = true;
+    }
+    public loadFile(){
+        //TODO Access Through a Modular
+        this.load = true;
+    }
 
     private getProbDescription(script:number){
         return this.configurationList[script].description;
     }
+
+    /**
+     * Downloads the File to save
+     * @param filename The Filename
+     * @param text the content
+     */
+    private static download(filename, text) {
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', filename);
+
+    if (document.createEvent) {
+        var event = document.createEvent('MouseEvents');
+        event.initEvent('click', true, true);
+        pom.dispatchEvent(event);
+    }
+    else {
+        pom.click();
+    }
+}
 
 }
