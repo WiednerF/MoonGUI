@@ -3,10 +3,10 @@ This is a Graphical User Interface for Network Analysis of the basic from MoonGe
 You can find more information to MoonGen on [MoonGen Github](https://github.com/emmericp/MoonGen).
 This project is written for LuaJIT on the Backend and for Angular2 in the frontend.
 ## Installation
-For further installation documentation see folder [documentation](documentation)
+For further installation documentation see folder [documentation](documentation/README.md)
 
 ## Documentation
-For further documentation see folder [documentation](documentation)
+For further documentation see folder [documentation](documentation/README.md)
 
 ## Information to Basic Work
 
