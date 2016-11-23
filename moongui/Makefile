@@ -13,5 +13,4 @@ build-dev:
 		ng build --dev
 
 clean:
-	npm clean cache
-	ng clean
+	npm cache clean

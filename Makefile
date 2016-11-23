@@ -4,26 +4,15 @@ all: clean install build
 
 install:
 	git submodule init
-	cd ../
-	./build.sh
-	cd webserver/
+	cd ../ && ./build.sh
 	luarocks install turbo
 	luarocks install luasocket
-	cd moongui
-	make install
-	cd ../
+	cd moongui && make install
 
 build:
-		cd moongui
-		make build
-		cd ../
+		cd moongui && $(MAKE) build
 
 build-dev:
-	cd moongui
-	make build-dev
-	cd ../
-
+		cd moongui && $(MAKE) build-dev
 clean:
-	cd moongui
-	make clean
-	cd ../
+		cd moongui && $(MAKE) clean
