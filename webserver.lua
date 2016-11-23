@@ -211,7 +211,7 @@ end
 
 local app = turbo.web.Application:new({
 	-- Serve single index.html file on root requests.
-	{"^/$", turbo.web.StaticFileHandler, "moonGui2/dist/index.html"},
+	{"^/$", turbo.web.StaticFileHandler, "moongui/dist/index.html"},
 	-- Serve Connection availability
 	{"^/rest/$",ConnectHandler},
 	-- Start the MoonGen Handler Function
@@ -225,7 +225,7 @@ local app = turbo.web.Application:new({
 	-- History API
 	{"^/rest/history/$",HistoryHandler},
 	-- Serve contents of directory.
-	{"^/(.*)$", turbo.web.StaticFileHandler, "moonGui2/dist/"}
+	{"^/(.*)$", turbo.web.StaticFileHandler, "moongui/dist/"}
 })	
 
 local srv = turbo.httpserver.HTTPServer(app)
