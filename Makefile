@@ -3,7 +3,7 @@
 all: clean install build
 
 install:
-	git submodule init
+	git submodule update --init
 	cd ../ && ./build.sh
 	luarocks install turbo
 	luarocks install luasocket
