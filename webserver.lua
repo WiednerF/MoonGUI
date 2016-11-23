@@ -206,9 +206,6 @@ function HistoryHandler:delete()
 	local cmd = "rm -rf history/*"
 	local command = io.popen(cmd)
 	local rest = command:read()
-	if not rest==="" then
-		self:status(503)
-	end
 end
  
 
