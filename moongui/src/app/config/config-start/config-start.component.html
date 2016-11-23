@@ -1,5 +1,5 @@
 <div class="tab-wrapper form-horizontal">
-    <div class="form-group">
+    <div class="form-group row">
         <label class="control-label col-sm-2" for="startStopMoonGen">MoonGen:</label>
         <div class="col-sm-10">
             <div class="btn-group" id="startStopMoonGen">
@@ -11,19 +11,19 @@
             </div>
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group row">
         <label class="control-label col-sm-2" for="title-moongui">Title:</label>
         <div class="col-sm-10">
             <input [(ngModel)]="title" (input)="changeTitle($event)" (change)="changeTitle($event)" class="form-control" type="text" name="title-moongui" id="title-moongui">
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group row">
         <label class="control-label col-sm-2" for="author-moongui">Author:</label>
         <div class="col-sm-10">
             <input [(ngModel)]="author" (input)="changeAuthor($event)" (change)="changeAuthor($event)" class="form-control" type="text" name="author-moongui" id="author-moongui">
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group row">
         <label class="control-label col-sm-2" for="script-moongui">Script:</label>
         <div class="col-sm-10">
             <select id="script-moongui" class="form-control" [(ngModel)]="script" (ngModelChange)="changeScript($event)">
@@ -31,13 +31,13 @@
             </select>
         </div>
     </div>
-    <div class="form-group" *ngIf="script==0||script">
+    <div class="form-group row" *ngIf="script==0||script">
         <label class="control-label col-sm-2" for="title-moongui">Description:</label>
             <div class="col-sm-10">
                 {{ getProbDescription(script) }}
             </div>
     </div>
-    <div class="form-group">
+    <div class="form-group row">
         <label class="control-label col-sm-2" for="saveLoad">Save/Load:</label>
         <div class="col-sm-10">
             <div class="btn-group" id="saveLoad">
@@ -48,7 +48,7 @@
             </div>
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group row">
         <div class="col-sm-2"></div>
         <div class="col-sm-4">
             <label class="btn btn-danger" [(ngModel)]="clearAllValues" (ngModelChange)="clearAll()"
