@@ -5,8 +5,6 @@ import {HistoryListComponent} from "./history/history-list/history-list.componen
 
 
 export const appRoutes: Routes = [
-
-    // TODO Add all other routes and add for each class a different handler service
     { path: 'history', component: HistoryListComponent},
     { path: '**', component: MainComponent }
 ];
