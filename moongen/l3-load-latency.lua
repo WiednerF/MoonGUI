@@ -9,11 +9,12 @@ local timer  = require "timer"
 local arp    = require "proto.arp"
 local log    = require "log"
 
---****ADDED FOR MoonGui
+--****ADDED FOR MoonGui (Obligatory)
 local pipe = require "pipe"
+local socket = require "socket"
 local moongui = require "moongui"
 
--- set addresses here (TODO Maybe add to configuration)
+-- set addresses here
 local DST_MAC		= nil -- resolved via ARP on GW_IP or DST_IP, can be overriden with a string here
 local SRC_IP_BASE	= "10.0.0.10" -- actual address will be SRC_IP_BASE + random(0, flows)
 local DST_IP		= "10.1.0.10"
@@ -109,7 +110,9 @@ function loadSlave(queue, rxDev, size, flows,p)
         queue:send(bufs)
         txCtr:update()
         rxCtr:update()
-	p:send("{timer="..os.time()..",rate="..rxCtr:getThroughput().."}")
+	local mpps = rxXtr:getStats(rxCtr)
+	p:send({timer=socket.gettime(),rate=mpps})
+	
     end
     txCtr:finalize()
     rxCtr:finalize()
@@ -128,12 +131,14 @@ function timerSlave(txQueue, rxQueue, size, flows,p)
     local rateLimit = timer:new(0.001)
     local baseIP = parseIPAddress(SRC_IP_BASE)
     while mg.running() do
-        hist:update(timestamper:measureLatency(size, function(buf)
-            fillUdpPacket(buf, size)
-            local pkt = buf:getUdpPacket()
-            pkt.ip4.src:set(baseIP + counter)
-            counter = incAndWrap(counter, flows)
-        end))
+	local temp,latency = timestamper:measureLatency(size, function(buf)
+            			fillUdpPacket(buf, size)
+            			local pkt = buf:getUdpPacket()
+            			pkt.ip4.src:set(baseIP + counter)
+           			counter = incAndWrap(counter, flows)
+        		end)
+	hist:update(temp,latency)
+	p:send({latency=latency,timer=socket.gettime()})
         rateLimit:wait()
         rateLimit:reset()
     end

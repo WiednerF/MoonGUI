@@ -18,10 +18,10 @@ function moongui.server(p,execution,mg)
 	local output = {}
 	local a = p:tryRecv(0)
 	local i=0
-	while a~=nil and i<50 do
+	while a~=nil and i<200 do
 		file:write(json.encode(a),"\n")
 		table.insert(output,a)
-		if i<50 then
+		if i<200 then
 			a=p:tryRecv(0)
 		end
 	end

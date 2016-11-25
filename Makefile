@@ -16,3 +16,5 @@ build-dev:
 		cd moongui && $(MAKE) build-dev
 clean:
 		cd moongui && $(MAKE) clean
+start:
+		./start-webserver.sh

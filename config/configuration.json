@@ -1,12 +1,12 @@
 [
-	{"name":"moongen-server.lua",
+	{"name":"moongen-virtual.lua",
 	  "description":"The Standard test script for users",
 			"graph":[
 				{
 					"type":"histogram",
 					"range":{
 						"max":100,
-						"min":-100,
+						"min":0,
 						"step":0.0000000001
 					},
 					"travers":[

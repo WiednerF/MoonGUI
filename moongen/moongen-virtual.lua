@@ -73,7 +73,7 @@ function rxTimestamper(queue,p)
 			results[#results + 1] = tonumber(rxTs - txTs) / tscFreq -- to nanoseconds
 			rxts[#rxts + 1] = tonumber(rxTs)
 			if #results>1 then
-				p:send({results=results[#results],rxts=rxts[#rxts],test=results[#results-1]})
+				p:send({results=results[#results],rxts=rxts[#rxts]})
 			end
 		end
 		bufs:free(numPkts)
