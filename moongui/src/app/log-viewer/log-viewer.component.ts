@@ -3,7 +3,7 @@ import {MoonGenService} from "../services/moon-gen.service";
 import {Observable} from "rxjs";
 import {MoonConnectServiceService} from "../services/moon-connect-service.service";
 
-declare var document:any;
+declare let document:any;
 
 @Component({
     selector: 'app-log-viewer',
@@ -49,7 +49,7 @@ export class LogViewerComponent implements OnInit {
     }
 
     /**
-     * Get the Log from extern
+     * Get the Log from external
      */
     private getLog() {
         let logFile = this.moonGenService.getLogFile(this.seek);
@@ -58,13 +58,12 @@ export class LogViewerComponent implements OnInit {
             logFile.timeout(30000,new Error("Timeout exceeded")).map(response=>response.json()).subscribe(response=> {
                 this.seek = response.seek;
                 this.response = true;
-                var result = response.log;
-                console.log(result);
-                for(var i=0;i<result.length;i++) {
+                let result = response.log;
+                for(let i=0;i<result.length;i++) {
                     this.log.push(decodeURIComponent(result[i]));
                 }
                 if(result.length>0){
-                    var elem = document.getElementsByClassName("flex-log")[0];
+                    let elem = document.getElementsByClassName("flex-log")[0];
                     elem.scrollTop = elem.scrollHeight;
                 }
             }, (error)=> {

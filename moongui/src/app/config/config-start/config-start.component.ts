@@ -128,7 +128,6 @@ export class ConfigStartComponent implements OnInit {
         myReader.onloadend = function(e){
             let result = JSON.parse(myReader.result);
             config.setJSONConfiguration(result);
-            console.log(result);
         };
 
         myReader.readAsText(file);

@@ -21,7 +21,6 @@ import {MoonConfigurationService} from "./services/moon-configuration.service";
 import { ConfigComponent } from './config/config/config.component';
 import {NouisliderModule} from "ng2-nouislider";
 import {routing} from "./app.routes";
-import { HistoryListComponent } from './history/history-list/history-list.component';
 import {Angular2DataTableModule} from "angular2-data-table";
 import {MoonHistoryService} from "./services/moon-history.service";
 
@@ -38,8 +37,7 @@ import {MoonHistoryService} from "./services/moon-history.service";
     MainAlertComponent,
     LogViewerComponent,
     SystemComponent,
-    ConfigComponent,
-    HistoryListComponent
+    ConfigComponent
   ],
   imports: [
     Ng2BootstrapModule,
