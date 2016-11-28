@@ -1,20 +1,20 @@
 [
 	{"name":"moongen-virtual.lua",
-	  "description":"The Standard test script for users",
+	  "description":"The default test script for users running on a virtual machine",
 			"graph":[
 				{
 					"type":"histogram",
 					"range":{
 						"max":100,
 						"min":0,
-						"step":0.0000000001
+						"step":0.00000000000001
 					},
 					"travers":[
 						{
 						 "x":"results"
 						}
 					],
-					"size": 0.01,
+					"size": 0.001,
 					"title":"Distribution of Latency",
 					"id":"hist"
 				},
@@ -61,7 +61,7 @@
             },
         {
           "name":"l3-load-latency.lua",
-	  "description":"A Level 3 scenario to test the network on load with latency tests",
+	  "description":"A Level 3 scenario to test the network on load with latency test",
           "configuration": {
             "interfaces": [
               {
@@ -117,7 +117,12 @@
               	"x":"latency"
 		}
 	      ],
-              "size":2,
+	      "range":{
+			"max":1000,
+			"min":0,
+			"step":1
+		},
+              "size":4,
               "title":"Distribution of Latency",
               "id":"hist"
             },
@@ -143,7 +148,7 @@
 			}
 		],
               "id":"lineRate",
-              "max":"1000",
+              "max":"3000",
               "title":"Live Rate"
             }
           ]
