@@ -6,7 +6,7 @@ import {AlertComponent} from "../alert/alert.component";
  * This Service is the basic Connection Service to the Backend and is based to reduce network traffic
  */
 @Injectable()
-export class MoonConnectServiceService {
+export class MoonConnectService {
 
     private alert: AlertComponent;//The AlertModule for Access to add different Alert Types
     private connect: boolean = true;//The Variable for the connection

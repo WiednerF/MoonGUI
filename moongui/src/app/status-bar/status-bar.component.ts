@@ -1,6 +1,6 @@
 import { Component, OnInit , Input} from '@angular/core';
 import {MoonGenService} from "../services/moon-gen.service";
-import {MoonConnectServiceService} from "../services/moon-connect-service.service";
+import {MoonConnectService} from "../services/moon-connect.service";
 
 @Component({
   selector: 'app-status-bar',
@@ -25,7 +25,7 @@ export class StatusBarComponent implements OnInit {
      * @param moonGenService The MoonGenAPI Service
      * @param connectService The Connection Service
      */
-  constructor(public moonGenService:MoonGenService,public connectService:MoonConnectServiceService) {
+  constructor(public moonGenService:MoonGenService,public connectService:MoonConnectService) {
 
   }
 

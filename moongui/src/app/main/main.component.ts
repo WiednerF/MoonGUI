@@ -3,7 +3,7 @@ import {
 } from '@angular/core';
 import {MoonGenService} from "../services/moon-gen.service";
 import {Observable} from "rxjs";
-import {MoonConnectServiceService} from "../services/moon-connect-service.service";
+import {MoonConnectService} from "../services/moon-connect.service";
 import {MoonConfigurationService} from "../services/moon-configuration.service";
 
 declare var $:any;
@@ -38,7 +38,7 @@ export class MainComponent implements OnInit {
      * @param connectService
      * @param configuration
      */
-  constructor(public element:ElementRef,public moonGenService:MoonGenService,public connectService:MoonConnectServiceService, public configuration:MoonConfigurationService) {
+  constructor(public element:ElementRef, public moonGenService:MoonGenService, public connectService:MoonConnectService, public configuration:MoonConfigurationService) {
         this.configuration.getWait().subscribe(value=>{if(value){
             let configurationObject=this.configuration.getConfiguration(this.configuration.getScript());
             this.initScript(configurationObject);

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {MoonConnectServiceService} from "./moon-connect-service.service";
+import {MoonConnectService} from "./moon-connect.service";
 import {Observable, Subject} from "rxjs";
 import {MoonConfigurationService} from "./moon-configuration.service";
 import {start} from "repl";
@@ -30,7 +30,7 @@ export class MoonGenService {
      * @param moonConnectService
      * @param configurationService
      */
-  constructor(private moonConnectService:MoonConnectServiceService, private configurationService:MoonConfigurationService) {
+  constructor(private moonConnectService:MoonConnectService, private configurationService:MoonConfigurationService) {
       this.testRunning();
   }
 

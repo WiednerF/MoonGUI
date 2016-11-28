@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Subject, Observable} from "rxjs";
 import {Response} from "@angular/http";
-import {MoonConnectServiceService} from "./moon-connect-service.service";
+import {MoonConnectService} from "./moon-connect.service";
 
 @Injectable()
 export class MoonConfigurationService {
@@ -21,7 +21,7 @@ export class MoonConfigurationService {
     private authorChange:Subject<string>=new Subject<string>();
     private wait:Subject<boolean>=new Subject<boolean>();
 
-  constructor(public connectService:MoonConnectServiceService) {
+  constructor(public connectService:MoonConnectService) {
       this.configurationHttp();
   }
   public configurationHttp(){

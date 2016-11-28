@@ -5,7 +5,7 @@ import {MoonConfigurationService} from "../../services/moon-configuration.servic
 import {MoonHistoryService} from "../../services/moon-history.service";
 import {ModalDirective} from "ng2-bootstrap";
 import {sha1} from "@angular/compiler/src/i18n/digest";
-import {MoonConnectServiceService} from "../../services/moon-connect-service.service";
+import {MoonConnectService} from "../../services/moon-connect.service";
 
 @Component({
     selector: 'app-config-start',
@@ -25,7 +25,7 @@ export class ConfigStartComponent implements OnInit {
     @ViewChild('loadFileModal') public loadFileModal: ModalDirective;
     private fileInformation:any = [];
 
-    constructor(public configurationService: MoonConfigurationService, public moonGenService: MoonGenService, public moonHistory: MoonHistoryService, public connect: MoonConnectServiceService) {
+    constructor(public configurationService: MoonConfigurationService, public moonGenService: MoonGenService, public moonHistory: MoonHistoryService, public connect: MoonConnectService) {
         this.configurationService.getWait().subscribe((value) => {
             if (value) {
                 this.configurationList = this.configurationService.getConfigurationList();

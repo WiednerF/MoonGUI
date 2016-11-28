@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {MoonConnectServiceService} from "../../services/moon-connect-service.service";
+import {MoonConnectService} from "../../services/moon-connect.service";
 import {Observable} from "rxjs";
 
 @Component({
@@ -11,10 +11,10 @@ export class SystemComponent {
 
   private sys:{arch:string,os:string,user:string,cores:number,lua:{version:string,status:boolean}}={arch:"",os:"",user:"",cores:0,lua:{version:"",status:false}};
 
-  constructor(public moonConnect:MoonConnectServiceService) {
+  constructor(public moonConnect:MoonConnectService) {
       Observable.timer(2000).take(1).subscribe(()=>this.getInformation(moonConnect));
   }
-  getInformation(moonConnect:MoonConnectServiceService){
+  getInformation(moonConnect:MoonConnectService){
       var moonConnectGet=  moonConnect.get("/rest/system/");
       if(moonConnectGet!=null) {
           moonConnectGet.map(result => result.json()).subscribe(result=>this.sys = result, ()=> {

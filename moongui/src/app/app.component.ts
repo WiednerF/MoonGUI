@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
-import {MoonConnectServiceService} from "./services/moon-connect-service.service";
+import {MoonConnectService} from "./services/moon-connect.service";
 import {AlertComponent} from "./alert/alert.component";
 
 @Component({
@@ -26,7 +26,7 @@ export class AppComponent implements OnInit{
      * Instantiate the MoonConnect
      * @param moonConnectService
      */
-    constructor(public moonConnectService:MoonConnectServiceService, viewContainerRef:ViewContainerRef) {
+    constructor(public moonConnectService:MoonConnectService, viewContainerRef:ViewContainerRef) {
         this.viewContainerRef = viewContainerRef;
     }
 

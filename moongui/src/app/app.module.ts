@@ -12,7 +12,7 @@ import { ConfigPartComponent } from './config-part/config-part.component';
 import { GraphHistogramComponent } from './graph/graph-histogram/graph-histogram.component';
 import { GraphLineComponent } from './graph/graph-line/graph-line.component';
 import { ConfigStartComponent } from './config/config-start/config-start.component';
-import {MoonConnectServiceService} from "./services/moon-connect-service.service";
+import {MoonConnectService} from "./services/moon-connect.service";
 import {MoonGenService} from "./services/moon-gen.service";
 import { AlertComponent } from './alert/alert.component';
 import { LogViewerComponent } from './log-viewer/log-viewer.component';
@@ -49,7 +49,7 @@ import {MoonHistoryService} from "./services/moon-history.service";
       NouisliderModule,
       Angular2DataTableModule
   ],
-  providers: [MoonConnectServiceService,MoonGenService, MoonConfigurationService, MoonHistoryService],
+  providers: [MoonConnectService,MoonGenService, MoonConfigurationService, MoonHistoryService],
   bootstrap: [AppComponent]
 })
 /**

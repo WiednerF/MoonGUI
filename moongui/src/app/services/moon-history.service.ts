@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import {MoonConnectServiceService} from "./moon-connect-service.service";
+import {MoonConnectService} from "./moon-connect.service";
 
 @Injectable()
 export class MoonHistoryService {
 
-  constructor(public moonConnect:MoonConnectServiceService) { }
+  constructor(public moonConnect:MoonConnectService) { }
 
 
   public clearAll():void{

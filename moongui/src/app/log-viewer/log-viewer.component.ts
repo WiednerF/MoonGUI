@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MoonGenService} from "../services/moon-gen.service";
 import {Observable} from "rxjs";
-import {MoonConnectServiceService} from "../services/moon-connect-service.service";
+import {MoonConnectService} from "../services/moon-connect.service";
 
 declare let document:any;
 
@@ -20,7 +20,7 @@ export class LogViewerComponent implements OnInit {
     private log: any = [];
     private seek: number = 0;
 
-    constructor(private moonGenService: MoonGenService, private connectService: MoonConnectServiceService) {
+    constructor(private moonGenService: MoonGenService, private connectService: MoonConnectService) {
 
     }
 
