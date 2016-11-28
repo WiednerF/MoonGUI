@@ -5,6 +5,7 @@ import {MoonConfigurationService} from "../../services/moon-configuration.servic
 import {MoonHistoryService} from "../../services/moon-history.service";
 import {ModalDirective} from "ng2-bootstrap";
 import {sha1} from "@angular/compiler/src/i18n/digest";
+import {MoonConnectServiceService} from "../../services/moon-connect-service.service";
 
 @Component({
     selector: 'app-config-start',
@@ -20,10 +21,11 @@ export class ConfigStartComponent implements OnInit {
     private clearAllValues: boolean = true;
     private save: boolean = true;
     private load: boolean = true;
+    private stopServerValue: boolean = true;
     @ViewChild('loadFileModal') public loadFileModal: ModalDirective;
     private fileInformation:any = [];
 
-    constructor(public configurationService: MoonConfigurationService, public moonGenService: MoonGenService, public moonHistory: MoonHistoryService) {
+    constructor(public configurationService: MoonConfigurationService, public moonGenService: MoonGenService, public moonHistory: MoonHistoryService, public connect: MoonConnectServiceService) {
         this.configurationService.getWait().subscribe((value) => {
             if (value) {
                 this.configurationList = this.configurationService.getConfigurationList();
@@ -98,6 +100,10 @@ export class ConfigStartComponent implements OnInit {
         this.moonHistory.clearAll();
         this.clearAllValues = true;
     }
+    public stopServer() {
+        this.connect.stopServer();
+        this.stopServerValue = true;
+    }
 
     public saveFile() {
         let content: string = this.configurationService.getJSONConfiguration();
@@ -107,7 +113,6 @@ export class ConfigStartComponent implements OnInit {
 
     public loadFile() {
         this.loadFileModal.show();
-        //TODO Access Through a Modular
         this.load = true;
     }
 

@@ -8,50 +8,61 @@ import {MainAlertComponent} from "../main-alert/main-alert.component";
 @Injectable()
 export class MoonConnectServiceService {
 
-    private mainAlert:MainAlertComponent;//The AlertModule for Access
-    private connect:boolean=true;//The Variable for the connection
-    private connectChange:Subject<boolean>=new Subject<boolean>();
-    private response:boolean=true;
+    private mainAlert: MainAlertComponent;//The AlertModule for Access
+    private connect: boolean = true;//The Variable for the connection
+    private connectChange: Subject<boolean> = new Subject<boolean>();
+    private response: boolean = true;
 
-    constructor(private http:Http) {
+    constructor(private http: Http) {
         this.testConnect();
     }
 
     /**
      * Test if the System run if it should run
      */
-    private testConnect(){
-        var obs=Observable.interval(5000);
-        obs.subscribe(()=>{
+    private testConnect() {
+        let obs = Observable.interval(5000);
+        obs.subscribe(() => {
             this.testConnectFunction();
         });
         this.testConnectFunction();
     }
 
-    private testConnectFunction(){
-        var connect=this.connect;
-        if(this.response) {
+    private testConnectFunction() {
+        let connect = this.connect;
+        if (this.response) {
             this.response = false;
-            this.http.head("/rest/").subscribe(()=> {
+            this.http.head("/rest/").subscribe(() => {
                 if (!connect) {
                     this.addAlert("success", "Connection Established")
                 }
                 this.response = true;
-                this.resultConnect(true,connect)
-            }, ()=> {
+                this.resultConnect(true, connect)
+            }, () => {
                 if (connect) {
                     this.addAlert("danger", "Connection Lost")
                 }
                 this.response = true;
-                this.resultConnect(false,connect);
+                this.resultConnect(false, connect);
             });
         }
     }
 
-    private resultConnect(result:boolean,previous:boolean){
-        this.connect=result;
+    private resultConnect(result: boolean, previous: boolean) {
+        this.connect = result;
         if (result != previous) {
             this.connectChange.next(this.connect);
+        }
+    }
+
+    public stopServer(): void {
+        let delResponse: Observable<Response> = this.del("/rest/");
+        if (delResponse != null) {
+            delResponse.subscribe(() => {
+                this.connect = false;
+                this.connectChange.next(false);
+                this.addAlert("success", "Successfully stopped server")
+            }, (error) => this.addAlert("danger", "Could not stop Server:" + error));
         }
     }
 
@@ -59,69 +70,70 @@ export class MoonConnectServiceService {
      * Set the Variable mainAlert to the Wanted value
      * @param mainAlertVariable
      */
-  public setMainAlert(mainAlertVariable:MainAlertComponent){
-      this.mainAlert=mainAlertVariable;
-  }
+    public setMainAlert(mainAlertVariable: MainAlertComponent) {
+        this.mainAlert = mainAlertVariable;
+    }
 
     /**
      * Add a temporary Alert
      * @param type The Type like warning or info
      * @param message The String Message
      */
-  public addAlert(type:string,message:string){
-        if(this.mainAlert) {
+    public addAlert(type: string, message: string) {
+        if (this.mainAlert) {
             this.mainAlert.addAlert(type, message);
         }
     }
-
 
 
     /**
      * Get the Connection HEad Message
      * @returns {Observable<Response>}
      */
-  public getConnection():Subject<boolean>{
-    return  this.connectChange;
-  }
+    public getConnection(): Subject<boolean> {
+        return this.connectChange;
+    }
 
-  public getConnectionStart():boolean{
-    return this.connect;
-}
+    public getConnectionStart(): boolean {
+        return this.connect;
+    }
+
     /**
      * The Get request
      * @param url
      * @returns {Observable<Response>}
      */
-  public get(url:string):Observable<Response>{
-        if(this.connect){
+    public get(url: string): Observable<Response> {
+        if (this.connect) {
             return this.http.get(url);
-        }else{
+        } else {
             return null;
         }
-  }
+    }
 
     /**
      * The head request
      * @param url
      * @returns {Observable<Response>}
      */
-    public head(url:string):Observable<Response>{
-        if(this.connect){
+    public head(url: string): Observable<Response> {
+        if (this.connect) {
             return this.http.head(url);
-        }else{
+        } else {
             return null;
         }
     }
+
     /**
      * The Post request
      * @param url
      * @param body
      * @returns {Observable<Response>}
      */
-    public post(url:string,body:any):Observable<Response>{
-        if(this.connect){
-            return this.http.post(url,body);
-        }else{
+    public post(url: string, body: any): Observable<Response> {
+        if (this.connect) {
+            return this.http.post(url, body);
+        } else {
             return null;
         }
     }
@@ -132,10 +144,10 @@ export class MoonConnectServiceService {
      * @param body
      * @returns {Observable<Response>}
      */
-    public put(url:string,body:any):Observable<Response>{
-        if(this.connect){
-            return this.http.put(url,body);
-        }else{
+    public put(url: string, body: any): Observable<Response> {
+        if (this.connect) {
+            return this.http.put(url, body);
+        } else {
             return null;
         }
     }
@@ -146,10 +158,10 @@ export class MoonConnectServiceService {
      * @returns {Observable<Response>}
      */
 
-    public del(url:string):Observable<Response>{
-        if(this.connect){
+    public del(url: string): Observable<Response> {
+        if (this.connect) {
             return this.http.delete(url);
-        }else{
+        } else {
             return null;
         }
     }

@@ -25,7 +25,7 @@ export class MoonConfigurationService {
       this.configurationHttp();
   }
   public configurationHttp(){
-      var configHTTP= this.connectService.get("/config/");
+      let configHTTP= this.connectService.get("/config/");
       if(configHTTP!=null) {
         configHTTP.map((result)=>result.json()).subscribe((result)=>this.writeConfiguration(result), (error)=> {
             Observable.interval(2000).take(1).subscribe(()=>this.configurationHttp());
@@ -34,6 +34,7 @@ export class MoonConfigurationService {
           Observable.interval(2000).take(1).subscribe(()=>this.configurationHttp());
       }
   }
+
   public writeConfiguration(config:any){
       this.configuration=config;
       this.setTitle(this.configuration[this.script].name);
