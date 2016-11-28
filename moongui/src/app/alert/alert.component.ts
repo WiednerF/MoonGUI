@@ -1,25 +1,20 @@
-import { Component, OnInit,Input } from '@angular/core';
+import { Component,Input } from '@angular/core';
 
 @Component({
-  selector: 'app-main-alert',
-  templateUrl: './main-alert.component.html',
-  styleUrls: ['./main-alert.component.css']
+  selector: 'app-alert',
+  templateUrl: 'alert.component.html',
+  styleUrls: ['alert.component.css']
 })
 /**
  * The Class for the Main Alerts on the top of the Page
  */
-export class MainAlertComponent implements OnInit {
+export class AlertComponent {
 
   @Input()
-  public alerts: Array<{type:string,content:string}> = [];//All the Alert types
+  public alerts: Array<{type:string,content:string}> = [];//All the Alert that are out on this moment
 
   constructor() {
   }
-
-  ngOnInit() {
-
-  }
-
     /**
      * Internal for Closing the Alerts
      * @param i
@@ -29,7 +24,7 @@ export class MainAlertComponent implements OnInit {
     }
 
   /**
-   * Add a new Alert to the see type
+   * Add a new Alert to the alerts visible
    * @param type Danger, info, warning, success
    * @param content The Content to be displayed
    */

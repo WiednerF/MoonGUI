@@ -14,7 +14,7 @@ import { GraphLineComponent } from './graph/graph-line/graph-line.component';
 import { ConfigStartComponent } from './config/config-start/config-start.component';
 import {MoonConnectServiceService} from "./services/moon-connect-service.service";
 import {MoonGenService} from "./services/moon-gen.service";
-import { MainAlertComponent } from './main-alert/main-alert.component';
+import { AlertComponent } from './alert/alert.component';
 import { LogViewerComponent } from './log-viewer/log-viewer.component';
 import { SystemComponent } from './config/system/system.component';
 import {MoonConfigurationService} from "./services/moon-configuration.service";
@@ -34,7 +34,7 @@ import {MoonHistoryService} from "./services/moon-history.service";
     GraphHistogramComponent,
     GraphLineComponent,
     ConfigStartComponent,
-    MainAlertComponent,
+    AlertComponent,
     LogViewerComponent,
     SystemComponent,
     ConfigComponent

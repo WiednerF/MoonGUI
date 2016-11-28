@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {MoonConnectServiceService} from "./services/moon-connect-service.service";
-import {MainAlertComponent} from "./main-alert/main-alert.component";
+import {AlertComponent} from "./alert/alert.component";
 
 @Component({
     selector: 'moon-gui',
@@ -11,7 +11,7 @@ import {MainAlertComponent} from "./main-alert/main-alert.component";
  * The Main Class Component for the Complete MoonGUI Application Frontend
  */
 export class AppComponent implements OnInit{
-    @ViewChild(MainAlertComponent) mainAlert:MainAlertComponent;//The Main Alert Component for Using the Alert Fields from Every Part
+    @ViewChild(AlertComponent) mainAlert:AlertComponent;//The Main Alert Component for Using the Alert Fields from Every Part
     private viewContainerRef: ViewContainerRef;
     /**
      * Shows the Status for the StatusBar to be able to  change it from Everywhere

@@ -1,14 +1,15 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from "@angular/http";
 import {Observable, Subject} from "rxjs";
-import {MainAlertComponent} from "../main-alert/main-alert.component";
+import {AlertComponent} from "../alert/alert.component";
 /**
- * This Service is the basic Connection Service to the Backend
+ * This Service is the basic Connection Service to the Backend and is based to reduce network traffic
  */
 @Injectable()
 export class MoonConnectServiceService {
 
-    private mainAlert: MainAlertComponent;//The AlertModule for Access
+    private alert: AlertComponent;//The AlertModule for Access to add different Alert Types
+    //TODO Rewrite from here
     private connect: boolean = true;//The Variable for the connection
     private connectChange: Subject<boolean> = new Subject<boolean>();
     private response: boolean = true;
@@ -67,11 +68,11 @@ export class MoonConnectServiceService {
     }
 
     /**
-     * Set the Variable mainAlert to the Wanted value
+     * Set the Variable alert to the Wanted value
      * @param mainAlertVariable
      */
-    public setMainAlert(mainAlertVariable: MainAlertComponent) {
-        this.mainAlert = mainAlertVariable;
+    public setMainAlert(mainAlertVariable: AlertComponent) {
+        this.alert = mainAlertVariable;
     }
 
     /**
@@ -80,8 +81,8 @@ export class MoonConnectServiceService {
      * @param message The String Message
      */
     public addAlert(type: string, message: string) {
-        if (this.mainAlert) {
-            this.mainAlert.addAlert(type, message);
+        if (this.alert) {
+            this.alert.addAlert(type, message);
         }
     }
 
