@@ -9,9 +9,10 @@ if #arg < 1 then
 	os.exit()
 end
 
-local executionNumber = 840
+local executionNumber = nil --The current executionNumber if a process runs or nil for no running process
 local port = tonumber(arg[1])
-local pid = nil
+local pid = nil --The current pid of the running process
+local running = true
 
 --SOURCE: https://gist.github.com/ignisdesign/4323051
 function urlencode(str)
@@ -21,6 +22,7 @@ function urlencode(str)
    end
    return str    
 end
+
 --Read the log file with less access
 function readLog(file,seekInput)
 	local seek = seekInput
@@ -57,6 +59,7 @@ function readLog(file,seekInput)
 	
 	return output,seek
 end
+
 --Read the data
 function readData()
 	local response,status,content= http.request('http://localhost:4999/data/')
@@ -69,6 +72,9 @@ end
 local ConnectHandler = class("ConnectHandler", turbo.web.RequestHandler)
 function ConnectHandler:head()
 		print("Connection Tested to REST API")
+end
+function ConnectHandler:delete()
+	running = false
 end
 --*********************************************
 --Starting of MOONGEN
@@ -149,7 +155,7 @@ end
 
 function MoonGenDefaultHandler:get(execution)
 	if tonumber(execution)==executionNumber then
-		data = readData()
+		data = readData()--TODO Add timeout and receiving small number of values
 		self:write({seek=seek,data=data})
 	else
 		self:set_status(404)
@@ -190,6 +196,7 @@ function SystemHandler:get()
 	local nproc = tonumber(command:read())
 	self:write({os=jit.os,arch=jit.arch,hostname=hostname,user=user,lua={version=jit.version,status=jit.status()},cores=nproc})
 end
+
 local InterfaceHandler = class("InterfaceHandler",turbo.web.RequestHandler)
 function InterfaceHandler:get()
 	local file = assert(io.popen("./dpdk-interfaces.py --status"))
@@ -201,6 +208,7 @@ function InterfaceHandler:get()
 	end
 	self:write(output)
 end
+
 local HistoryHandler = class("HistoryHandler",turbo.web.RequestHandler)
 function HistoryHandler:delete()
 	local cmd = "rm -rf history/*"
@@ -232,5 +240,10 @@ local srv = turbo.httpserver.HTTPServer(app)
 srv:bind(port)
 srv:start(1) -- Adjust amount of processes to fork.
 print('Server started, listening on port: ' .. port)
-
-turbo.ioloop.instance():start()
+local ioloop = turbo.ioloop.instance()
+ioloop:set_interval(500,function()
+	if not running then
+		ioloop:close()
+	end
+end)
+ioloop:start()
