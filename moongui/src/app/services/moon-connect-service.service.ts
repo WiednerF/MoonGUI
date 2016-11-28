@@ -9,13 +9,16 @@ import {AlertComponent} from "../alert/alert.component";
 export class MoonConnectServiceService {
 
     private alert: AlertComponent;//The AlertModule for Access to add different Alert Types
-    //TODO Rewrite from here
     private connect: boolean = true;//The Variable for the connection
-    private connectChange: Subject<boolean> = new Subject<boolean>();
-    private response: boolean = true;
+    private connectChange: Subject<boolean> = new Subject<boolean>();//Registering for changes in the connect status
+    private response: boolean = true;//If already responded to the previous request (If false, no request will be send out)
 
+    /**
+     *
+     * @param http Injecting the HTTP Service of Angular2 for the connections
+     */
     constructor(private http: Http) {
-        this.testConnect();
+        this.testConnect();//Start to test the connection during the running of the software
     }
 
     /**
@@ -29,6 +32,9 @@ export class MoonConnectServiceService {
         this.testConnectFunction();
     }
 
+    /**
+     * Run the test connection request
+     */
     private testConnectFunction() {
         let connect = this.connect;
         if (this.response) {
@@ -49,6 +55,11 @@ export class MoonConnectServiceService {
         }
     }
 
+    /**
+     * Submit the result of the connection
+     * @param result The result from the request
+     * @param previous The previous value
+     */
     private resultConnect(result: boolean, previous: boolean) {
         this.connect = result;
         if (result != previous) {
@@ -56,6 +67,9 @@ export class MoonConnectServiceService {
         }
     }
 
+    /**
+     * The Server will be stopped (Not interrupted)
+     */
     public stopServer(): void {
         let delResponse: Observable<Response> = this.del("/rest/");
         if (delResponse != null) {
@@ -95,6 +109,10 @@ export class MoonConnectServiceService {
         return this.connectChange;
     }
 
+    /**
+     * Get the Starting value of the variable connect (After registering to the Subject)
+     * @returns {boolean}
+     */
     public getConnectionStart(): boolean {
         return this.connect;
     }
