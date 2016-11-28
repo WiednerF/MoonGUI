@@ -27,7 +27,9 @@ export class MoonConnectService {
     private testConnect() {
         let obs = Observable.interval(5000);
         obs.subscribe(() => {
-            this.testConnectFunction();
+            if(this.response) {
+                this.testConnectFunction();
+            }
         });
         this.testConnectFunction();
     }
@@ -36,35 +38,22 @@ export class MoonConnectService {
      * Run the test connection request
      */
     private testConnectFunction() {
-        let connect = this.connect;
-        if (this.response) {
             this.response = false;
             this.http.head("/rest/").subscribe(() => {
-                if (!connect) {
-                    this.addAlert("success", "Connection Established")
+                if (!this.connect) {
+                    this.addAlert("success", "Connection Established");
+                    this.connect = true;
+                    this.connectChange.next(true);
                 }
                 this.response = true;
-                this.resultConnect(true, connect)
             }, () => {
-                if (connect) {
-                    this.addAlert("danger", "Connection Lost")
+                if (this.connect) {
+                    this.addAlert("danger", "Connection Lost");
+                    this.connect = false;
+                    this.connectChange.next(false);
                 }
                 this.response = true;
-                this.resultConnect(false, connect);
             });
-        }
-    }
-
-    /**
-     * Submit the result of the connection
-     * @param result The result from the request
-     * @param previous The previous value
-     */
-    private resultConnect(result: boolean, previous: boolean) {
-        this.connect = result;
-        if (result != previous) {
-            this.connectChange.next(this.connect);
-        }
     }
 
     /**
