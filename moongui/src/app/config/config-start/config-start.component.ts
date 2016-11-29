@@ -59,7 +59,7 @@ export class ConfigStartComponent implements OnInit {
         this.moonGenService.startMoonGen(ConfigStartComponent.startMoonGenResult, this);
     }
 
-    public static startMoonGenResult(result: Response, error: boolean, component: ConfigStartComponent) {
+    public static startMoonGenResult(error: boolean, component: ConfigStartComponent) {
         if (error) {
             component.status = 0;
         }
@@ -69,7 +69,7 @@ export class ConfigStartComponent implements OnInit {
         this.moonGenService.stopMoonGen(ConfigStartComponent.stopMoonGenResult, this);
     }
 
-    public static stopMoonGenResult(result: Response, error: boolean, component: ConfigStartComponent) {
+    public static stopMoonGenResult(error: boolean, component: ConfigStartComponent) {
         if (error) {
             component.status = 1;
         }

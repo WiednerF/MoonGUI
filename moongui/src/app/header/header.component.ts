@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {MoonGenService} from "../services/moon-gen.service";
+import {MoonConfigurationService} from "../services/moon-configuration.service";
 
 @Component({
   selector: 'app-header',
@@ -13,12 +13,12 @@ export class HeaderComponent implements OnInit{
 
   public title:string = "";//The Title
 
-  constructor(private moonGen:MoonGenService) {
+  constructor(private moonConfig:MoonConfigurationService) {
 
   }
 
   ngOnInit(){
-      this.moonGen.getTitle().subscribe((value)=>{this.title=value;document.title = this.title!=""?"MoonGen - "+this.title:"MoonGen";});
+      this.moonConfig.getTitleSubscribe().subscribe((value)=>{this.title=value;document.title = this.title!=""?"MoonGen - "+this.title:"MoonGen";});
   }
 
 }
