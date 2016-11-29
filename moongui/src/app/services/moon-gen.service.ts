@@ -113,6 +113,8 @@ export class MoonGenService {
                 stopHTTP.subscribe(() => {
                     this.shouldRun = false;
                     this.executionNumber = null;
+                    this.running = false;//Removes the running dependencies
+                    this.runningChange.next(false);
                     if (this.subscribe != null) {
                         this.subscribe.unsubscribe();
                         this.subscribe = null;
