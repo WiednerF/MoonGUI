@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import {MoonConnectService} from "./moon-connect.service";
 import {Observable, Subject} from "rxjs";
 import {MoonConfigurationService} from "./moon-configuration.service";
-import {start} from "repl";
+import {Response} from "@angular/http";
 /**
- * This is the MoonGen Class for the Complete API Behind the point /rest/moongen
+ * This is the MoonGen Class for the Complete API Behind the API endpoint /rest/moongen
  */
 @Injectable()
 export class MoonGenService {
@@ -17,63 +17,67 @@ export class MoonGenService {
      * @type {boolean}
      */
   private shouldRun:boolean=false;
+    /**
+     * If the response of the last request already was here
+     * @type {boolean}
+     */
     private response:boolean=true;
     /**
      * If moonGen is really running
      * @type {boolean}
      */
   private running:boolean=false;
-    private runningChange:Subject<boolean>=new Subject<boolean>();
+  private runningChange:Subject<boolean>=new Subject<boolean>();
+
+    /**
+     * The interval generator for the subscribeTestRunning
+     */
+  private interval;
+
+  private subscribe=null;//The Subscriper to the running process
 
     /**
      * Needs the Connection Service for accessing the Connection
-     * @param moonConnectService
-     * @param configurationService
+     * @param moonConnectService The connection service for handling network connections
+     * @param configurationService The configuration service for moongen
      */
   constructor(private moonConnectService:MoonConnectService, private configurationService:MoonConfigurationService) {
-      this.testRunning();
+      this.interval = Observable.interval(10000);//Starting the Interval Observable
   }
 
     /**
-     * Test if the System run if it should run
+     * Starts the Test if the System is running and returns the Subscription
      */
-  private testRunning(){
-      var obs=Observable.interval(10000);
-      obs.subscribe(()=>{
-          var running=this.running;
+  private subscribeTestRunning(){
+      return this.interval.subscribe(()=>{
           if(this.response) {
-              if (this.shouldRun) {
                   this.response=false;
-                  var runTestHTTP=this.moonConnectService.head("/rest/moongen/" + this.executionNumber + "/");
+                  let runTestHTTP:Observable<Response>=this.moonConnectService.head("/rest/moongen/" + this.executionNumber + "/");
                   if(runTestHTTP!=null) {
-                      this.moonConnectService.head("/rest/moongen/" + this.executionNumber + "/").subscribe((response)=> {
+                      runTestHTTP.subscribe(()=> {//Success
                           this.response = true;
-                          this.resultRunning(true, running)
-                      }, (error)=> {
-                          if (running) {
+                          if(!this.running){//Change only if there was a change
+                              this.running=true;
+                              this.runningChange.next(true);
+                          }
+                      }, ()=> {//Error
+                          if (this.running) {//Change only if there was a change
+                              this.running=false;
+                              this.runningChange.next(false);
                               this.moonConnectService.addAlert("danger", "MoonGen stopped")
                           }
                           this.response = true;
-                          this.resultRunning(false, running);
                       });
-                      this.running=true;
-                  }else{
+                  }else{//Change if there is no connection to the server
                       this.running=false;
+                      this.runningChange.next(false);
                       this.response=true;
                   }
-              } else {
-                  this.resultRunning(false, this.running);
               }
-          }
       })
   }
 
-  private resultRunning(running:boolean,previous:boolean){
-      this.running=running;
-      if (running != previous) {
-          this.runningChange.next(this.running);
-      }
-  }
+    //TODO From here
 
     /**
      * Starting MoonGen
@@ -83,11 +87,12 @@ export class MoonGenService {
      */
   public startMoonGen(responseFunction:any,object:any):void{
       if(this.shouldRun) return null;
-        var startHTTP= this.moonConnectService.post("/rest/moongen/", this.configurationService.getConfigurationObject());
+        let startHTTP= this.moonConnectService.post("/rest/moongen/", this.configurationService.getConfigurationObject());
         if(startHTTP!=null) {
           startHTTP .subscribe((response)=> {
                 this.shouldRun = true;
                 this.executionNumber = response.json().execution;
+                this.subscribe = this.subscribeTestRunning();
                 responseFunction(response, false, object);
             }, error=> {
                 this.shouldRun = false;
@@ -107,11 +112,15 @@ export class MoonGenService {
      */
   public stopMoonGen(responseFunction:any,object:any):void{
       if(!this.shouldRun) return null
-        var stopHTTP=this.moonConnectService.del("/rest/moongen/"+this.executionNumber+"/");
+        let stopHTTP=this.moonConnectService.del("/rest/moongen/"+this.executionNumber+"/");
         if(stopHTTP!=null) {
             stopHTTP.subscribe(()=> {
                 this.shouldRun = false;
                 this.executionNumber = null;
+                if(this.subscribe!=null){
+                    this.subscribe.dispose();
+                    this.subscribe = null;
+                }
                 responseFunction(null, false, object);
             }, (error)=> {
                 this.shouldRun = true;

@@ -26,7 +26,7 @@ export class MoonHistoryService {
             del.subscribe(() => {
                 this.moonConnect.addAlert("success", "Successfully deleted all history files")
             }, (error) => {
-                this.moonConnect.addAlert("error", "Error in Deleting history files: " + error)
+                this.moonConnect.addAlert("danger", "Error in Deleting history files: " + error)
             });
         }
     }
