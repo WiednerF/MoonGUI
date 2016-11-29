@@ -93,6 +93,7 @@ export class MoonGenService {
                 this.shouldRun = true;
                 this.executionNumber = response.json().execution;
                 this.subscribe = this.subscribeTestRunning();
+                this.interval.next(0);
                 responseFunction(response, false, object);
             }, error=> {
                 this.shouldRun = false;
