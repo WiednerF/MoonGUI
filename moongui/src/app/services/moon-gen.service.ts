@@ -89,6 +89,8 @@ export class MoonGenService {
                 startHTTP .subscribe((response) => {
                     this.shouldRun = true;
                     this.executionNumber = response.json().execution;
+                    this.running = true;//Removes the running dependencies
+                    this.runningChange.next(true);
                     this.subscribe = this.subscribeTestRunning();
                     responseFunction(false, object);//Gives the result back to the consumer
                 }, error => {
@@ -129,7 +131,6 @@ export class MoonGenService {
         }
     }
 
-    //TODO From here
     /**
      * Get if the thing is running
      * @returns {boolean}
@@ -139,7 +140,7 @@ export class MoonGenService {
     }
 
     /**
-     * Get if the thing is running
+     * Get if the software is running
      * @returns {boolean}
      */
     public getRunningSubscribe(): Subject<boolean> {
@@ -154,12 +155,21 @@ export class MoonGenService {
         return this.executionNumber;
     }
 
-    public getLogFile(seek: number) {
+    /**
+     * Returns the subscriber for the LogFile
+     * @param seek Where in the LogFile the next part should be
+     * @returns {Observable<Response>}
+     */
+    public getLogFile(seek: number):Observable<Response> {
         if (!this.shouldRun) return null;
         return this.moonConnectService.get("/rest/moongen/" + this.executionNumber + "/log/?seek=" + seek);
     }
 
-    public getData() {
+    /**
+     * Returns the subscriber for the data connection
+     * @returns {Observable<Response>}
+     */
+    public getData():Observable<Response> {
         if (!this.shouldRun) return null;
         return this.moonConnectService.get("/rest/moongen/" + this.executionNumber + "/");
     }
