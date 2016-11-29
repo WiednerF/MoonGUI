@@ -114,7 +114,7 @@ export class MoonGenService {
                     this.shouldRun = false;
                     this.executionNumber = null;
                     if (this.subscribe != null) {
-                        this.subscribe.dispose();
+                        this.subscribe.unsubscribe();
                         this.subscribe = null;
                     }
                     responseFunction(false, object);
