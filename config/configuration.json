@@ -28,7 +28,7 @@
 						}
 					],
 					"id":"line",
-					"max":"400",
+					"max":"800",
 					"title":"Live Latency"
 				}
 			],
@@ -152,6 +152,24 @@
               "title":"Live Rate"
             }
           ]
+        },
+      {
+        "name":"quality-of-service-test.lua",
+        "description":"Generates two flows of traffic and compares them. This example requires an ixgbe NIC due to the used hardware features.",
+        "configuration": {
+          "interfaces": [
+            {
+              "standard": 0,
+              "name": "TX Interface",
+              "conf": "tx"
+            },
+            {
+              "standard": 1,
+              "name": "RX Interface",
+              "conf": "rx"
+            }
+          ]
         }
+      }
 
         ]
