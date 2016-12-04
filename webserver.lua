@@ -61,8 +61,8 @@ function readLog(file,seekInput)
 end
 
 --Read the data
-function readData()
-	local response,status,content= http.request('http://localhost:4999/data/')
+function readData(count)
+	local response,status,content= http.request('http://localhost:4999/data/?count='+count)
 	if status==200 then
 		return json.decode(response,1,nil)
 	end
@@ -155,8 +155,9 @@ end
 
 function MoonGenDefaultHandler:get(execution)
 	if tonumber(execution)==executionNumber then
-		data = readData()--TODO Add timeout and receiving small number of values
-		self:write({seek=seek,data=data})
+		local count = tonumber(self:get_argument("count","0"))
+		data = readData(count)
+		self:write({count=(#data+count),data=data})
 	else
 		self:set_status(404)
 	end

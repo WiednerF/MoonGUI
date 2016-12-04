@@ -10,23 +10,14 @@ function moongui.getConfig(execution)
     return config
 end
 
-function moongui.server(p,execution,mg)
+function moongui.server(p,mg)
+	local dataStorage = {}
+
     local MoonGenDataHandler = class("MoonGenDataHandler",turbo.web.RequestHandler)
 
-    function MoonGenDataHandler:get()
-	local init = os.time()
-	local current = os.time()
-	local output = {}
-	local a = p:tryRecv(0)
-	local i=0
-	while a~=nil and i<50 and current-init<50 do--TODO Test value for time
-		table.insert(output,a)
-		current = os.time()
-		if i<50 and current-init<50 then
-			a=p:tryRecv(0)
-		end
-	end
-	self:write(output)
+    function MoonGenDataHandler:get()--TODO Test
+		local count = tonumber(self:get_argument("count","0"))
+		self:write(table.unpack(dataStorage,1,count))
     end
 	
     turbo.web.Application({
@@ -38,6 +29,17 @@ function moongui.server(p,execution,mg)
 				ioloop:close()
 			end
 		end
+	)
+	ioloop:set_interval(100, function()
+		local a = p:tryRecv(0)
+		local i=0
+		while a~=nil and i<50 do
+			table.insert(dataStorage,a)
+			if i<50 then
+				a=p:tryRecv(0)
+			end
+		end
+	end
 	)
     ioloop:start()
 end
