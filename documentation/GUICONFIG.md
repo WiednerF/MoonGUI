@@ -1,9 +1,9 @@
 # MoonGUI configuration object
 In this file is the documentation for adding new scripts to the configuration object of the graphical user interface or changing the current ones.
-All configurations are stored in the file config/configuration.json as a JSON array with an object for each individual script, divided in the parts script, description, configuration and graph.
+All configurations are stored in the file config/configuration.json as a JSON array with an object for each individual script, divided in the parts name, description, configuration and graph.
  Each of this parts is an divided name for an additional object, so the base structur is:
- `{"script":"moongui-lua","description":...,"configuration":{...},"graph":{...}"`. The next sections are divided according to this information:
- ## Script
+ `{"name":"moongui-lua","description":...,"configuration":{...},"graph":{...}"`. The next sections are divided according to this information:
+ ## Name
  This parts wants an String containing the name of the script file, like it is stored in the folder moongen. If it is stored in a subfolder, then it wants the
  complete path from the folder moongen. The ending `.lua` has to be included.
  ## Description
