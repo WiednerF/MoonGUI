@@ -29,6 +29,7 @@ export class MainComponent implements OnInit {
      */
     private configurationObject:any={graph:[]};
     private pointData:any=[];
+    private dataCount:number=0;
 
 
     /**
@@ -70,6 +71,7 @@ export class MainComponent implements OnInit {
                 }
             }
         }
+        this.dataCount=0;
     }
 
   ngOnInit() {
@@ -179,12 +181,15 @@ export class MainComponent implements OnInit {
      * Get the Data from external
      */
     private getData() {
-        let data = this.moonGenService.getData();
+        let data = this.moonGenService.getData(this.dataCount);
         this.responseData = false;
         if (data != null) {
             data.timeout(3000,new Error("Timeout exceeded")).map(response=>response.json()).subscribe(response=> {
                 this.responseData = true;
-                var result = response.data;
+                let result = response.data;
+                if(response.count) {
+                    this.dataCount = response.count;
+                }
                 if(this.configurationObject&&this.configurationObject.graph&&this.configurationObject.graph.length!=0) {
                     for(let x:number=0;x<this.configurationObject.graph.length;x++) {
                             if (this.configurationObject.graph[x].type == "histogram") {
@@ -236,5 +241,6 @@ export class MainComponent implements OnInit {
                 }
             }
         }
+        this.dataCount = 0;
     }
 }

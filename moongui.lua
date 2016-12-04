@@ -11,17 +11,18 @@ function moongui.getConfig(execution)
 end
 
 function moongui.server(p,execution,mg)
-    local file = io.open("history/"..execution.."/data.json","a")
     local MoonGenDataHandler = class("MoonGenDataHandler",turbo.web.RequestHandler)
 
     function MoonGenDataHandler:get()
+	local init = os.time()
+	local current = os.time()
 	local output = {}
 	local a = p:tryRecv(0)
 	local i=0
-	while a~=nil and i<50 do
-		file:write(json.encode(a),"\n")
+	while a~=nil and i<50 and current-init<50 do--TODO Test value for time
 		table.insert(output,a)
-		if i<50 then
+		current = os.time()
+		if i<50 and current-init<50 then
 			a=p:tryRecv(0)
 		end
 	end

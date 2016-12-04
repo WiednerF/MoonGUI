@@ -169,8 +169,8 @@ export class MoonGenService {
      * Returns the subscriber for the data connection
      * @returns {Observable<Response>}
      */
-    public getData():Observable<Response> {
+    public getData(count:number):Observable<Response> {
         if (!this.shouldRun) return null;
-        return this.moonConnectService.get("/rest/moongen/" + this.executionNumber + "/");
+        return this.moonConnectService.get("/rest/moongen/" + this.executionNumber + "/?count="+ count);
     }
 }

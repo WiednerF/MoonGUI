@@ -10,7 +10,7 @@ For Further information see documentation on installation [installation](INSTALL
 For further installation documentation see [installation](INSTALL.md)
 
 ## Build Project
-For further documentation to build the project see [build](BUILD.md)
+For further documentation to build the project see [Installation](INSTALL.md)
 
 ## Documentation
 The documentation for this project is splitted into different parts, divided by the architecture of

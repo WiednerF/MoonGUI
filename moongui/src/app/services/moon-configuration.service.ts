@@ -3,6 +3,8 @@ import {Subject, Observable} from "rxjs";
 import {Response} from "@angular/http";
 import {MoonConnectService} from "./moon-connect.service";
 
+//TODO From here
+
 @Injectable()
 export class MoonConfigurationService {
     /**
