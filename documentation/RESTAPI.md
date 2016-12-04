@@ -69,13 +69,28 @@ This connection is using the URI to describe resources and the http methods to d
   Returns the current running MoonGen Id or a empty object, if no process is currently running
   + Action: reads the Execution Number
   + Response: JSON {execution: Execution Number} or {}
-  TODO
   ### Method POST
   Starts a new Process, if no other MoonGen Process is currently running.
   + Action: Stores Config and starts a new process MoonGen
   + Body: Requires a JSON Configuration files, define by the config file for the GUI with necesary information:  title, author and script (MoonGen script to run with the server)
   + Response: JSON {execution: ID of execution}, if successfully
   ## MoonGen Running Entry
-  TODO
+  This entry is working with a running process or will return status 404 if no one found at this entry:
+  + URI: /rest/moongen/{executionNumber}/
+  ### Method HEAD
+  + Action: Search if the process is running at the moment
+  + Response: status 200 if running or 412 if the process is stopped
+  + No Body
+  ### Method GET
+ + Action: Returns the data from the actual count
+ + Parameter: count (Number of already send data points)
+ + Response: JSON {data: {List of data points},count:{Number already send included them send in this packet}}
+ + Status: 200 if process is found
+  ### Method DELETE
+  + Action: Stopps the current running MoonGen process
+  + Response: Status 200 for OK
   ## MoonGen Log Entry
-  TODO
+  + Action: Reads the Log lines as HTML objects
+  + Parameter: Seek for the beginning of the lines
+  + Response: JSON {seek: {The number after this reponse}, log: {Lines of the log as array} }
+  + Status: 200
