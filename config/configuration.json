@@ -169,7 +169,110 @@
               "conf": "rx"
             }
           ]
-        }
+        ,
+        "input":[
+          {
+            "standard": 1000,
+            "type": "range",
+            "name": "Foreground Traffic rate",
+            "unit": "Mbit/s",
+            "conf": "fgRate",
+            "max": 100000,
+            "min": 1,
+            "step": 1
+          },
+          {
+            "standard": 4000,
+            "type": "range",
+            "name": "Background Traffic rate",
+            "unit": "Mbit/s",
+            "conf": "bgRate",
+            "max": 100000,
+            "min": 1,
+            "step": 1
+          },
+          {
+            "standard": 42,
+            "type": "number",
+            "name": "Foreground Traffic Port",
+            "unit": "Port",
+            "conf": "fgPort",
+            "max": 1000000,
+            "min": 1,
+            "step": 1
+          },
+          {
+            "standard": 43,
+            "type": "number",
+            "name": "Background Traffic Port",
+            "unit": "Port",
+            "conf": "bgPort",
+            "max": 1000000,
+            "min": 1,
+            "step": 1
+          },
+          {
+            "standard": 124,
+            "type": "number",
+            "name": "Packet Size",
+            "unit": "B",
+            "conf": "size",
+            "max": 100000,
+            "min": 10,
+            "step": 1
+          }
+          ]
+          },
+        "graph":[
+          {
+            "type":"histogram",
+            "travers":[
+              {
+                "x":"latencyFG"
+              },
+              {
+                "x":"latencyBG"
+              }
+            ],
+            "range":{
+              "max":1000,
+              "min":0,
+              "step":1
+            },
+            "size":4,
+            "title":"Distribution of Latency",
+            "id":"hist"
+          },
+          {
+            "type":"line",
+            "travers":[
+              {
+                "x":"timer",
+                "title":"latency Foreground",
+                "y":"latencyFG"
+              },
+              {
+                "x":"timer",
+                "title":"latency Background",
+                "y":"latencyBG"
+              }
+            ],
+            "id":"line",
+            "max":"1000",
+            "title":"Live Latency"
+          },
+          {
+            "type":"line",
+            "travers":[
+              {
+                "x":"timer",
+                "y":"rate"
+              }
+            ],
+            "id":"lineRate",
+            "max":"3000",
+            "title":"Live Rate"
+          }
+        ]
       }
-
         ]
