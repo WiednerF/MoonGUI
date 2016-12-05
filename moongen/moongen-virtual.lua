@@ -28,12 +28,7 @@ function master(args)
 	device.waitForLinks()
 	mg.startTask("txTimestamper", txDev:getTxQueue(0))
 	mg.startTask("rxTimestamper", rxDev:getRxQueue(0),p)
-	mg.startTask("server",p)
-	mg.waitForTasks()
-end
-
-function server(p)
-    moongui.server(p,mg)
+	moongui.server(mg,p)
 end
 
 function txTimestamper(queue)
