@@ -47,6 +47,8 @@ function master(args)
         txDev = device.config { port = config.interfaces.tx, rxQueues = 1, txQueues = 3 }
         rxDev = device.config { port = config.interfaces.rx, rxQueues = 2 }
     end
+
+    mg.startTask("server",p)
     -- wait until the links are up
     device.waitForLinks()
     log:info("Sending %d MBit/s background traffic to UDP port %d", config.input.bgRate, config.input.bgPort)
@@ -69,6 +71,10 @@ function master(args)
     mg.startSharedTask("timerSlave", txDev:getTxQueue(2), rxDev:getRxQueue(1), config.input.bgPort, config.input.fgPort, config.input.fgRate / (config.input.fgRate + config.input.bgRate),config,p)
     -- wait until all tasks are finished
     mg.waitForTasks()
+end
+
+function server(p)
+    moongui.server(p, mg)
 end
 
 --TODO Add SlowPipe and Messages for rate
