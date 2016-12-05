@@ -48,7 +48,6 @@ function master(args)
 		txDev:getTxQueue(0):setRate(tonumber(config.input.rate) - (tonumber(config.input.size) + 4) * 8 / 1000)
 	end
 
-	mg.startTask("server",p)
 	mg.startTask("loadSlave", txDev:getTxQueue(0), rxDev, tonumber(config.input.size), tonumber(config.input.frame),p)
 	mg.startTask("timerSlave", txDev:getTxQueue(1), rxDev:getRxQueue(1), tonumber(config.input.size), tonumber(config.input.frame),p)
 	arp.startArpTask{
@@ -57,7 +56,7 @@ function master(args)
 		-- we need an IP address to do ARP requests on this interface
 		{ rxQueue = txDev:getRxQueue(2), txQueue = txDev:getTxQueue(2), ips = ARP_IP }
 	}
-	mg.waitForTasks()
+	moongui.server(p, mg)
 end
 
 local function fillUdpPacket(buf, len)
@@ -82,9 +81,6 @@ local function doArp()
 		end
 	end
 	log:info("Destination mac: %s", DST_MAC)
-end
-function server(p)
-	moongui.server(p, mg)
 end
 
 function loadSlave(queue, rxDev, size, flows,p)
