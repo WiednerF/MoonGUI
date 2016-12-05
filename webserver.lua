@@ -62,7 +62,7 @@ end
 
 --Read the data
 function readData(count)
-	local response,status,content= http.request('http://localhost:4999/data/?count='+count)
+	local response,status,content= http.request('http://localhost:4999/data/?count=' .. count)
 	if status==200 then
 		return json.decode(response,1,nil)
 	end
@@ -156,7 +156,7 @@ end
 function MoonGenDefaultHandler:get(execution)
 	if tonumber(execution)==executionNumber then
 		local count = tonumber(self:get_argument("count","0"))
-		data = readData(count)
+		local data = readData(count)
 		self:write({count=(#data+count),data=data})
 	else
 		self:set_status(404)
