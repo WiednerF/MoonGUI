@@ -7,7 +7,7 @@ local moongui = {}
 function moongui.subrange(t,first)
 	local sub = {}
 	local i = first
-	while #t>=i do
+	while #t>=i and ((i-first)<=300) do
 		sub[#sub + 1] = t[i]
 		i = i +1
 	end
@@ -28,7 +28,8 @@ function moongui.server(p,mg)
 
     function MoonGenDataHandler:get()--TODO Test
 		local count = tonumber(self:get_argument("count","0"))
-		self:write(moongui.subrange(dataStorage,count))
+		local data = moongui.subrange(dataStorage,count)
+		self:write({count=(#data+count),data=data})
     end
 	
     turbo.web.Application({
