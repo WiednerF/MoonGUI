@@ -183,7 +183,7 @@ export var MainComponent = (function () {
         var data = this.moonGenService.getData(this.dataCount);
         this.responseData = false;
         if (data != null) {
-            data.timeout(3000, new Error("Timeout exceeded")).map(function (response) { return response.json(); }).subscribe(function (response) {
+            data.timeout(5000, new Error("Timeout exceeded")).map(function (response) { return response.json(); }).subscribe(function (response) {
                 _this.responseData = true;
                 var result = response.data;
                 if (response.count) {

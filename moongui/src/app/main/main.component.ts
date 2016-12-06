@@ -184,7 +184,7 @@ export class MainComponent implements OnInit {
         let data = this.moonGenService.getData(this.dataCount);
         this.responseData = false;
         if (data != null) {
-            data.timeout(3000,new Error("Timeout exceeded")).map(response=>response.json()).subscribe(response=> {
+            data.timeout(5000,new Error("Timeout exceeded")).map(response=>response.json()).subscribe(response=> {
                 this.responseData = true;
                 let result = response.data;
                 if(response.count) {

@@ -7,7 +7,7 @@ local moongui = {}
 function moongui.subrange(t,first)
 	local sub = {}
 	local i = first
-	while #t>=i and ((i-first)<=4000) do
+	while #t>=i and ((i-first)<=1000) do
 		sub[#sub + 1] = t[i]
 		i = i +1
 	end

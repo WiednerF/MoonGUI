@@ -13,7 +13,7 @@ export var GraphLineComponent = (function () {
     function GraphLineComponent(element) {
         this.element = element;
         this.configuration = { showLink: false, displaylogo: false };
-        this.layout = { title: this.title, bargap: 0.05, bargrourgap: 0.2, yaxis: { title: "Count" }, xaxis: { title: "Value", autorange: false, range: [0, 1000000] } };
+        this.layout = { title: this.title, bargap: 0.05, bargrourgap: 0.2, yaxis: { title: "Count" }, xaxis: { title: "Value", type: "date", autorange: false, range: [0, 1000000] } };
         this.data = [];
     }
     GraphLineComponent.prototype.ngAfterViewInit = function () {
