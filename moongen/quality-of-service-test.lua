@@ -112,6 +112,7 @@ function loadSlave(queue, port, config)
         -- send packets
         bufs:offloadUdpChecksums()
         txCtr:updateWithSize(queue:send(bufs), config.input.size)
+
     end
     txCtr:finalize()
 end
@@ -141,6 +142,13 @@ function counterSlave(queue)
         -- this is not done in countPacket() for performance reasons (needs to check timestamps)
         for k, v in pairs(ctrs) do
             v:update()
+            local mpps,mbit = v:getStats()
+            if config.input.fgPort==k then
+                p:send({rateFG=mbit[#mbit],timer=socket.gettime()})
+            else
+                p:send({rateBG=mbit[#mbit],timer=socket.gettime()})
+            end
+
         end
         bufs:freeAll()
     end
@@ -188,8 +196,6 @@ function timerSlave(txQueue, rxQueue, bgPort, port, ratio, config,p)
         rateLimit:reset()
     end
     mg.sleepMillis(100) -- to prevent overlapping stdout
-    histBg:save("hist-background.csv")
-    histFg:save("hist-foreground.csv")
     histBg:print("Background traffic")
     histFg:print("Foreground traffic")
 end

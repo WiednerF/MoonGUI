@@ -266,7 +266,13 @@
             "travers":[
               {
                 "x":"timer",
-                "y":"rate"
+                "title":"Rate Foreground",
+                "y":"rateFG"
+              },
+              {
+                "x":"timer",
+                "title":"Rate Background",
+                "y":"rateBG"
               }
             ],
             "id":"lineRate",
