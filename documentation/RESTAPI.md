@@ -3,8 +3,10 @@ The connection between the client and server system is connected through a REST 
 This connection is using the URI to describe resources and the http methods to describe, what to do with the resource. A resource is for example a running moongen process or the interface list.
  The answers are described by HTTP status codes to show, is it working correct or what happened. 
  Using this method reduces the overhead sending data over networks.
+
+## HTTP Method Usage
  
- ## HTTP Method Usage
+ 
  <table>
  <thead>
  <tr><th>Method</th><th>Usage</th><th>HTTP Body</th></tr>
@@ -24,18 +26,17 @@ This connection is using the URI to describe resources and the http methods to d
     </tr>
  </tbody>
  <table>
- 
- ## Entry Points
+## Entry Points
  
  In this sections every entry point and used methods as well as the answer is described.
  
- ### Default entry
+### Default entry
  
  + URI: /
  + Method: GET
  + Response with the Default used GUI files (Static Response)
  
- ## Configuration Entry
+## Configuration Entry
  + URI: /config/
  + Reponse: Static GUI Configuration file under config/configuration.json
  
