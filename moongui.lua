@@ -3,6 +3,17 @@ local turbo = require "turbo"
 
 local moongui = {}
 
+-- Source stackoverflow.com
+function moongui.subrange(t,first)
+	local sub = {}
+	local i = first
+	while #t>=i do
+		sub[#sub + 1] = t[i]
+		i = i +1
+	end
+	return sub
+end
+
 function moongui.getConfig(execution)
     local configFile = assert(io.open("history/"..execution.."/config.json"))
     local configString = configFile:read("*all")
@@ -17,7 +28,7 @@ function moongui.server(p,mg)
 
     function MoonGenDataHandler:get()--TODO Test
 		local count = tonumber(self:get_argument("count","0"))
-		self:write(table.unpack(dataStorage,1,count))
+		self:write(moongui.subrange(dataStorage,count))
     end
 	
     turbo.web.Application({
