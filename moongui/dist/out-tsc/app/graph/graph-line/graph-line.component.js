@@ -36,14 +36,12 @@ export var GraphLineComponent = (function () {
                 Plotly.restyle(graphDiv, update1);
                 if (changes.points.currentValue.length > 0) {
                     if (changes.points.currentValue[0].x.length > this.max) {
-                        var update3 = { xaxis: this.layout.xaxis };
-                        update3.xaxis.range = [changes.points.currentValue[0].x[changes.points.currentValue[0].x.length - (this.max)], changes.points.currentValue[0].x[changes.points.currentValue[0].x.length - 1]];
-                        Plotly.relayout(graphDiv, update3);
+                        this.layout.xaxis.range = [changes.points.currentValue[0].x[changes.points.currentValue[0].x.length - (this.max)], changes.points.currentValue[0].x[changes.points.currentValue[0].x.length - 1]];
+                        Plotly.relayout(graphDiv, this.layout);
                     }
                     else {
-                        var update2 = { xaxis: this.layout.xaxis };
-                        update2.xaxis.range = [changes.points.currentValue[0].x[0], changes.points.currentValue[0].x[changes.points.currentValue[0].x.length - 1]];
-                        Plotly.relayout(graphDiv, update2);
+                        this.layout.xaxis.range = [changes.points.currentValue[0].x[0], changes.points.currentValue[0].x[changes.points.currentValue[0].x.length - 1]];
+                        Plotly.relayout(graphDiv, this.layout);
                     }
                 }
             }
@@ -62,11 +60,12 @@ export var GraphLineComponent = (function () {
     GraphLineComponent.prototype.changeXAxisTitle = function ($event) {
         var graphDiv = document.getElementById(this.id);
         this.layout.xaxis.title = $event;
-        Plotly.relayout(graphDiv, { xaxis: this.layout.xaxis });
+        Plotly.relayout(graphDiv, this.layout);
     };
     GraphLineComponent.prototype.changeTitle = function ($event) {
         var graphDiv = document.getElementById(this.id);
-        Plotly.relayout(graphDiv, { title: $event });
+        this.layout.title = $event;
+        Plotly.relayout(graphDiv, this.layout);
     };
     __decorate([
         Input(), 
