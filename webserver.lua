@@ -66,7 +66,7 @@ function readData(count)
 	if status==200 then
 		return response
 	end
-	return "{count:"..count..",data:[]}"
+	return '{"count":'..count..',"data":[]}'
 end
 
 local ConnectHandler = class("ConnectHandler", turbo.web.RequestHandler)
