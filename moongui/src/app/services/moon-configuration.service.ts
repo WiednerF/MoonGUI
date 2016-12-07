@@ -3,33 +3,57 @@ import {Subject, Observable} from "rxjs";
 import {Response} from "@angular/http";
 import {MoonConnectService} from "./moon-connect.service";
 
-//TODO From here
-
 @Injectable()
 export class MoonConfigurationService {
     /**
      * Stores the Configuration Information for all scripts
      */
     private configuration: any;
+    /**
+     * Stores the selected script number
+     * @type {number}
+     */
     private script:number=0;
     private scriptChange:Subject<number>=new Subject<number>();
+    /**
+     * Saves the information array for the interfaces loaded at the moment
+     * @type {Array}
+     */
     private interfaceNodes:any=[];
     private interfacesChange:Subject<any>=new Subject<any>();
+    /**
+     * Stores the input configuration of the current selected script
+     * @type {Array}
+     */
     private input:any[]=[];
     private inputChange:Subject<any>=new Subject<any>();
+    /**
+     * Stores the title of the current experiment
+     * @type {string}
+     */
     private title:string="";
     private titleChange:Subject<string>=new Subject<string>();
-    private author:string="";
-    private authorChange:Subject<string>=new Subject<string>();
+    /**
+     * If the configurationObject is not loaded at the moment
+     * @type {Subject<boolean>}
+     */
     private wait:Subject<boolean>=new Subject<boolean>();
 
+    /**
+     * The connection service is needed to call the configuration object
+      * @param connectService
+     */
   constructor(public connectService:MoonConnectService) {
       this.configurationHttp();
   }
+
+    /**
+     * The loading process of the configuration object
+     */
   public configurationHttp(){
       let configHTTP= this.connectService.get("/config/");
       if(configHTTP!=null) {
-        configHTTP.map((result)=>result.json()).subscribe((result)=>this.writeConfiguration(result), (error)=> {
+        configHTTP.map((result)=>result.json()).subscribe((result)=>this.writeConfiguration(result), ()=> {
             Observable.interval(2000).take(1).subscribe(()=>this.configurationHttp());
           });
       }else{
@@ -37,25 +61,53 @@ export class MoonConfigurationService {
       }
   }
 
+    /**
+     * Created the Graphical user interface out of the newly loaded config object
+     * @param config The object loaded from the server
+     */
   public writeConfiguration(config:any){
       this.configuration=config;
       this.setTitle(this.configuration[this.script].name);
       this.wait.next(true);
   }
 
+    /**
+     * Wait until the configuration object is received, can be subscribed here
+     * @returns {Subject<boolean>}
+     */
   public getWait():Subject<boolean>{
       return this.wait;
   }
 
+    /**
+     * Get the script specific configuration
+     * @param id The id of the script
+     * @returns {any}
+     */
   public getConfiguration(id:number):any{
       return this.configuration[id];
   }
+
+    /**
+     * Get the complete Configuration object
+     * @returns {any}
+     */
   public getConfigurationList():any{
       return this.configuration;
   }
+
+    /**
+     * The selected script number
+     * @returns {number}
+     */
   public getScript():number{
       return this.script;
   }
+
+    /**
+     * Set the selected to a new script number and changes input parameter and all other script related things according to the script
+     * @param script The script number for the selection process
+     */
   public setScript(script:number):void{
       this.setTitle(this.getConfigurationList()[script].name);
       this.script=script;
@@ -63,31 +115,45 @@ export class MoonConfigurationService {
       this.input=[];
       this.scriptChange.next(script);
   }
+
+    /**
+     * Subscribe to changes in the script selection
+     * @returns {Subject<number>}
+     */
   public getScriptChange():Subject<number>{
       return this.scriptChange;
   }
     //************STANDARD Configuration Options
+    /**
+     * Receive the current title
+     * @returns {string}
+     */
     public getTitle():string{
         return this.title;
     }
+
+    /**
+     * Subscribe to title changes
+     * @returns {Subject<string>}
+     */
     public getTitleSubscribe():Subject<string>{
         return this.titleChange;
     }
+
+    /**
+     * Change the title
+     * @param title The new title value
+     */
     public setTitle(title:string):void{
         this.title=title;
         this.titleChange.next(title);
     }
-    public getAuthor():string{
-        return this.author;
-    }
-    public getAuthorSubscribe():Subject<string>{
-        return this.authorChange;
-    }
-    public setAuthor(author:string):void{
-        this.author=author;
-        this.authorChange.next(author);
-    }
     //***********Standard Values
+    /**
+     * Get the selected interface
+     * @param id Which selected interface (More then one are possible)
+     * @returns {any}
+     */
     public getInterface(id:number):number{
         if(this.configuration[this.script].configuration.interfaces.length>id){
             if(this.interfaceNodes[id]){
@@ -98,13 +164,30 @@ export class MoonConfigurationService {
             }
         }
     }
+
+    /**
+     * Subscribe to changes in the Interfaces
+     * @returns {Subject<any>}
+     */
     public getInterfaceChange():Subject<any>{
        return this.interfacesChange;
     }
+
+    /**
+     * Set a new value to the interfaces
+     * @param id The id of the interface to change
+     * @param value The value for the change
+     */
     public setInterface(id:number,value:number):void{
         this.interfaceNodes[id] = value;
         this.interfacesChange.next({id:id,value:value});
     }
+
+    /**
+     * Get an input value
+     * @param id The id of the wanted input value
+     * @returns {any}
+     */
     public getInput(id:number):any{
         if(this.configuration[this.script].configuration.input.length>id){
             if(this.input[id]){
@@ -115,19 +198,39 @@ export class MoonConfigurationService {
             }
         }
     }
+
+    /**
+     * Subscribe to changes in the input array
+     * @returns {Subject<any>}
+     */
     public getInputChange():Subject<any>{
         return this.inputChange;
     }
+
+    /**
+     * Set a new value to the inputs
+     * @param id The input id
+     * @param value The vnew value to this input id
+     */
     public setInput(id:number,value:any):void{
         this.input[id] = value;
         this.inputChange.next({id:id,value:value});
     }
+
+    /**
+     * Call the interface list with interface names from the server
+     * @returns {Observable<Response>}
+     */
     public getInterfaceList():Observable<Response>{
         return this.connectService.get("/rest/interfaces/");
     }
 
+    /**
+     * Get the complete configuration as JSON object to be able to save it
+     * @returns {string}
+     */
     public getJSONConfiguration():string{
-        return JSON.stringify({title: this.title, author: this.author, script: this.script, interfaceNodes: this.interfaceNodes, input: this.input });
+        return JSON.stringify({title: this.title, script: this.script, interfaceNodes: this.interfaceNodes, input: this.input });
     }
 
     /**
@@ -141,9 +244,6 @@ export class MoonConfigurationService {
         if(res.title){
             this.setTitle(res.title);
         }
-        if(res.author){
-            this.setAuthor(res.author);
-        }
         if(res.interfaceNodes){
             for(let i:number = 0;i<res.interfaceNodes.length;i++){
                 this.setInterface(i,res.interfaceNodes[i]);
@@ -156,11 +256,14 @@ export class MoonConfigurationService {
         }
     }
 
+    /**
+     * Generates the configuration object needed from the MoonGen process for configuration
+     * @returns {any}
+     */
     public getConfigurationObject():any{
         let result=<any>{};
         result.title=this.getTitle();
         result.script=this.configuration[this.getScript()].name;
-        result.author=this.getAuthor();
         let conf=this.getConfiguration(this.getScript());
         if(conf.configuration){
             if(conf.configuration.interfaces){

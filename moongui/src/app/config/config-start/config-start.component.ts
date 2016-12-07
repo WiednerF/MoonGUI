@@ -15,7 +15,6 @@ import {MoonConnectService} from "../../services/moon-connect.service";
 export class ConfigStartComponent implements OnInit {
     status = 0;
     private title: string;
-    private author: string;
     private script: number;
     private configurationList: any;
     private clearAllValues: boolean = true;
@@ -31,7 +30,6 @@ export class ConfigStartComponent implements OnInit {
                 this.configurationList = this.configurationService.getConfigurationList();
                 this.script = this.configurationService.getScript();
                 this.title = this.configurationService.getTitle();
-                this.author = this.configurationService.getAuthor();
             }
         });
     }
@@ -39,9 +37,6 @@ export class ConfigStartComponent implements OnInit {
     ngOnInit() {
         this.configurationService.getTitleSubscribe().subscribe((value) => {
             this.title = value
-        });
-        this.configurationService.getAuthorSubscribe().subscribe((value) => {
-            this.author = value
         });
         this.moonGenService.getRunningSubscribe().subscribe(value => {
             if (value) {
@@ -80,13 +75,6 @@ export class ConfigStartComponent implements OnInit {
      */
     public changeTitle($event) {
         this.configurationService.setTitle($event.target.value);
-    }
-
-    /**
-     * Change the Author of the Component
-     */
-    public changeAuthor($event) {
-        this.configurationService.setAuthor($event.target.value);
     }
 
     /**
