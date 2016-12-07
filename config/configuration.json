@@ -80,7 +80,7 @@
                 "standard": 1000,
                 "type": "range",
                 "name": "Rate",
-                "unit": "bs",
+                "unit": "Mbit/s",
                 "conf": "rate",
                 "max": 100000,
                 "min": 1,
