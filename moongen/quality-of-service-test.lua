@@ -64,19 +64,12 @@ function master(args)
         mg.startTask("loadSlave", txDev:getTxQueue(1), config.input.fgPort, config)
     end
     -- count the incoming packets
-    mg.startTask("counterSlave", rxDev:getRxQueue(0),config)
+    mg.startTask("counterSlave", rxDev:getRxQueue(0),config,p)
     -- measure latency from a second queue
     mg.startSharedTask("timerSlave", txDev:getTxQueue(2), rxDev:getRxQueue(1), config.input.bgPort, config.input.fgPort, config.input.fgRate / (config.input.fgRate + config.input.bgRate),config,p)
     -- wait until all tasks are finished
     moongui.server(p,mg)
-    mg.waitForTasks()
 end
-
-function server(p)
-    moongui.server(p, mg)
-end
-
---TODO Add SlowPipe and Messages for rate
 
 function loadSlave(queue, port, config)
     mg.sleepMillis(100) -- wait a few milliseconds to ensure that the rx thread is running
@@ -117,7 +110,7 @@ function loadSlave(queue, port, config)
     txCtr:finalize()
 end
 
-function counterSlave(queue,config)
+function counterSlave(queue,config,p)
     -- the simplest way to count packets is by receiving them all
     -- an alternative would be using flow director to filter packets by port and use the queue statistics
     -- however, the current implementation is limited to filtering timestamp packets

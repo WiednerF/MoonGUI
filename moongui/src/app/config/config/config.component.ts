@@ -94,16 +94,21 @@ export class ConfigComponent implements OnInit {
 
     private getInterfaceList(){
         this.getInterfaceListHTTP();
-        Observable.interval(100000).subscribe(()=>{
-            this.getInterfaceListHTTP();
-        });
     }
     private getInterfaceListHTTP(){
-        var interfaceListHTTP=this.configuration.getInterfaceList();
+        let interfaceListHTTP=this.configuration.getInterfaceList();
         if(interfaceListHTTP!=null) {
             this.configuration.getInterfaceList().map((response)=>response.json()).subscribe((response)=> {
                 this.interfaceList = response;
-            }, (error)=>console.log("Error: " + error));
+            }, (error)=>{console.log("Error: " + error);
+                Observable.interval(100000).take(1).subscribe(()=>{
+                    this.getInterfaceListHTTP();
+                });
+            });
+        }else{
+            Observable.interval(100000).take(1).subscribe(()=>{
+                this.getInterfaceListHTTP();
+            });
         }
     }
 

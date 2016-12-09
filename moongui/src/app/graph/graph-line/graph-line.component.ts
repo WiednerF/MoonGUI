@@ -19,7 +19,7 @@ export class GraphLineComponent implements OnChanges,AfterViewInit {
     @ViewChild('editModal') public editModal:ModalDirective;
 
   private configuration:any={showLink: false,displaylogo: false};
-  private layout:any= {title: this.title,bargap: 0.05,bargrourgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value",type:"date", autorange: false,range:[0,1000000]}};
+  private layout:any= {title: this.title,bargap: 0.05,bargrourgap:0.2,yaxis:{title: "Count"},xaxis:{title:"Value", autorange: false,range:[0,1000000]}};
   private data:any=[];
 
     constructor(public element:ElementRef) {
