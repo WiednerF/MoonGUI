@@ -64,7 +64,7 @@ function master(args)
         mg.startTask("loadSlave", txDev:getTxQueue(1), config.input.fgPort, config)
     end
     -- count the incoming packets
-    mg.startTask("counterSlave", rxDev:getRxQueue(0))
+    mg.startTask("counterSlave", rxDev:getRxQueue(0),config)
     -- measure latency from a second queue
     mg.startSharedTask("timerSlave", txDev:getTxQueue(2), rxDev:getRxQueue(1), config.input.bgPort, config.input.fgPort, config.input.fgRate / (config.input.fgRate + config.input.bgRate),config,p)
     -- wait until all tasks are finished
@@ -117,7 +117,7 @@ function loadSlave(queue, port, config)
     txCtr:finalize()
 end
 
-function counterSlave(queue)
+function counterSlave(queue,config)
     -- the simplest way to count packets is by receiving them all
     -- an alternative would be using flow director to filter packets by port and use the queue statistics
     -- however, the current implementation is limited to filtering timestamp packets
