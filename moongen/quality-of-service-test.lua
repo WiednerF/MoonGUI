@@ -3,7 +3,6 @@ local mg = require "moongen"
 local memory = require "memory"
 local device = require "device"
 local ts = require "timestamping"
-local filter = require "filter"
 local stats = require "stats"
 local hist = require "histogram"
 local timer = require "timer"
@@ -13,6 +12,7 @@ local log = require "log"
 local pipe = require "pipe"
 local socket = require "socket"
 local moongui = require "moongui"
+local time = socket.gettime();
 
 -- check out l3-load-latency.lua if you want to get this via ARP
 local ETH_DST = "10:11:12:13:14:15" -- src mac is taken from the NIC
@@ -134,12 +134,11 @@ function counterSlave(queue,config,p)
         -- update() on rxPktCounters must be called to print statistics periodically
         -- this is not done in countPacket() for performance reasons (needs to check timestamps)
         for k, v in pairs(ctrs) do
-            v:update()
             local mpps,mbit = v:getStats()
             if config.input.fgPort==k then
-                p:send({rateFG=mbit[#mbit],timer=socket.gettime()})
+                p:send({rateFG=mbit[#mbit],timer=socket.gettime()-time})
             else
-                p:send({rateBG=mbit[#mbit],timer=socket.gettime()})
+                p:send({rateBG=mbit[#mbit],timer=socket.gettime()-time})
             end
 
         end
@@ -179,10 +178,10 @@ function timerSlave(txQueue, rxQueue, bgPort, port, ratio, config,p)
         if lat then
             if port == bgPort then
                 histBg:update(lat)
-                p:send({latencyBG=lat,timer=socket.gettime()})
+                p:send({latencyBG=lat,timer=socket.gettime()-time})
             else
                 histFg:update(lat)
-                p:send({latencyFG=lat,timer=socket.gettime()})
+                p:send({latencyFG=lat,timer=socket.gettime()-time})
             end
         end
         rateLimit:wait()

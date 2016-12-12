@@ -13,6 +13,7 @@ local log    = require "log"
 local pipe = require "pipe"
 local socket = require "socket"
 local moongui = require "moongui"
+local time = socket.gettime();
 
 -- set addresses here
 local DST_MAC		= nil -- resolved via ARP on GW_IP or DST_IP, can be overriden with a string here
@@ -104,10 +105,8 @@ function loadSlave(queue, rxDev, size, flows,p)
         bufs:offloadUdpChecksums()
         queue:send(bufs)
         txCtr:update()
-        rxCtr:update()
-	local mpps,mbit = rxCtr:getStats()
-	p:send({timer=socket.gettime(),rate=mbit[#mbit]})
-	
+        local mpps,mbit = rxCtr:getStats()
+	    p:send({timer=socket.gettime()-time,rate=mpps[#mpps]})
     end
     txCtr:finalize()
     rxCtr:finalize()
@@ -133,7 +132,7 @@ function timerSlave(txQueue, rxQueue, size, flows,p)
            			counter = incAndWrap(counter, flows)
         		end)
 	hist:update(latency)
-	p:send({latency=latency,timer=socket.gettime()})
+	p:send({latency=latency,timer=socket.gettime()-time})
         rateLimit:wait()
         rateLimit:reset()
     end
