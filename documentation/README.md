@@ -12,9 +12,12 @@ For further installation documentation see [installation](INSTALL.md)
 ## Build Project
 For further documentation to build the project see [Installation](INSTALL.md)
 
+## Run the Project
+For further documentation see [Installation](INSTALL.md)
+
 ## Documentation
 The documentation for this project is splitted into different parts, divided by the architecture of
-the programm
+the programm. The Architecture of the Program can be seen in [Architecture](ARCH.md)
 ### Script API
 For further documentation to build own scripts see [ScriptAPI](SCRIPTAPI.md)
 ### Configuration of the Graphical User Interface
