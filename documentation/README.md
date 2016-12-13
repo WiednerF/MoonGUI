@@ -24,6 +24,7 @@ For further documentation to build own scripts see [ScriptAPI](SCRIPTAPI.md)
 For further documentation to Add Scripts to the GUI see [GUI CONFIG](GUICONFIG.md)
 ### REST API
 For further documentation to the REST API see [REST API](RESTAPI.md)
+
 ### Additional Make targets
 <table>
 <thead>
@@ -50,25 +51,3 @@ For further documentation to the REST API see [REST API](RESTAPI.md)
 </tr>
 </tbody>
 <table>
-
-## Information to Basic Work
-
-<table>
-<tbody>
-<tr>
-<td>Author</td><td>Florian Wiedner</td>
-</tr>
-<tr>
-<td>Advisor</td><td>Sebastian Gallenmüller, Paul Emmerich</td>
-</tr>
-<tr>
-<td>Superadvisor</td><td>Professor Georg Carle</td>
-</tr>
-<tr>
-<td>Bachelor Thesis</td><td>Creation of a User Interface for Network Analysis</td>
-</tr>
-<tr>
-<td>University</td><td>Technische Universität München</td>
-</tr>
-</tbody>
-</table>
