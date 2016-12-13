@@ -7,5 +7,5 @@ MoonGUI's architecture is based on basically three parts, the MoonGen process, t
   ![MoonGUI Client](client.png)
   
 ## Server Architecture  
-The Server is based on the Server which starts and stops the MoonGen process and collects data like described in the following pciture:
+The Server is based on the Server which starts and stops the MoonGen process and collects data like described in the following picture:
  ![MoonGUI Server](server.png) 
