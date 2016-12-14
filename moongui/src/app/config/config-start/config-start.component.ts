@@ -1,10 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {MoonGenService} from "../../services/moon-gen.service";
-import {Response} from "@angular/http";
 import {MoonConfigurationService} from "../../services/moon-configuration.service";
 import {MoonHistoryService} from "../../services/moon-history.service";
 import {ModalDirective} from "ng2-bootstrap";
-import {sha1} from "@angular/compiler/src/i18n/digest";
 import {MoonConnectService} from "../../services/moon-connect.service";
 
 @Component({
@@ -12,20 +10,66 @@ import {MoonConnectService} from "../../services/moon-connect.service";
     templateUrl: './config-start.component.html',
     styleUrls: ['./config-start.component.css']
 })
+/**
+ * Defines the View for Configuration and Starting of general purpose and not script related Stuff
+ */
 export class ConfigStartComponent implements OnInit {
-    status = 0;
+    /**
+     * The Status of the MoonGen Process (0 = stopped and 1 = running)
+     * @type {number}
+     */
+    private status:boolean = false;
+    /**
+     * The Title of the Experiment
+     */
     private title: string;
+    /**
+     * The Number of the selected script
+     */
     private script: number;
+    /**
+     * The ConfigurationList for the GUI
+     */
     private configurationList: any;
+    /**
+     * Status of the button
+     * @type {boolean}
+     */
     private clearAllValues: boolean = true;
+    /**
+     * Status of the save Button
+     * @type {boolean}
+     */
     private save: boolean = true;
+    /**
+     * Status of the Load Button
+     * @type {boolean}
+     */
     private load: boolean = true;
+    /**
+     * Status of the Stop Server Button
+     * @type {boolean}
+     */
     private stopServerValue: boolean = true;
+    /**
+     * The Modal for loading for starting and stopping
+     */
     @ViewChild('loadFileModal') public loadFileModal: ModalDirective;
+    /**
+     * The file Information list from the loading process
+     * @type {Array}
+     */
     private fileInformation:any = [];
 
+    /**
+     *
+     * @param configurationService The ConfigurationService
+     * @param moonGenService The MoonGen process service
+     * @param moonHistory The MoonGen history service for cleaning the files
+     * @param connect The connect service for the connection to the alert service
+     */
     constructor(public configurationService: MoonConfigurationService, public moonGenService: MoonGenService, public moonHistory: MoonHistoryService, public connect: MoonConnectService) {
-        this.configurationService.getWait().subscribe((value) => {
+        this.configurationService.getWait().subscribe((value) => {//Wait for the loading of the application
             if (value) {
                 this.configurationList = this.configurationService.getConfigurationList();
                 this.script = this.configurationService.getScript();
@@ -34,40 +78,38 @@ export class ConfigStartComponent implements OnInit {
         });
     }
 
-    ngOnInit() {
+    ngOnInit() {//Subscribe to the different Values used in this tab
         this.configurationService.getTitleSubscribe().subscribe((value) => {
             this.title = value
         });
         this.moonGenService.getRunningSubscribe().subscribe(value => {
-            if (value) {
-                this.status = 1;
-            } else {
-                this.status = 0;
-            }
+            this.status = !!value;
         });
         this.configurationService.getScriptChange().subscribe(value => {
             this.script = value
         });
     }
 
+    /**
+     * Starts the MoonGen Process after activated through the button
+     */
     startMoonGen() {
-        this.moonGenService.startMoonGen(ConfigStartComponent.startMoonGenResult, this);
+        this.moonGenService.startMoonGen((error:boolean,component:ConfigStartComponent)=>{
+            if (error) {
+                component.status = false;
+            }
+        }, this);
     }
 
-    public static startMoonGenResult(error: boolean, component: ConfigStartComponent) {
-        if (error) {
-            component.status = 0;
-        }
-    }
-
+    /**
+     * Stops the MoonGen Process after activated through the button
+     */
     stopMoonGen() {
-        this.moonGenService.stopMoonGen(ConfigStartComponent.stopMoonGenResult, this);
-    }
-
-    public static stopMoonGenResult(error: boolean, component: ConfigStartComponent) {
-        if (error) {
-            component.status = 1;
-        }
+        this.moonGenService.stopMoonGen((error:boolean,component:ConfigStartComponent)=>{
+            if (error) {
+                component.status = true;
+            }
+        }, this);
     }
 
     /**
@@ -84,26 +126,43 @@ export class ConfigStartComponent implements OnInit {
         this.configurationService.setScript($event);
     }
 
+    /**
+     * Clear the Complete History on the server
+     */
     public clearAll() {
         this.moonHistory.clearAll();
         this.clearAllValues = true;
     }
+
+    /**
+     * Stops the Server directly from the GUI
+     */
     public stopServer() {
         this.connect.stopServer();
         this.stopServerValue = true;
     }
 
+    /**
+     * Saves the file as Download named moonGUI.json
+     */
     public saveFile() {
         let content: string = this.configurationService.getJSONConfiguration();
         ConfigStartComponent.download("moonGUI.json", content);
         this.save = true;
     }
 
+    /**
+     * Starts the Dialog to Load a file
+     */
     public loadFile() {
         this.loadFileModal.show();
         this.load = true;
     }
 
+    /**
+     * At the end of the Loading process, the file is loaded as new configuration
+     * @param event
+     */
     public loadNewConfiguration(event){
         this.loadFileModal.hide();
         this.readThis(event.target);
@@ -118,7 +177,7 @@ export class ConfigStartComponent implements OnInit {
         let myReader:FileReader = new FileReader();
         let config = this.configurationService;
 
-        myReader.onloadend = function(e){
+        myReader.onloadend = function(){
             let result = JSON.parse(myReader.result);
             config.setJSONConfiguration(result);
         };
@@ -126,6 +185,11 @@ export class ConfigStartComponent implements OnInit {
         myReader.readAsText(file);
     }
 
+    /**
+     * Gets the Property for the description based on the script number
+     * @param script The script number
+     * @returns {string }
+     */
     private getProbDescription(script: number) {
         return this.configurationList[script].description;
     }

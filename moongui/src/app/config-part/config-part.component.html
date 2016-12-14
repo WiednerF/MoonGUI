@@ -1,11 +1,12 @@
+<!--Each tab contains directly one Configuration tab described in the subordinated classes-->
 <tabset>
-    <tab heading="Start/Stop" [disabled]="tabs[0].disabled">
+    <tab [heading]="'Start/Stop'">
             <app-config-start></app-config-start>
     </tab>
-    <tab heading="Configuration" [disabled]="tabs[1].disabled">
+    <tab [heading]="'Configuration'">
         <app-config></app-config>
     </tab>
-    <tab heading="System" [disabled]="tabs[2].disabled">
+    <tab [heading]="'System'">
         <app-system></app-system>
     </tab>
 </tabset>

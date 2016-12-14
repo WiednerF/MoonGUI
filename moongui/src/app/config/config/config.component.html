@@ -7,7 +7,7 @@
             <div class="col-sm-8">
                 <select class="form-control" [ngModel]="getProp('interfaceNode',i)"
                         (ngModelChange)="changeInterface($event,i)">
-                    <option *ngFor="let interface of interfaceList" [ngValue]="interface.index">{{interface.show}}
+                    <option *ngFor="let interfaceValue of interfaceList" [ngValue]="interfaceValue.index">{{interfaceValue.show}}
                     </option>
                 </select>
             </div>
@@ -45,7 +45,6 @@
                     <textarea [ngModel]="getProp('input',i)" (ngModelChange)="changeInput($event,i)" class="form-control"
                            [rows]="inputItem.rows" [cols]="inputItem.cols"  title="{{ inputItem.name }}"></textarea>
                 </div>
-                <!--TODO More Types-->
             </div>
         </div>
     </div>

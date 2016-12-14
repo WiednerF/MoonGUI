@@ -1,6 +1,7 @@
 <div class="tab-wrapper form-horizontal">
     <div class="form-group" >
         <div class="col-lg-12 headline">System</div>
+        <!--Each line correspond directly to the labeled information from the server-->
         <div class="col-sm-4">Architecture: </div><div class="col-sm-8">{{ sys.arch || "Loading.." }}</div>
         <div class="col-sm-4">Cores: </div><div class="col-sm-8">{{ sys.cores || "Loading.." }}</div>
         <div class="col-sm-4">System: </div><div class="col-sm-8">{{ sys.os || "Loading.." }}</div>
@@ -11,6 +12,4 @@
         <div class="col-sm-4">Version: </div><div class="col-sm-8">{{ sys.lua.version || "Loading.." }}</div>
         <div class="col-sm-4">Status: </div><div class="col-sm-8">{{ sys.lua.status || "Loading.." }}</div>
         </div>
-
-
 </div>

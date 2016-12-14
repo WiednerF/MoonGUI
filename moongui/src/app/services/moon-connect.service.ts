@@ -107,6 +107,14 @@ export class MoonConnectService {
     }
 
     /**
+     * Gets the System Information Connection
+     * @returns {Observable<Response>}
+     */
+    public getSystemInformation():Observable<Response>{
+        return this.get("/rest/system/");
+    }
+
+    /**
      * The Get request
      * @param url
      * @returns {Observable<Response>}

@@ -10,7 +10,7 @@
     margin-bottom: 1em;
     margin-left: 0;
     margin-right: 0;
-    webkit-box-shadow: 2px 2px 16px 4px rgba(0,0,0,0.22);
+    -webkit-box-shadow: 2px 2px 16px 4px rgba(0,0,0,0.22);
     -moz-box-shadow: 2px 2px 16px 4px rgba(0,0,0,0.22);
     box-shadow: 2px 2px 16px 4px rgba(0,0,0,0.22);
 }
