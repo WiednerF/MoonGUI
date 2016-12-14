@@ -15,7 +15,7 @@ export class AppComponent implements OnInit{
     private viewContainerRef: ViewContainerRef;
     /**
      * Shows the Status for the StatusBar to be able to  change it from Everywhere
-     * @type {{connect: any; status: string; progressBar: {show: boolean; value: number; max: number}}}
+     * @type {any}
      */
     public status: {status: string, progressBar: {show: boolean, value: number, max: number}} = {
         status: "",
@@ -24,7 +24,8 @@ export class AppComponent implements OnInit{
 
     /**
      * Instantiate the MoonConnect
-     * @param moonConnectService
+     * @param moonConnectService The MoonGen Service handling connections
+     * @param viewContainerRef  The Container Reference for the modal view
      */
     constructor(public moonConnectService:MoonConnectService, viewContainerRef:ViewContainerRef) {
         this.viewContainerRef = viewContainerRef;

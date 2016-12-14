@@ -13,8 +13,12 @@ export class HeaderComponent implements OnInit{
 
   public title:string = "";//The Title
 
+  /**
+   *
+   * @param moonConfig The configuration service of MoonGUI for receiving the title
+   */
   constructor(private moonConfig:MoonConfigurationService) {
-
+      this.title = moonConfig.getTitle();
   }
 
   ngOnInit(){

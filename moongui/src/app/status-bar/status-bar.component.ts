@@ -29,7 +29,7 @@ export class StatusBarComponent implements OnInit {
 
   }
 
-  ngOnInit() {//Check the Sunning Syste,
+  ngOnInit() {//Check the Status of the System,
 
         this.moonGenService.getRunningSubscribe().subscribe((value)=>this.running=value);
         this.connectService.getConnection().subscribe((value)=>this.connectStatus=value);
