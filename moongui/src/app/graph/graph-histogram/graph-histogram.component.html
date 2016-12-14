@@ -1,11 +1,12 @@
 <div>
-    <div></div>
+    <div></div><!--This div is used by the software for displaying the graph-->
     <button (click)="editModal.show()" type="button" class="btn btn-primary"
             style="position:relative;top:-400px;">
         Edit
-    </button>
+    </button><!--This Button shows the information needed for Editing the graph-->
 </div>
 
+<!--The Modal-->
 <div bsModal #editModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
      aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -18,7 +19,8 @@
             </div>
             <div class="modal-body">
                 <tabset>
-                    <tab heading="X-Axis">
+                    <!--The X-Axis with Editing of Automatic Display-->
+                    <tab [heading]="'X-Axis'">
                         <div class="tab-wrapper form-horizontal">
                             <div class="form-group row">
                                 <label class="control-label col-sm-4">Name</label>
@@ -63,7 +65,7 @@
                                            type="number">
                                 </div>
                             </div>
-                            <div [hidden]="layout.xaxis.autorange || !xAxisPercentile" class="form-group row"><!--TODO Testen-->
+                            <div [hidden]="layout.xaxis.autorange || !xAxisPercentile" class="form-group row">
                                 <div class="col-sm-6"></div>
                                 <div class="col-sm-3">
                                     <div class="input-group">
@@ -82,7 +84,7 @@
                             </div>
                         </div>
                     </tab>
-                    <tab heading="Y-Axis">
+                    <tab [heading]="'Y-Axis'">
                         <div class="tab-wrapper form-horizontal">
                             <div class="form-group row">
                                 <label class="control-label col-sm-4">Name</label>
@@ -94,11 +96,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <!--TODO-->
                         </div>
                     </tab>
                 </tabset>
-                <!--TODO Edit Modal for Editing of Graph with use of Tabs-->
             </div>
         </div>
     </div>

@@ -11,7 +11,8 @@
 					},
 					"travers":[
 						{
-						 "x":"results"
+						 "x":"results",
+						 "title":"latency"
 						}
 					],
 					"size": 0.001,
@@ -114,7 +115,8 @@
               "type":"histogram",
 	      "travers":[
 		{
-              	"x":"latency"
+              	"x":"latency",
+		"title":"latency"
 		}
 	      ],
 	      "range":{
@@ -228,10 +230,12 @@
             "type":"histogram",
             "travers":[
               {
-                "x":"latencyFG"
+                "x":"latencyFG",
+		"title":"Latency Foreground"
               },
               {
-                "x":"latencyBG"
+                "x":"latencyBG",
+		"title":"latency Background"
               }
             ],
             "range":{

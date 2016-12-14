@@ -1,8 +1,8 @@
 import {Component, Input, OnChanges, AfterViewInit, ElementRef, ViewChild} from '@angular/core';
 import {ModalDirective} from "ng2-bootstrap";
 
-declare var Plotly: any;
-declare var document: any;
+declare let Plotly: any;//Declares the Variables already defined to be usable in the TypeScript Compiler
+declare let document: any;
 
 @Component({
   selector: 'app-graph-histogram',
@@ -12,6 +12,8 @@ declare var document: any;
  * Generates a standard graph template for a histogram
  */
 export class GraphHistogramComponent implements OnChanges,AfterViewInit {
+
+    //TODO From here
   @Input() public points:any;
   @Input() public title:string;
     @Input() public size:number;
@@ -45,7 +47,9 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
               autobinx: false,
               xbins: {start: Math.min.apply(Math, this.points[i].x), end: Math.max.apply(Math, this.points[i].x), size: this.size}
           });
+
       }
+      console.log(this.data);
       this.layout.title=this.title;
       Plotly.newPlot(this.id, this.data,this.layout,this.configuration);
   }
@@ -53,9 +57,8 @@ export class GraphHistogramComponent implements OnChanges,AfterViewInit {
       if(this.data!=[]&& this.data.length!=0) {
           var graphDiv=document.getElementById(this.id);
           if (changes.points) {
-              var update1:any = {x:[],xbins:[], name: []};
+              var update1:any = {x:[],xbins:[]};
               for(let i:number=0;i<changes.points.currentValue.length;i++) {
-                  update1.name.push(changes.points.currentValue[i].title);
                   update1.x.push(changes.points.currentValue[i].x);
                   update1.xbins.push({
                       start: Math.min.apply(Math, changes.points.currentValue[i].x),
