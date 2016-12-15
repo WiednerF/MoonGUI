@@ -43,6 +43,47 @@ export class MoonGenService {
      */
     constructor(private moonConnectService: MoonConnectService, private configurationService: MoonConfigurationService) {
         this.interval = Observable.interval(10000);//Starting the Interval Observable
+        this.moonConnectService.getConnection().subscribe((value)=>{//Connects to the Server and connects to a running MoonGen process if applicable
+           if(value){
+               this.testChangesInRunningProcess();
+           }
+        });
+        this.testChangesInRunningProcess();
+    }
+
+    /**
+     * Tests if another process started to run
+     */
+    private testChangesInRunningProcess(){
+        let res:Observable<Response> = this.moonConnectService.get("/rest/moongen/");
+        if(res!=null){
+            res.map(res=>res.json()).subscribe((res)=>{
+                if(res.execution){
+                    if(res.execution!=this.executionNumber){
+                        this.executionNumber=res.execution;
+                        this.shouldRun = true;
+                        this.running = true;//Removes the running dependencies
+                        this.runningChange.next(true);
+                        if (this.subscribe != null) {
+                            this.subscribe.unsubscribe();
+                            this.subscribe = null;
+                        }
+                        this.subscribe = this.subscribeTestRunning();
+                    }
+                }else{
+                    if(this.executionNumber!=null){
+                        this.shouldRun = false;
+                        this.executionNumber = null;
+                        this.running = false;//Removes the running dependencies
+                        this.runningChange.next(false);
+                        if (this.subscribe != null) {
+                            this.subscribe.unsubscribe();
+                            this.subscribe = null;
+                        }
+                    }
+                }
+            },()=>{},()=>{});
+        }
     }
 
     /**
