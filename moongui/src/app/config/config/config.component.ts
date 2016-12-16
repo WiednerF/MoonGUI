@@ -113,6 +113,17 @@ export class ConfigComponent implements OnInit {
     }
 
     /**
+     * Changes the Input configuration for the Range Slider
+     * @param $event
+     * @param id
+     */
+    public changeRangeInput($event:number,id){
+        let temp:number = Number($event);
+        this.configuration.setInput(id,temp);
+        this.input[id]=temp;
+    }
+
+    /**
      * Get the Property directly
      * Is needed for the ngModel directive because of internal reasons
      * @param name The name of the Property

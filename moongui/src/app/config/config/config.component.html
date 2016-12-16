@@ -21,7 +21,7 @@
                 <!--TYPE: range-->
                 <div class="input-group" *ngIf="inputItem.type=='range'">
                     <span class="input-group-addon">{{ inputItem.unit }}</span>
-                    <input [ngModel]="getProp('input',i)" (ngModelChange)="changeInput($event,i)" class="form-control range"
+                    <input [ngModel]="getProp('input',i)" (ngModelChange)="changeRangeInput($event,i)" class="form-control range"
                            type="range" [min]="inputItem.min" [max]="inputItem.max"
                            [step]="inputItem.step" title="{{ inputItem.name }}">
                     <span class="input-group-addon inputAddon"><input type="number" [ngModel]="getProp('input',i)" (ngModelChange)="changeInput($event,i)" ></span>
