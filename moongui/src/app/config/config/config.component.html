@@ -45,6 +45,10 @@
                     <textarea [ngModel]="getProp('input',i)" (ngModelChange)="changeInput($event,i)" class="form-control"
                            [rows]="inputItem.rows" [cols]="inputItem.cols"  title="{{ inputItem.name }}"></textarea>
                 </div>
+                <!--TYPE: textArea-->
+                <div class="input-group" *ngIf="inputItem.type=='button'">
+                    <button type="button" class="btn btn-info" (click)="buttonAction(i)">{{ inputItem.description }}</button>
+                </div>
             </div>
         </div>
     </div>

@@ -1,6 +1,7 @@
 [
 	{"name":"moongen-virtual.lua",
 	  "description":"The default test script for users running on a virtual machine",
+	  "update":true,
 			"graph":[
 				{
 					"type":"histogram",
@@ -56,13 +57,20 @@
                          "max": 100,
                          "min": 1,
                          "step": 1
-                     }
+                     },
+					 {
+						"type":"button",
+						"name":"Button",
+						"description":"Button",
+						"parameter":"button"
+					 }
                  ]
              }
             },
         {
           "name":"l3-load-latency.lua",
 	  "description":"A Level 3 scenario to test the network on load with latency test",
+	  "update":false,
           "configuration": {
             "interfaces": [
               {
@@ -158,6 +166,7 @@
       {
         "name":"quality-of-service-test.lua",
         "description":"Generates two flows of traffic and compares them. This example requires an ixgbe NIC due to the used hardware features.",
+		"update":false,
         "configuration": {
           "interfaces": [
             {

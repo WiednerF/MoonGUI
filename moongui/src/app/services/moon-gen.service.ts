@@ -43,12 +43,27 @@ export class MoonGenService {
      */
     constructor(private moonConnectService: MoonConnectService, private configurationService: MoonConfigurationService) {
         this.interval = Observable.interval(10000);//Starting the Interval Observable
+        this.configurationService.getInputChange().subscribe(()=>this.updateConfig());
         this.moonConnectService.getConnection().subscribe((value)=>{//Connects to the Server and connects to a running MoonGen process if applicable
            if(value){
                this.testChangesInRunningProcess();
            }
         });
         this.testChangesInRunningProcess();
+    }
+
+    /**
+     * Updates the configuration of the running MoonGen process
+     */
+    private updateConfig(){
+        if(this.running){
+            if(this.configurationService.getConfiguration(this.configurationService.getScript()).update){
+                let update = this.moonConnectService.put("/rest/moongen/"+this.executionNumber+"/", this.configurationService.getConfigurationObject());
+                if (update != null) {
+                    update .subscribe(() => {}, error => {this.moonConnectService.addAlert("danger", "Could not update MoonGen configuration: " + error);});
+                }
+            }
+        }
     }
 
     /**
@@ -213,5 +228,16 @@ export class MoonGenService {
     public getData(count:number):Observable<Response> {
         if (!this.shouldRun) return null;
         return this.moonConnectService.get("/rest/moongen/" + this.executionNumber + "/?count="+ count);
+    }
+
+    /**
+     * Runs the action For Buttons
+     * @param param The parameter name of the button
+     */
+    public buttonAction(param:any){
+        if(this.shouldRun){
+            let result:Observable<Response> = this.moonConnectService.put("/rest/moongen/" + this.executionNumber + "/button/?button="+param,"");
+            result.subscribe(()=>this.moonConnectService.addAlert("success","Button action "+param+" successfully started"),()=>this.moonConnectService.addAlert("danger","Button action "+param+" not worked"))
+        }
     }
 }

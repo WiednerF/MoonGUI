@@ -21,6 +21,9 @@ This connection is using the URI to describe resources and the http methods to d
    <tr>
       <td>POST</td><td>Create Resource</td><td>Yes</td>
    </tr>
+   <tr>
+      <td>PUT</td><td>Update Resource</td><td>Yes</td>
+   </tr>
     <tr>
        <td>DELETE</td><td>Destroy the resource</td><td>No</td>
     </tr>
@@ -105,6 +108,11 @@ This connection is using the URI to describe resources and the http methods to d
  + Response: JSON {data: {List of data points},count:{Number already send included them send in this packet}}
  + Status: 200 if process is found
  
+ ### Method PUT
+  + Action: Updates the configuration file
+  + Body: Requires a JSON Configuration files, define by the config file for the GUI with necesary information:  title, author and script (MoonGen script to run with the server)
+  + Status: 200 if successfully
+ 
  ### Method DELETE
   + Action: Stopps the current running MoonGen process
   + Response: Status 200 for OK
@@ -113,4 +121,9 @@ This connection is using the URI to describe resources and the http methods to d
   + Action: Reads the Log lines as HTML objects
   + Parameter: Seek for the beginning of the lines
   + Response: JSON {seek: {The number after this reponse}, log: {Lines of the log as array} }
+  + Status: 200
+  
+  ## MoonGen Button Entry
+  + Action: Activates the button action
+  + Parameter: button for the button name
   + Status: 200

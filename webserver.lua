@@ -91,7 +91,7 @@ function MoonGenStartHandler:post()
 	configurationFile:write(json.encode(configurationObject,{indent= true}))
 	configurationFile:close()
 	local historyFile = io.open("history/history-number","a")
-	historyFile:write(executionNumber..";"..configurationObject.title..";"..configurationObject.script..";"..configurationObject.author..";"..os.date("%x %X")..";\n")
+	historyFile:write(executionNumber..";"..configurationObject.title..";"..configurationObject.script..";"..os.date("%x %X")..";\n")
 	historyFile:close()
 	--Executing Standard MoonGen Script
 	cmd = "nohup moongen/moongen.sh "..configurationObject.script.." "..executionNumber.." > history/"..executionNumber.."/run.log & echo $! > history/"..executionNumber.."/pid.log"
@@ -162,6 +162,17 @@ function MoonGenDefaultHandler:get(execution)
 		self:set_status(404)
 	end
 end
+
+function MoonGenDefaultHandler:put(execution)
+	if tonumber(execution)==executionNumber then
+		local configurationObject = self:get_json(true)
+		local configurationFile = io.open("history/"..executionNumber.."/config.json","w")
+		configurationFile:write(json.encode(configurationObject,{indent= true}))
+		configurationFile:close()
+	else
+		self:set_status(404)
+	end
+end
 --***********MOONGEN LOG*******************************
 local MoonGenLogHandler = class("MoonGenLogHandler",turbo.web.RequestHandler)
 function MoonGenLogHandler:get(execution)
@@ -186,6 +197,17 @@ function MoonGenLogHandler:get(execution)
 			self:set_status(404)
 		end
 end
+--***********MOONGEN Button Action Handler
+local MoonGenButtonHandler = class("MoonGenButtonHandler",turbo.web.RequestHandler)
+function MoonGenButtonHandler:put(execution)
+	if tonumber(execution)==executionNumber then	
+			local button = self:get_argument("button","noButton")
+			io.write(button)
+		else
+			self:set_status(404)
+		end
+end
+
 --*******************SYSTEM
 local SystemHandler = class("SystemHandler",turbo.web.RequestHandler)
 function SystemHandler:get()
@@ -226,6 +248,7 @@ local app = turbo.web.Application:new({
 	-- Start the MoonGen Handler Function
 	{"^/rest/moongen/$",MoonGenStartHandler},
 	{"^/rest/moongen/(.*)/log/$",MoonGenLogHandler},
+	{"^/rest/moongen/(.*)/button/$",MoonGenButtonHandler},
 	{"^/rest/moongen/(.*)/$",MoonGenDefaultHandler},
 	--Get System Information
 	{"^/rest/system/$",SystemHandler},

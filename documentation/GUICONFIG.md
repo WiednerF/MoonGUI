@@ -2,13 +2,15 @@
 In this file is the documentation for adding new scripts to the configuration object of the graphical user interface or changing the current ones.
 All configurations are stored in the file config/configuration.json as a JSON array with an object for each individual script, divided in the parts name, description, configuration and graph.
  Each of this parts is an divided name for an additional object, so the base structur is:
- `{"name":"moongui-lua","description":...,"configuration":{...},"graph":{...}"`. The next sections are divided according to this information:
+ `{"name":"moongui-lua","update":true,"description":...,"configuration":{...},"graph":{...}"`. The next sections are divided according to this information:
  
 ## Name
  This parts wants an String containing the name of the script file, like it is stored in the folder moongen. If it is stored in a subfolder, then it wants the
  complete path from the folder moongen. The ending `.lua` has to be included.
 ## Description
  This parts wants a description, which will be shown after the selection in the GUI for further information to this script. It needs an string value.
+## Update
+ This requires true or false, if the configuration should be updated on the running process or not 
 ## Configuration
  The configuration object needs two different objects, the interfaces (For the selection of network interfaces) and the input for additional input parameters. The configruation object looks like this:
  `{"interfaces":[...],"input":[...]}`. Both of the objects are containing a list of objects, which are described in the subsections below:
@@ -22,7 +24,7 @@ All configurations are stored in the file config/configuration.json as a JSON ar
  ### Input
  This is the list of Additional Input Information. For this type, different types of input are available, which will be described in subsections after the default 
  values for every type:
- + type: Can be text, textArea, range or number
+ + type: Can be text, textArea, range, button or number
  + unit: A string value for the unit to be shown in the GUI
  + name: The name shown in the GUI as description for this input parameter
  + conf: The identifier used in the configuration object send to the script
@@ -37,6 +39,9 @@ All configurations are stored in the file config/configuration.json as a JSON ar
  #### number and range
  Additional number values are the values for min, max and step called in the same name. Example: `{"standard": 60,"type": "number","name": "Packet Size",
 "unit": "B","conf": "size","max": 100000,"min": 10, "step": 1}`
+
+ #### button
+ Only following values without the one for the others, except type must be button: name (Name for the label) , parameter (Name for sending the button) and text (Name on the button)
  
  ## Graph
  In this object list, the different graphs shown and their input data is defined. Every graph is either a line or a historgam (graph) and has for this together

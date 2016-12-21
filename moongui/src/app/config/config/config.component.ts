@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MoonConfigurationService} from "../../services/moon-configuration.service";
 import {Observable} from "rxjs";
+import {MoonGenService} from "../../services/moon-gen.service";
 
 @Component({
   selector: 'app-config',
@@ -37,8 +38,9 @@ export class ConfigComponent implements OnInit {
     /**
      *
      * @param configuration The Configuration service needed to get all relevant information
+     * @param moonGen The Running MoonGen process
      */
-  constructor(public configuration:MoonConfigurationService) {
+  constructor(public configuration:MoonConfigurationService, public moonGen:MoonGenService) {
       this.configuration.getWait().subscribe(value=>{if(value){//Receive, if the configuration is already loaded from the device
           let configurationObject=this.configuration.getConfiguration(this.configuration.getScript());//The Configuration script with the selected object is loaded
           this.initScript(configurationObject);//The script is initiated
@@ -121,6 +123,14 @@ export class ConfigComponent implements OnInit {
         let temp:number = Number($event);
         this.configuration.setInput(id,temp);
         this.input[id]=temp;
+    }
+
+    /**
+     * Activates the Push from the button
+     * @param i The parameter of the config
+     */
+    public buttonAction(i){
+        this.moonGen.buttonAction(this.configurationObject.configuration.input[i].parameter);
     }
 
     /**
