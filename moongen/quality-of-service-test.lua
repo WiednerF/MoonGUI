@@ -64,11 +64,11 @@ function master(args)
         mg.startTask("loadSlave", txDev:getTxQueue(1), config.input.fgPort, config)
     end
     -- count the incoming packets
-    mg.startTask("counterSlave", rxDev:getRxQueue(0),config,p)
+    mg.startTask("counterSlave", rxDev:getRxQueue(0), config, p)
     -- measure latency from a second queue
-    mg.startSharedTask("timerSlave", txDev:getTxQueue(2), rxDev:getRxQueue(1), config.input.bgPort, config.input.fgPort, config.input.fgRate / (config.input.fgRate + config.input.bgRate),config,p)
+    mg.startSharedTask("timerSlave", txDev:getTxQueue(2), rxDev:getRxQueue(1), config.input.bgPort, config.input.fgPort, config.input.fgRate / (config.input.fgRate + config.input.bgRate), config, p)
     -- wait until all tasks are finished
-    moongui.server(p,mg)
+    moongui.server(p, mg)
 end
 
 function loadSlave(queue, port, config)
@@ -105,12 +105,11 @@ function loadSlave(queue, port, config)
         -- send packets
         bufs:offloadUdpChecksums()
         txCtr:updateWithSize(queue:send(bufs), config.input.size)
-
     end
     txCtr:finalize()
 end
 
-function counterSlave(queue,config,p)
+function counterSlave(queue, config, p)
     -- the simplest way to count packets is by receiving them all
     -- an alternative would be using flow director to filter packets by port and use the queue statistics
     -- however, the current implementation is limited to filtering timestamp packets
@@ -134,13 +133,14 @@ function counterSlave(queue,config,p)
         -- update() on rxPktCounters must be called to print statistics periodically
         -- this is not done in countPacket() for performance reasons (needs to check timestamps)
         for k, v in pairs(ctrs) do
-            local mpps,mbit = v:getStats()
-            if config.input.fgPort==k then
-                p:send({rateFG=mbit[#mbit],timer=socket.gettime()-time})
-            else
-                p:send({rateBG=mbit[#mbit],timer=socket.gettime()-time})
+            if v:update() then
+                local mpps, mbit = v:getStats()
+                if config.input.fgPort == k then
+                    p:send({ rateFG = mbit[#mbit], timer = socket.gettime() - time })
+                else
+                    p:send({ rateBG = mbit[#mbit], timer = socket.gettime() - time })
+                end
             end
-
         end
         bufs:freeAll()
     end
@@ -151,7 +151,7 @@ function counterSlave(queue,config,p)
 end
 
 
-function timerSlave(txQueue, rxQueue, bgPort, port, ratio, config,p)
+function timerSlave(txQueue, rxQueue, bgPort, port, ratio, config, p)
     local txDev = txQueue.dev
     local rxDev = rxQueue.dev
     local timestamper = ts:newUdpTimestamper(txQueue, rxQueue)
@@ -178,10 +178,10 @@ function timerSlave(txQueue, rxQueue, bgPort, port, ratio, config,p)
         if lat then
             if port == bgPort then
                 histBg:update(lat)
-                p:send({latencyBG=lat,timer=socket.gettime()-time})
+                p:send({ latencyBG = lat, timer = socket.gettime() - time })
             else
                 histFg:update(lat)
-                p:send({latencyFG=lat,timer=socket.gettime()-time})
+                p:send({ latencyFG = lat, timer = socket.gettime() - time })
             end
         end
         rateLimit:wait()

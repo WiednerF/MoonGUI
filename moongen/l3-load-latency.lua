@@ -105,8 +105,10 @@ function loadSlave(queue, rxDev, size, flows,p)
         bufs:offloadUdpChecksums()
         queue:send(bufs)
         txCtr:update()
-        local mpps,mbit = rxCtr:getStats()
-	    p:send({timer=socket.gettime()-time,rate=mpps[#mpps]})
+        if rxCtr:update() then
+            local mpps,mbit = rxCtr:getStats()
+	        p:send({timer=socket.gettime()-time,rate=mbit[#mbit]})
+        end
     end
     txCtr:finalize()
     rxCtr:finalize()
