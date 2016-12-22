@@ -106,8 +106,8 @@ function loadSlave(queue, rxDev, size, flows,p)
         queue:send(bufs)
         txCtr:update()
         if rxCtr:update() then
-            local mpps,mbit = rxCtr:getStats()
-	        p:send({timer=socket.gettime()-time,rate=mbit[#mbit]})
+		local mpps,mbit = rxCtr:getStats()
+	     p:send({timer=socket.gettime()-time,rate=mbit[#mbit]})
         end
     end
     txCtr:finalize()
