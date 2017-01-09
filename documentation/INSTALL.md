@@ -9,6 +9,7 @@ followed by installation instructions and the built instructions for the fronten
 + Install Angular-cli with `npm install -g angular-cli`
 + Luarocks: Luarocks is needed for the installation of all Lua dependendent Libraries for the webserver: Follow the installation instructions
 on the following page [LuaRocks Installation page](https://github.com/luarocks/luarocks/wiki/Download).
++ If problems comes with invalid configuration object then do: `npm uninstall webpack --save-dev & npm install webpack@2.1.0-beta.22 --save-dev`
 
 ## Installation
 For Installation of the Software rest dependencies and building MoonGen as well as all additional Dependencies of MoonGUI run in the 
