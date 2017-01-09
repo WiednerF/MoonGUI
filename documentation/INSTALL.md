@@ -4,6 +4,8 @@ followed by installation instructions and the built instructions for the fronten
 ## Dependencies
 + NPM: The package installer for NodeJS: Follow the instructions provided on the following page
 [NodeJS Installation page](https://nodejs.org/en/download/package-manager/). 
++ NodeJS: NodeJS itself for building: Follow the instructions provided on the following page
+[NodeJS Installation page](https://nodejs.org/en/download/). 
 + Luarocks: Luarocks is needed for the installation of all Lua dependendent Libraries for the webserver: Follow the installation instructions
 on the following page [LuaRocks Installation page](https://github.com/luarocks/luarocks/wiki/Download).
 
