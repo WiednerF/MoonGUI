@@ -5,6 +5,7 @@ all: clean install build
 install:
 	npm install
 	npm install --dev-only
+	npm install angular-cli -g
 
 build:
 		ng build --prod
