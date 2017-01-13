@@ -187,7 +187,7 @@ export class MainComponent implements OnInit {
      * Starts the Process for Fetching Log File
      */
     private runningData() {
-        Observable.interval(1000).subscribe(()=> {
+        Observable.interval(500).subscribe(()=> {
             if (this.moonGenService.getShouldRun() == true) {
                 if (this.executionNumber != this.moonGenService.getExecutionNumber()) {
                     this.executionNumber = this.moonGenService.getExecutionNumber();
