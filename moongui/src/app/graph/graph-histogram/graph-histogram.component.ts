@@ -101,8 +101,8 @@ export class GraphHistogramComponent implements OnChanges, AfterViewInit {
                 type: 'histogram',
                 autobinx: false,
                 xbins: {
-                    start: this.arrayMin(this.points[i].x),
-                    end: this.arrayMax(this.points[i].x),
+                    start: 0,
+                    end: 100,
                     size: this.size
                 }
             });
@@ -119,11 +119,13 @@ export class GraphHistogramComponent implements OnChanges, AfterViewInit {
                 let update1: any = {x: [], xbins: []};
                 for (let i: number = 0; i < changes.points.currentValue.length; i++) {
                     update1.x.push(changes.points.currentValue[i].x);//Calculates the changes for each trace again
-                    update1.xbins.push({
-                        start: this.arrayMin(changes.points.currentValue[i].x),
-                        end: this.arrayMax(changes.points.currentValue[i].x),
-                        size: this.size
-                    });
+                    if(changes.points.currentValue[i].x!=[] && changes.points.currentValue[i].x.length>=0) {
+                        update1.xbins.push({
+                            start: this.arrayMin(changes.points.currentValue[i].x),
+                            end: this.arrayMax(changes.points.currentValue[i].x),
+                            size: this.size
+                        });
+                    }
                 }
                 Plotly.restyle(graphDiv, update1);//Update and change range of percentile, if wanted
                 if (this.xAxisPercentile && !this.layout.xaxis.autorange) {
