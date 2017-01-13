@@ -147,7 +147,7 @@ export class GraphHistogramComponent implements OnChanges, AfterViewInit {
     private arrayMax(array) {
         return array.reduce(function(a, b) {
             return Math.max(a, b);
-        });
+        },0);
     }
 
     /**
@@ -157,7 +157,7 @@ export class GraphHistogramComponent implements OnChanges, AfterViewInit {
     private arrayMin(array) {
         return array.reduce(function(a, b) {
             return Math.min(a, b);
-        });
+        },100);
     }
 
     /**
