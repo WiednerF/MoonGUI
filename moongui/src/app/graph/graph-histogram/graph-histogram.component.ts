@@ -101,8 +101,8 @@ export class GraphHistogramComponent implements OnChanges, AfterViewInit {
                 type: 'histogram',
                 autobinx: false,
                 xbins: {
-                    start: Math.min.apply(Math, this.points[i].x),
-                    end: Math.max.apply(Math, this.points[i].x),
+                    start: this.arrayMin(this.points[i].x),
+                    end: this.arrayMax(this.points[i].x),
                     size: this.size
                 }
             });
@@ -120,8 +120,8 @@ export class GraphHistogramComponent implements OnChanges, AfterViewInit {
                 for (let i: number = 0; i < changes.points.currentValue.length; i++) {
                     update1.x.push(changes.points.currentValue[i].x);//Calculates the changes for each trace again
                     update1.xbins.push({
-                        start: Math.min.apply(Math, changes.points.currentValue[i].x),
-                        end: Math.max.apply(Math, changes.points.currentValue[i].x),
+                        start: this.arrayMin(changes.points.currentValue[i].x),
+                        end: this.arrayMax(changes.points.currentValue[i].x),
                         size: this.size
                     });
                 }
@@ -136,6 +136,26 @@ export class GraphHistogramComponent implements OnChanges, AfterViewInit {
                 Plotly.relayout(graphDiv, this.layout);
             }
         }
+    }
+
+    /**
+     * Maximum of given array
+     * @param array
+     */
+    private arrayMax(array) {
+        return array.reduce(function(a, b) {
+            return Math.max(a, b);
+        });
+    }
+
+    /**
+     * Minimum of given array
+     * @param array
+     */
+    private arrayMin(array) {
+        return array.reduce(function(a, b) {
+            return Math.min(a, b);
+        });
     }
 
     /**
