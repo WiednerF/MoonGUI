@@ -1,6 +1,8 @@
 # MoonGUI Installation
 This file describes all important informations related to the installation of MoonGui, starting with the pre install and built dependencies,
 followed by installation instructions and the built instructions for the frontend.
+## Submodule
+This is designed to be used as submodule (Subfolder) of the MoonGen software, because this provides only the GUI and handling of the configuration, not the measurements. Please follow at first the Instruction of [MoonGen](https://github.com/emmericp/MoonGen) and add this thereafter as subfolder. 
 ## Dependencies
 + NPM: The package installer for NodeJS: Follow the instructions provided on the following page
 [NodeJS Installation page](https://nodejs.org/en/download/package-manager/). 
